@@ -1,5 +1,5 @@
 using Mirror.Cloud.ListServerService;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Cloud
 {
@@ -14,9 +14,9 @@ namespace Mirror.Cloud
     /// <summary>
     /// Used to requests and responses from the mirror api
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/CloudServices/ApiConnector")]
-    [HelpURL("https://mirror-networking.com/docs/api/Mirror.Cloud.ApiConnector.html")]
+    //[DisallowMultipleComponent]
+    ////[AddComponentMenu("Network/CloudServices/ApiConnector")]
+    //[HelpURL("https://mirror-networking.com/docs/api/Mirror.Cloud.ApiConnector.html")]
     public class ApiConnector : MonoBehaviour, IApiConnector, ICoroutineRunner
     {
         #region Inspector

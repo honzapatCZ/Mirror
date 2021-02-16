@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using kcp2k;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
@@ -18,9 +18,9 @@ namespace Mirror
     /// </summary>
     public enum NetworkManagerMode { Offline, ServerOnly, ClientOnly, Host }
 
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkManager")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkManager.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkManager")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkManager.html")]
     public class NetworkManager : MonoBehaviour
     {
         static readonly ILogger logger = LogFactory.GetLogger<NetworkManager>();

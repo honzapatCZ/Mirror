@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Compilation;
-using UnityEngine;
+using FlaxEngine;
 using UnityAssembly = UnityEditor.Compilation.Assembly;
 
 namespace Mirror.Weaver

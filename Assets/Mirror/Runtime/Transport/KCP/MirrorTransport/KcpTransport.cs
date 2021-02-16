@@ -2,12 +2,12 @@
 using System;
 using System.Linq;
 using System.Net;
-using UnityEngine;
+using FlaxEngine;
 using Mirror;
 
 namespace kcp2k
 {
-    [DisallowMultipleComponent]
+    //[DisallowMultipleComponent]
     public class KcpTransport : Transport
     {
         // scheme used by this transport

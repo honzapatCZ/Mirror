@@ -1,13 +1,13 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Logging
 {
     /// <summary>
     /// Used to load LogSettings in build
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkLogSettings")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkLogSettings.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkLogSettings")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkLogSettings.html")]
     public class NetworkLogSettings : MonoBehaviour
     {
         [Header("Log Settings Asset")]

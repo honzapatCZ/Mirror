@@ -1,10 +1,10 @@
 using System.Collections;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.SceneManagement;
 
 namespace Mirror.Examples.Additive
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class AdditiveNetworkManager : NetworkManager
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(AdditiveNetworkManager));

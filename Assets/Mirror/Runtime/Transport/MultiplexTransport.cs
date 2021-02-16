@@ -1,11 +1,11 @@
 using System;
 using System.Text;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
     // a transport that can listen to multiple underlying transport at the same time
-    [DisallowMultipleComponent]
+    //[DisallowMultipleComponent]
     public class MultiplexTransport : Transport
     {
         public Transport[] transports;

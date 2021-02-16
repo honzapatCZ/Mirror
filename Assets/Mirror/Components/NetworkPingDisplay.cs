@@ -1,13 +1,13 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
     /// <summary>
     /// Component that will display the clients ping in milliseconds
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkPingDisplay")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkPingDisplay.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkPingDisplay")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkPingDisplay.html")]
     public class NetworkPingDisplay : MonoBehaviour
     {
         public bool showPing = true;

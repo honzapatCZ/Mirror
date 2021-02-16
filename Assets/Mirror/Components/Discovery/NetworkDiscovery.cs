@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.Events;
 
 namespace Mirror.Discovery
@@ -8,8 +8,8 @@ namespace Mirror.Discovery
     [Serializable]
     public class ServerFoundUnityEvent : UnityEvent<ServerResponse> { };
 
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkDiscovery")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkDiscovery")]
     public class NetworkDiscovery : NetworkDiscoveryBase<ServerRequest, ServerResponse>
     {
         #region Server

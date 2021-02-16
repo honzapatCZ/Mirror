@@ -1,6 +1,6 @@
 using Mirror.Logging;
 using UnityEditor;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.EditorScripts.Logging
 {

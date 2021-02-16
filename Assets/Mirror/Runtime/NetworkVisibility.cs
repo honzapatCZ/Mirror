@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
@@ -9,7 +9,7 @@ namespace Mirror
     //
     // note: we inherit from NetworkBehaviour so we can reuse .netIdentity, etc.
     // note: unlike UNET, we only allow 1 proximity checker per NetworkIdentity.
-    [DisallowMultipleComponent]
+    //[DisallowMultipleComponent]
     public abstract class NetworkVisibility : NetworkBehaviour
     {
         /// <summary>

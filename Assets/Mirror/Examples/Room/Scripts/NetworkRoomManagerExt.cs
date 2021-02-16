@@ -1,9 +1,9 @@
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.SceneManagement;
 
 namespace Mirror.Examples.NetworkRoom
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class NetworkRoomManagerExt : NetworkRoomManager
     {
         [Header("Spawner Setup")]

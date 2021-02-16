@@ -1,9 +1,9 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Experimental
 {
-    [AddComponentMenu("Network/Experimental/NetworkLerpRigidbody")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkLerpRigidbody.html")]
+    //[AddComponentMenu("Network/Experimental/NetworkLerpRigidbody")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkLerpRigidbody.html")]
     public class NetworkLerpRigidbody : NetworkBehaviour
     {
         [Header("Settings")]

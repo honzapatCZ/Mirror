@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.SceneManagement;
 
 namespace Mirror.Examples.MultipleAdditiveScenes
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class MultiSceneNetManager : NetworkManager
     {
         [Header("Spawner Setup")]

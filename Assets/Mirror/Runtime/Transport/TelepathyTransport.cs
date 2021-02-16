@@ -2,13 +2,13 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using UnityEngine;
+using FlaxEngine;
 
 // Replaced by Kcp November 2020
 namespace Mirror
 {
-    [HelpURL("https://github.com/vis2k/Telepathy/blob/master/README.md")]
-    [DisallowMultipleComponent]
+    //[HelpURL("https://github.com/vis2k/Telepathy/blob/master/README.md")]
+    //[DisallowMultipleComponent]
     public class TelepathyTransport : Transport
     {
         // scheme used by this transport

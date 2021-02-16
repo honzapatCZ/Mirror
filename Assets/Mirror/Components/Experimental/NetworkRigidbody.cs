@@ -1,9 +1,9 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Experimental
 {
-    [AddComponentMenu("Network/Experimental/NetworkRigidbody")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkRigidbody.html")]
+    //[AddComponentMenu("Network/Experimental/NetworkRigidbody")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkRigidbody.html")]
     public class NetworkRigidbody : NetworkBehaviour
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkRigidbody));

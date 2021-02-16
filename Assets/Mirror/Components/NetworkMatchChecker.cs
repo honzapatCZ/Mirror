@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
@@ -9,10 +9,10 @@ namespace Mirror
     /// <para>Any object with this component on it will only be visible to other objects in the same match.</para>
     /// <para>This would be used to isolate players to their respective matches within a single game server instance. </para>
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkMatchChecker")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkMatchChecker")]
     [RequireComponent(typeof(NetworkIdentity))]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkMatchChecker.html")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkMatchChecker.html")]
     public class NetworkMatchChecker : NetworkVisibility
     {
         static readonly Dictionary<Guid, HashSet<NetworkIdentity>> matchPlayers = new Dictionary<Guid, HashSet<NetworkIdentity>>();

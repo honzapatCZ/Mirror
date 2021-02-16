@@ -1,9 +1,9 @@
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.SceneManagement;
 
 namespace Mirror.Examples.NetworkRoom
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class NetworkRoomPlayerExt : NetworkRoomPlayer
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkRoomPlayerExt));

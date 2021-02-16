@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
@@ -7,9 +7,9 @@ namespace Mirror
     /// Component that controls visibility of networked objects for players.
     /// <para>Any object with this component on it will not be visible to players more than a (configurable) distance away.</para>
     /// </summary>
-    [AddComponentMenu("Network/NetworkProximityChecker")]
+    //[AddComponentMenu("Network/NetworkProximityChecker")]
     [RequireComponent(typeof(NetworkIdentity))]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkProximityChecker.html")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkProximityChecker.html")]
     public class NetworkProximityChecker : NetworkVisibility
     {
         /// <summary>

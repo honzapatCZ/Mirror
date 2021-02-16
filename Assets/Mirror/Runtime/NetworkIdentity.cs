@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Mirror.RemoteCalls;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.Serialization;
 
 
@@ -103,9 +103,9 @@ namespace Mirror
     ///     </description></item>
     /// </list>
     /// </remarks>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkIdentity")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkIdentity.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkIdentity")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkIdentity.html")]
     public sealed class NetworkIdentity : MonoBehaviour
     {
         static readonly ILogger logger = LogFactory.GetLogger<NetworkIdentity>();

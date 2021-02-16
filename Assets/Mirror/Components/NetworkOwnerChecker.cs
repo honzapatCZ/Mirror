@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using FlaxEngine;
 using System.Collections.Generic;
 
 namespace Mirror
@@ -8,10 +8,10 @@ namespace Mirror
     /// <para>Any object with this component on it will only be visible to the client that has been assigned authority for it.</para>
     /// <para>This would be used for spawning a non-player networked object for single client to interact with, e.g. in-game puzzles.</para>
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkOwnerChecker")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkOwnerChecker")]
     [RequireComponent(typeof(NetworkIdentity))]
-    [HelpURL("https://mirror-networking.com/docs/Components/NetworkOwnerChecker.html")]
+    //[HelpURL("https://mirror-networking.com/docs/Components/NetworkOwnerChecker.html")]
     public class NetworkOwnerChecker : NetworkVisibility
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkSceneChecker));

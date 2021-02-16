@@ -1,9 +1,9 @@
 using System.Collections;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Authenticators
 {
-    [AddComponentMenu("Network/Authenticators/BasicAuthenticator")]
+    ////[AddComponentMenu("Network/Authenticators/BasicAuthenticator")]
     public class BasicAuthenticator : NetworkAuthenticator
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(BasicAuthenticator));

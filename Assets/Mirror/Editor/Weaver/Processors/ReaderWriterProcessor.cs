@@ -5,7 +5,7 @@ using Mono.CecilX;
 using Mono.CecilX.Cil;
 using UnityEditor;
 using UnityEditor.Compilation;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Weaver
 {

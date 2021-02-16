@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Articles/Components/NetworkManager.html
@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Mirror.Examples.Basic
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class BasicNetManager : NetworkManager
     {
         // Players List to manage playerNumber

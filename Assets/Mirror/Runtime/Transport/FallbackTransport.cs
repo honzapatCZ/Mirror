@@ -2,12 +2,12 @@
 // example: to use Apathy if on Windows/Mac/Linux and fall back to Telepathy
 //          otherwise.
 using System;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
-    [HelpURL("https://mirror-networking.com/docs/Articles/Transports/Fallback.html")]
-    [DisallowMultipleComponent]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Transports/Fallback.html")]
+    //[DisallowMultipleComponent]
     public class FallbackTransport : Transport
     {
         public Transport[] transports;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Mirror.RemoteCalls;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
@@ -18,9 +18,9 @@ namespace Mirror
     /// <para>The NetworkBehaviour component requires a NetworkIdentity on the game object. There can be multiple NetworkBehaviours on a single game object. For an object with sub-components in a hierarchy, the NetworkIdentity must be on the root object, and NetworkBehaviour scripts must also be on the root object.</para>
     /// <para>Some of the built-in components of the networking system are derived from NetworkBehaviour, including NetworkTransport, NetworkAnimator and NetworkProximityChecker.</para>
     /// </remarks>
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     [RequireComponent(typeof(NetworkIdentity))]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Guides/NetworkBehaviour.html")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Guides/NetworkBehaviour.html")]
     public abstract class NetworkBehaviour : MonoBehaviour
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkBehaviour));

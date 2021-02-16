@@ -1,5 +1,5 @@
 using System;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.Events;
 
 namespace Mirror
@@ -12,7 +12,7 @@ namespace Mirror
     /// <summary>
     /// Base class for implementing component-based authentication during the Connect phase
     /// </summary>
-    [HelpURL("https://mirror-networking.com/docs/Articles/Guides/Authentication.html")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Guides/Authentication.html")]
     public abstract class NetworkAuthenticator : MonoBehaviour
     {
         [Header("Event Listeners (optional)")]

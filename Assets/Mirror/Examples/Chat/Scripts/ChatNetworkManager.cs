@@ -1,8 +1,8 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Examples.Chat
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class ChatNetworkManager : NetworkManager
     {
         [Header("Chat GUI")]

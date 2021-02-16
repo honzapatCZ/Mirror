@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Discovery
 {
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkDiscoveryHUD")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkDiscovery.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkDiscoveryHUD")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkDiscovery.html")]
     [RequireComponent(typeof(NetworkDiscovery))]
     public class NetworkDiscoveryHUD : MonoBehaviour
     {

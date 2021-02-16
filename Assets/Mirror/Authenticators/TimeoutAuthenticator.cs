@@ -1,5 +1,5 @@
 using System.Collections;
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror.Authenticators
 {
@@ -7,7 +7,7 @@ namespace Mirror.Authenticators
     /// An authenticator that disconnects connections if they don't
     /// authenticate within a specified time limit.
     /// </summary>
-    [AddComponentMenu("Network/Authenticators/TimeoutAuthenticator")]
+    //[AddComponentMenu("Network/Authenticators/TimeoutAuthenticator")]
     public class TimeoutAuthenticator : NetworkAuthenticator
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(TimeoutAuthenticator));

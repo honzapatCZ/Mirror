@@ -1,4 +1,4 @@
-using UnityEngine;
+using FlaxEngine;
 
 namespace Mirror
 {
@@ -6,9 +6,9 @@ namespace Mirror
     /// This component works in conjunction with the NetworkRoomManager to make up the multiplayer room system.
     /// <para>The RoomPrefab object of the NetworkRoomManager must have this component on it. This component holds basic room player data required for the room to function. Game specific data for room players can be put in other components on the RoomPrefab or in scripts derived from NetworkRoomPlayer.</para>
     /// </summary>
-    [DisallowMultipleComponent]
-    [AddComponentMenu("Network/NetworkRoomPlayer")]
-    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkRoomPlayer.html")]
+    //[DisallowMultipleComponent]
+    //[AddComponentMenu("Network/NetworkRoomPlayer")]
+    //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkRoomPlayer.html")]
     public class NetworkRoomPlayer : NetworkBehaviour
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkRoomPlayer));

@@ -1,12 +1,12 @@
 using System;
 using System.Net;
 using System.Security.Authentication;
-using UnityEngine;
+using FlaxEngine;
 using UnityEngine.Serialization;
 
 namespace Mirror.SimpleWeb
 {
-    [DisallowMultipleComponent]
+    //[DisallowMultipleComponent]
     public class SimpleWebTransport : Transport
     {
         public const string NormalScheme = "ws";

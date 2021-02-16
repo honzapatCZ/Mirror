@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using FlaxEngine;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkManager.html
@@ -7,7 +7,7 @@
 
 namespace Mirror.Examples.MultipleMatch
 {
-    [AddComponentMenu("")]
+    //[AddComponentMenu("")]
     public class MatchNetworkManager : NetworkManager
     {
         [Header("Match GUI")]
