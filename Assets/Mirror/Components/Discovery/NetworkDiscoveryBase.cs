@@ -17,21 +17,20 @@ namespace Mirror.Discovery
     /// </summary>
     //[DisallowMultipleComponent]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkDiscovery.html")]
-    public abstract class NetworkDiscoveryBase<Request, Response> : MonoBehaviour
+    public abstract class NetworkDiscoveryBase<Request, Response> : Script
         where Request : NetworkMessage
         where Response : NetworkMessage
     {
-        public static bool SupportedOnThisPlatform { get { return Application.platform != RuntimePlatform.WebGLPlayer; } }
 
         // each game should have a random unique handshake,  this way you can tell if this is the same game or not
-        [HideInInspector]
+        [HideInEditor]
         public long secretHandshake;
 
-        [SerializeField]
+        [Serialize]
         [Tooltip("The UDP port the server will listen for multi-cast messages")]
         protected int serverBroadcastListenPort = 47777;
 
-        [SerializeField]
+        [Serialize]
         [Tooltip("Time in seconds between multi-cast messages")]
         [Range(1, 60)]
         float ActiveDiscoveryInterval = 3;
@@ -52,8 +51,9 @@ namespace Mirror.Discovery
 
         public static long RandomLong()
         {
-            int value1 = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-            int value2 = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            Random rand = new Random();
+            int value1 = rand.Next(int.MinValue, int.MaxValue);
+            int value2 = rand.Next(int.MinValue, int.MaxValue);
             return value1 + ((long)value2 << 32);
         }
 
@@ -114,9 +114,6 @@ namespace Mirror.Discovery
         /// </summary>
         public void AdvertiseServer()
         {
-            if (!SupportedOnThisPlatform)
-                throw new PlatformNotSupportedException("Network discovery not supported in this platform");
-
             StopDiscovery();
 
             // Setup port -- may throw exception
@@ -228,9 +225,6 @@ namespace Mirror.Discovery
         /// </summary>
         public void StartDiscovery()
         {
-            if (!SupportedOnThisPlatform)
-                throw new PlatformNotSupportedException("Network discovery not supported in this platform");
-
             StopDiscovery();
 
             try

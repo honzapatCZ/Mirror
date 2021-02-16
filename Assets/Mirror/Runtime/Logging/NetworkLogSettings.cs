@@ -11,7 +11,7 @@ namespace Mirror.Logging
     public class NetworkLogSettings : Script
     {
         [Header("Log Settings Asset")]
-        [SerializeField] internal LogSettings settings;
+        [Serialize] internal LogSettings settings;
 
 #if UNITY_EDITOR
         // called when component is added to GameObject

@@ -49,14 +49,14 @@ namespace Mirror
             object[] fieldMarkers = field.GetCustomAttributes(typeof(SyncVarAttribute), true);
             return fieldMarkers.Length > 0;
         }
-        public static bool IsSerializeField(this FieldInfo field)
+        public static bool IsSerialize(this FieldInfo field)
         {
-            object[] fieldMarkers = field.GetCustomAttributes(typeof(SerializeField), true);
+            object[] fieldMarkers = field.GetCustomAttributes(typeof(Serialize), true);
             return fieldMarkers.Length > 0;
         }
         public static bool IsVisibleField(this FieldInfo field)
         {
-            return field.IsPublic || IsSerializeField(field);
+            return field.IsPublic || IsSerialize(field);
         }
 
         public static bool IsSyncObject(this FieldInfo field)

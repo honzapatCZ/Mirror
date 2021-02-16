@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Security.Authentication;
 using FlaxEngine;
-using UnityEngine.Serialization;
 
 namespace Mirror.SimpleWeb
 {
@@ -59,8 +58,8 @@ namespace Mirror.SimpleWeb
 
         [Header("Debug")]
         [Tooltip("Log functions uses ConditionalAttribute which will effect which log methods are allowed. DEBUG allows warn/error, SIMPLEWEB_LOG_ENABLED allows all")]
-        [FormerlySerializedAs("logLevels")]
-        [SerializeField] Log.Levels _logLevels = Log.Levels.none;
+        //[FormerlySerializedAs("logLevels")]
+        [Serialize] Log.Levels _logLevels = Log.Levels.none;
 
         /// <summary>
         /// <para>Gets _logLevels field</para>

@@ -25,14 +25,16 @@ namespace Mirror
             Debug.Log("FallbackTransport available: " + available.GetType());
         }
 
-        void OnEnable()
+        public override void OnEnable()
         {
-            available.enabled = true;
+            base.OnEnable();
+            available.Enabled = true;
         }
 
-        void OnDisable()
+        public override void OnDisable()
         {
-            available.enabled = false;
+            base.OnEnable();
+            available.Enabled = false;
         }
 
         // The client just uses the first transport available

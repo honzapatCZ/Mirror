@@ -70,7 +70,7 @@ namespace Mirror
         public static uint CompressQuaternion(Quaternion value)
         {
             // make sure value is normalized (don't trust user given value, and math here assumes normalized)
-            value = value.normalized;
+            value.Normalize();
 
             int largestIndex = FindLargestIndex(value);
             Vector3 small = GetSmallerDimensions(largestIndex, value);
@@ -81,9 +81,9 @@ namespace Mirror
                 small *= -1;
             }
 
-            uint a = ScaleToUInt(small.x, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
-            uint b = ScaleToUInt(small.y, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
-            uint c = ScaleToUInt(small.z, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
+            uint a = ScaleToUInt(small.X, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
+            uint b = ScaleToUInt(small.Y, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
+            uint c = ScaleToUInt(small.Z, QuaternionMinValue, QuaternionMaxValue, 0, QuaternionUintRange);
 
             // pack each 10 bits and extra 2 bits into uint32
             uint packed = a | b << 10 | c << 20 | (uint)largestIndex << 30;
@@ -112,10 +112,10 @@ namespace Mirror
 
         static Vector3 GetSmallerDimensions(int largestIndex, Quaternion value)
         {
-            float x = value.x;
-            float y = value.y;
-            float z = value.z;
-            float w = value.w;
+            float x = value.X;
+            float y = value.Y;
+            float z = value.Z;
+            float w = value.W;
 
             switch (largestIndex)
             {
@@ -160,21 +160,29 @@ namespace Mirror
 
         static Quaternion FromSmallerDimensions(uint largestIndex, Vector3 smallest)
         {
-            float a = smallest.x;
-            float b = smallest.y;
-            float c = smallest.z;
+            float a = smallest.X;
+            float b = smallest.Y;
+            float c = smallest.Z;
 
             float largest = Mathf.Sqrt(1 - a * a - b * b - c * c);
             switch (largestIndex)
             {
                 case 0:
-                    return new Quaternion(largest, a, b, c).normalized;
+                    Quaternion quat = new Quaternion(largest, a, b, c);
+                    quat.Normalize();
+                    return quat;
                 case 1:
-                    return new Quaternion(a, largest, b, c).normalized;
+                    Quaternion quat2 = new Quaternion(a, largest, b, c);
+                    quat2.Normalize();
+                    return quat2;
                 case 2:
-                    return new Quaternion(a, b, largest, c).normalized;
+                    Quaternion quat3 = new Quaternion(a, b, largest, c);
+                    quat3.Normalize();
+                    return quat3;
                 case 3:
-                    return new Quaternion(a, b, c, largest).normalized;
+                    Quaternion quat4 = new Quaternion(a, b, c, largest);
+                    quat4.Normalize();
+                    return quat4;
                 default:
                     throw new IndexOutOfRangeException("Invalid Quaternion index!");
 

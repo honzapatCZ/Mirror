@@ -1,9 +1,9 @@
-using UnityEditor;
+using FlaxEditor;
 using FlaxEngine;
 
 namespace Mirror.Logging
 {
-#if UNITY_EDITOR
+#if FLAX_EDITOR
     public static class EditorLogSettingsLoader
     {
         [InitializeOnLoadMethod]
@@ -28,14 +28,13 @@ namespace Mirror.Logging
             if (cache != null)
                 return cache;
 
-            string[] assetGuids = AssetDatabase.FindAssets("t:" + nameof(LogSettings));
+            System.Guid[] assetGuids = Content.GetAllAssetsByType(typeof(LogSettings));
             if (assetGuids.Length == 0)
                 return null;
 
-            string firstGuid = assetGuids[0];
-
-            string path = AssetDatabase.GUIDToAssetPath(firstGuid);
-            cache = AssetDatabase.LoadAssetAtPath<LogSettings>(path);
+            System.Guid firstGuid = assetGuids[0];
+                        
+            cache = Content.Load<LogSettings>(firstGuid);
 
             if (assetGuids.Length > 2)
             {

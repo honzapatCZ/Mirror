@@ -1,6 +1,5 @@
 using System.Linq;
 using FlaxEngine;
-using UnityEngine.Serialization;
 
 namespace Mirror
 {
@@ -27,7 +26,7 @@ namespace Mirror
         /// <summary>
         /// The animator component to synchronize.
         /// </summary>
-        [FormerlySerializedAs("m_Animator")]
+        //[FormerlySerializedAs("m_Animator")]
         [Header("Animator")]
         [Tooltip("Animator that will have parameters synchronized")]
         public Animator animator;

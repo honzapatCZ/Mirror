@@ -5,7 +5,7 @@ namespace Mirror.Cloud.Examples.Pong
 {
     public class BallManager : NetworkBehaviour
     {
-        [SerializeField] GameObject ballPrefab = null;
+        [Serialize] GameObject ballPrefab = null;
         GameObject ball;
         NetworkManagerListServerPong manager;
 

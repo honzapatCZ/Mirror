@@ -28,7 +28,7 @@ namespace Mirror
         /// <para>This should be set if your game has a single NetworkManager that exists for the lifetime of the process. If there is a NetworkManager in each scene, then this should not be set.</para>
         /// </summary>
         [Header("Configuration")]
-        //[FormerlySerializedAs("m_DontDestroyOnLoad")]
+        ////[FormerlySerializedAs("m_DontDestroyOnLoad")]
         //[Tooltip("Should the Network Manager object be persisted through scene changes?")]
         //public bool dontDestroyOnLoad = true;
 
@@ -36,7 +36,7 @@ namespace Mirror
         /// Controls whether the program runs when it is in the background.
         /// <para>This is required when multiple instances of a program using networking are running on the same machine, such as when testing using localhost. But this is not recommended when deploying to mobile platforms.</para>
         /// </summary>
-        //[FormerlySerializedAs("m_RunInBackground")]
+        ////[FormerlySerializedAs("m_RunInBackground")]
         //[Tooltip("Should the server or client keep running in the background?")]
         //public bool runInBackground = true;
 
@@ -46,13 +46,13 @@ namespace Mirror
         /// <para>Server build is true when "Server build" is checked in build menu, or BuildOptions.EnableHeadlessMode flag is in BuildOptions</para>
         /// </summary>
         [Tooltip("Should the server auto-start when 'Server Build' is checked in build settings")]
-        //[FormerlySerializedAs("startOnHeadless")]
+        ////[FormerlySerializedAs("startOnHeadless")]
         public bool autoStartServerBuild = true;
 
         /// <summary>
         /// Enables verbose debug messages in the console
         /// </summary>
-        //[FormerlySerializedAs("m_ShowDebugMessages")]
+        ////[FormerlySerializedAs("m_ShowDebugMessages")]
         [Tooltip("This will enable verbose debug messages in the Unity Editor console")]
         public bool showDebugMessages;
 
@@ -88,7 +88,7 @@ namespace Mirror
         /// </summary>
         [Header("Scene Management")]
         [Scene]
-        //[FormerlySerializedAs("m_OfflineScene")]
+        ////[FormerlySerializedAs("m_OfflineScene")]
         [Tooltip("Scene that Mirror will switch to when the client or server is stopped")]
         public SceneReference offlineScene;
 
@@ -97,7 +97,7 @@ namespace Mirror
         /// <para>Setting this makes the NetworkManager do scene management. This scene will be switched to when a network session is started - such as a client connect, or a server listen.</para>
         /// </summary>
         [Scene]
-        //[FormerlySerializedAs("m_OnlineScene")]
+        ////[FormerlySerializedAs("m_OnlineScene")]
         [Tooltip("Scene that Mirror will switch to when the server is started. Clients will recieve a Scene Message to load the server's current scene when they connect.")]
         public SceneReference onlineScene;
 
@@ -111,7 +111,7 @@ namespace Mirror
         /// The network address currently in use.
         /// <para>For clients, this is the address of the server that is connected to. For servers, this is the local address.</para>
         /// </summary>
-        //[FormerlySerializedAs("m_NetworkAddress")]
+        ////[FormerlySerializedAs("m_NetworkAddress")]
         [Tooltip("Network Address where the client should connect to the server. Server does not use this for anything.")]
         public string networkAddress = "localhost";
 
@@ -119,7 +119,7 @@ namespace Mirror
         /// The maximum number of concurrent network connections to support.
         /// <para>This effects the memory usage of the network layer.</para>
         /// </summary>
-        //[FormerlySerializedAs("m_MaxConnections")]
+        ////[FormerlySerializedAs("m_MaxConnections")]
         [Tooltip("Maximum number of concurrent connections.")]
         public int maxConnections = 100;
 
@@ -149,21 +149,21 @@ namespace Mirror
         /// <para>Player objects are created in the default handler for AddPlayer() on the server. Implementing OnServerAddPlayer overrides this behaviour.</para>
         /// </summary>
         [Header("Player Object")]
-        //[FormerlySerializedAs("m_PlayerPrefab")]
+        ////[FormerlySerializedAs("m_PlayerPrefab")]
         [Tooltip("Prefab of the player object. Prefab must have a Network Identity component. May be an empty game object or a full avatar.")]
         public Prefab playerPrefab;
 
         /// <summary>
         /// A flag to control whether or not player objects are automatically created on connect, and on scene change.
         /// </summary>
-        //[FormerlySerializedAs("m_AutoCreatePlayer")]
+        ////[FormerlySerializedAs("m_AutoCreatePlayer")]
         [Tooltip("Should Mirror automatically spawn the player after scene change?")]
         public bool autoCreatePlayer = true;
 
         /// <summary>
         /// The current method of spawning players used by the NetworkManager.
         /// </summary>
-        //[FormerlySerializedAs("m_PlayerSpawnMethod")]
+        ////[FormerlySerializedAs("m_PlayerSpawnMethod")]
         [Tooltip("Round Robin or Random order of Start Position selection")]
         public PlayerSpawnMethod playerSpawnMethod;
 
@@ -171,7 +171,7 @@ namespace Mirror
         /// List of prefabs that will be registered with the spawning system.
         /// <para>For each of these prefabs, ClientScene.RegisterPrefab() will be automatically invoked.</para>
         /// </summary>
-        //[FormerlySerializedAs("m_SpawnPrefabs"), HideInInspector]
+        ////[FormerlySerializedAs("m_SpawnPrefabs"), HideInEditor]
         public List<Prefab> spawnPrefabs = new List<Prefab>();
 
         /// <summary>

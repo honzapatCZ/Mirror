@@ -80,10 +80,6 @@ namespace kcp2k
             Debug.Log("KcpTransport initialized!");
         }
 
-        // all except WebGL
-        public override bool Available() =>
-            Application.platform != RuntimePlatform.WebGLPlayer;
-
         // client
         public override bool ClientConnected() => client.connected;
         public override void ClientConnect(string address)
@@ -119,7 +115,7 @@ namespace kcp2k
             // -> we need to check enabled here
             // -> and in kcp's internal loops, see Awake() OnCheckEnabled setup!
             // (see also: https://github.com/vis2k/Mirror/pull/379)
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             server.Tick();
@@ -312,6 +308,11 @@ namespace kcp2k
                 log += $"  ReceiveBuffer: {client.connection.ReceiveBufferCount}\n\n";
                 Debug.Log(log);
             }
+        }
+
+        public override bool Available()
+        {
+            return true;
         }
     }
 }

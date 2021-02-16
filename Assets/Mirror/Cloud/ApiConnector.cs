@@ -17,21 +17,21 @@ namespace Mirror.Cloud
     //[DisallowMultipleComponent]
     ////[AddComponentMenu("Network/CloudServices/ApiConnector")]
     //[HelpURL("https://mirror-networking.com/docs/api/Mirror.Cloud.ApiConnector.html")]
-    public class ApiConnector : MonoBehaviour, IApiConnector, ICoroutineRunner
+    public class ApiConnector : Script, IApiConnector, ICoroutineRunner
     {
         #region Inspector
         [Header("Settings")]
 
         [Tooltip("Base URL of api, including https")]
-        [SerializeField] string ApiAddress = "";
+        [Serialize] string ApiAddress = "";
 
         [Tooltip("Api key required to access api")]
-        [SerializeField] string ApiKey = "";
+        [Serialize] string ApiKey = "";
 
         [Header("Events")]
 
         [Tooltip("Triggered when server list updates")]
-        [SerializeField] ServerListEvent _onServerListUpdated = new ServerListEvent();
+        [Serialize] System.Action<ServerCollectionJson> _onServerListUpdated;
         #endregion
 
         IRequestCreator requestCreator;

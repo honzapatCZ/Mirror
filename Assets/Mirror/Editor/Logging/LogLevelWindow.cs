@@ -7,7 +7,7 @@ namespace Mirror.EditorScripts.Logging
     public class LogLevelWindow : EditorWindow
     {
         [Header("Log Settings Asset")]
-        [SerializeField] LogSettings settings = null;
+        [Serialize] LogSettings settings = null;
 
         SerializedObject serializedObject;
         SerializedProperty settingsProp;

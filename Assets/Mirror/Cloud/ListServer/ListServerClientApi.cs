@@ -1,23 +1,21 @@
 using System.Collections;
 using FlaxEngine;
-using UnityEngine.Events;
-using UnityEngine.Networking;
 
 namespace Mirror.Cloud.ListServerService
 {
     public sealed class ListServerClientApi : ListServerBaseApi, IListServerClientApi
     {
-        readonly ServerListEvent _onServerListUpdated;
+        private System.Action<ServerCollectionJson> _onServerListUpdated;
 
         Coroutine getServerListRepeatCoroutine;
 
-        public event UnityAction<ServerCollectionJson> onServerListUpdated
+        public event System.Action<ServerCollectionJson> onServerListUpdated
         {
-            add => _onServerListUpdated.AddListener(value);
-            remove => _onServerListUpdated.RemoveListener(value);
+            add => _onServerListUpdated += (value);
+            remove => _onServerListUpdated -= (value);
         }
 
-        public ListServerClientApi(ICoroutineRunner runner, IRequestCreator requestCreator, ServerListEvent onServerListUpdated) : base(runner, requestCreator)
+        public ListServerClientApi(ICoroutineRunner runner, IRequestCreator requestCreator, System.Action<ServerCollectionJson> onServerListUpdated) : base(runner, requestCreator)
         {
             _onServerListUpdated = onServerListUpdated;
         }

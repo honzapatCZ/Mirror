@@ -495,7 +495,7 @@ namespace Mirror.Weaver
             netBehaviourSubclass.Methods.Add(serialize);
         }
 
-        void DeserializeField(FieldDefinition syncVar, ILProcessor worker, MethodDefinition deserialize)
+        void DeSerialize(FieldDefinition syncVar, ILProcessor worker, MethodDefinition deserialize)
         {
             // check for Hook function
             MethodDefinition hookMethod = SyncVarProcessor.GetHookMethod(netBehaviourSubclass, syncVar);
@@ -862,7 +862,7 @@ namespace Mirror.Weaver
 
             foreach (FieldDefinition syncVar in syncVars)
             {
-                DeserializeField(syncVar, serWorker, serialize);
+                DeSerialize(syncVar, serWorker, serialize);
             }
 
             serWorker.Append(serWorker.Create(OpCodes.Ret));
@@ -888,7 +888,7 @@ namespace Mirror.Weaver
                 serWorker.Append(serWorker.Create(OpCodes.And));
                 serWorker.Append(serWorker.Create(OpCodes.Brfalse, varLabel));
 
-                DeserializeField(syncVar, serWorker, serialize);
+                DeSerialize(syncVar, serWorker, serialize);
 
                 serWorker.Append(varLabel);
                 dirtyBit += 1;

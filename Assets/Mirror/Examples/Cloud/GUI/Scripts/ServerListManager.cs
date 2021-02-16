@@ -9,16 +9,16 @@ namespace Mirror.Cloud.Example
     public class ServerListManager : Script
     {
         [Header("UI")]
-        [SerializeField] ServerListUI listUI = null;
+        [Serialize] ServerListUI listUI = null;
 
         [Header("Buttons")]
-        [SerializeField] Button refreshButton = null;
-        [SerializeField] Button startServerButton = null;
+        [Serialize] Button refreshButton = null;
+        [Serialize] Button startServerButton = null;
 
 
         [Header("Auto Refresh")]
-        [SerializeField] bool autoRefreshServerlist = false;
-        [SerializeField] int refreshinterval = 20;
+        [Serialize] bool autoRefreshServerlist = false;
+        [Serialize] int refreshinterval = 20;
 
         ApiConnector connector;
 

@@ -84,7 +84,7 @@ namespace Mirror
         internal NetworkConnection()
         {
             // set lastTime to current time when creating connection to make sure it isn't instantly kicked for inactivity
-            lastMessageTime = Time.time;
+            lastMessageTime = Time.GameTime;
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Mirror
                 if (messageHandlers.TryGetValue(msgType, out NetworkMessageDelegate msgDelegate))
                 {
                     msgDelegate.Invoke(this, reader, channelId);
-                    lastMessageTime = Time.time;
+                    lastMessageTime = Time.GameTime;
                     return true;
                 }
                 else
@@ -248,7 +248,7 @@ namespace Mirror
         /// </para>
         /// </summary>
         /// <returns>True if server has recently received a message</returns>
-        internal virtual bool IsAlive(float timeout) => Time.time - lastMessageTime < timeout;
+        internal virtual bool IsAlive(float timeout) => Time.GameTime - lastMessageTime < timeout;
 
         internal void AddOwnedObject(NetworkIdentity obj)
         {
@@ -268,7 +268,7 @@ namespace Mirror
             {
                 if (netIdentity != null)
                 {
-                    NetworkServer.Destroy(netIdentity.gameObject);
+                    NetworkServer.Destroy(netIdentity.Actor);
                 }
             }
 

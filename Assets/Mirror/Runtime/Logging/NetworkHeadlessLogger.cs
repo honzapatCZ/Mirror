@@ -11,7 +11,7 @@ namespace Mirror.Logging
     public class NetworkHeadlessLogger : Script
     {
 #pragma warning disable CS0414 // unused private members
-        [SerializeField] bool showExceptionStackTrace = false;
+        [Serialize] bool showExceptionStackTrace = false;
 #pragma warning restore CS0414 // unused private members
 
         void Awake()

@@ -13,12 +13,12 @@ namespace Mirror
     {
         public void Awake()
         {
-            NetworkManager.RegisterStartPosition(transform);
+            NetworkManager.RegisterStartPosition(Transform);
         }
 
         public void OnDestroy()
         {
-            NetworkManager.UnRegisterStartPosition(transform);
+            NetworkManager.UnRegisterStartPosition(Transform);
         }
     }
 }

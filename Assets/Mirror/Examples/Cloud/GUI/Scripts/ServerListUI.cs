@@ -9,8 +9,8 @@ namespace Mirror.Cloud.Example
     /// </summary>
     public class ServerListUI : Script
     {
-        [SerializeField] ServerListUIItem itemPrefab = null;
-        [SerializeField] Transform parent = null;
+        [Serialize] ServerListUIItem itemPrefab = null;
+        [Serialize] Transform parent = null;
 
         readonly List<ServerListUIItem> items = new List<ServerListUIItem>();
 

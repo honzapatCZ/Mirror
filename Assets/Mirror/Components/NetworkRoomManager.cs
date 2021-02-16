@@ -26,17 +26,17 @@ namespace Mirror
 
         [Header("Room Settings")]
 
-        //[FormerlySerializedAs("m_ShowRoomGUI")]
+        ////[FormerlySerializedAs("m_ShowRoomGUI")]
         [Serialize]
         [Tooltip("This flag controls whether the default UI is shown for the room")]
         public bool showRoomGUI = true;
 
-        //[FormerlySerializedAs("m_MinPlayers")]
+        ////[FormerlySerializedAs("m_MinPlayers")]
         [Serialize]
         [Tooltip("Minimum number of players to auto-start the game")]
         public int minPlayers = 1;
 
-        //[FormerlySerializedAs("m_RoomPlayerPrefab")]
+        ////[FormerlySerializedAs("m_RoomPlayerPrefab")]
         [Serialize]
         [Tooltip("Prefab to use for the Room Player")]
         public Prefab roomPlayerPrefab;//NetworkRoomPlayer
@@ -56,7 +56,7 @@ namespace Mirror
         /// <summary>
         /// List of players that are in the Room
         /// </summary>
-        //[FormerlySerializedAs("m_PendingPlayers")]
+        ////[FormerlySerializedAs("m_PendingPlayers")]
         public List<PendingPlayer> pendingPlayers = new List<PendingPlayer>();
 
         [Header("Diagnostics")]
@@ -65,7 +65,7 @@ namespace Mirror
         /// True when all players have submitted a Ready message
         /// </summary>
         [Tooltip("Diagnostic flag indicating all players are ready to play")]
-        //[FormerlySerializedAs("allPlayersReady")]
+        ////[FormerlySerializedAs("allPlayersReady")]
         [Serialize]
         bool _allPlayersReady;
 

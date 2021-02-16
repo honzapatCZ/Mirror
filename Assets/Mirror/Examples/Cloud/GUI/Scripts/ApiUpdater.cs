@@ -11,8 +11,8 @@ namespace Mirror.Cloud.Example
     {
         static readonly ILogger logger = LogFactory.GetLogger<ApiUpdater>();
 
-        [SerializeField] NetworkManagerListServer manager;
-        [SerializeField] ApiConnector connector;
+        [Serialize] NetworkManagerListServer manager;
+        [Serialize] ApiConnector connector;
         public string gameName = "Game";
 
         void Awake()

@@ -20,19 +20,21 @@ namespace Mirror
             }
         }
 
-        void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
             foreach (Transport transport in transports)
             {
-                transport.enabled = true;
+                transport.Enabled = true;
             }
         }
 
-        void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             foreach (Transport transport in transports)
             {
-                transport.enabled = false;
+                transport.Enabled = false;
             }
         }
 

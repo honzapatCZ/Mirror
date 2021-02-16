@@ -10,12 +10,12 @@ namespace Mirror.Cloud.Example
     /// </summary>
     public class ServerListUIItem : Script
     {
-        [SerializeField] Text nameText = null;
-        [SerializeField] Text namePlayers = null;
-        [SerializeField] string playersFormat = "{0} / {1}";
-        [SerializeField] Text addressText = null;
+        [Serialize] Text nameText = null;
+        [Serialize] Text namePlayers = null;
+        [Serialize] string playersFormat = "{0} / {1}";
+        [Serialize] Text addressText = null;
 
-        [SerializeField] Button joinButton = null;
+        [Serialize] Button joinButton = null;
 
         ServerJson server;
 

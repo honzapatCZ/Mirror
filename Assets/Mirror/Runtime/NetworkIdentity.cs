@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Mirror.RemoteCalls;
 using FlaxEngine;
-using UnityEngine.Serialization;
 
 
 #if UNITY_EDITOR
@@ -182,13 +181,13 @@ namespace Mirror
         /// <para>This is used for spawning scene objects on clients.</para>
         /// </summary>
         // persistent scene id <sceneHash/32,sceneId/32> (see AssignSceneID comments)
-        [FormerlySerializedAs("m_SceneId"), HideInInspector]
+        ////[FormerlySerializedAs("m_SceneId"), HideInEditor]
         public ulong sceneId;
 
         /// <summary>
         /// Flag to make this object only exist when the game is running as a server (or host).
         /// </summary>
-        [FormerlySerializedAs("m_ServerOnly")]
+        ////[FormerlySerializedAs("m_ServerOnly")]
         [Tooltip("Prevents this object from being spawned / enabled on clients")]
         public bool serverOnly;
 
@@ -239,10 +238,10 @@ namespace Mirror
 
         void CreateNetworkBehavioursCache()
         {
-            networkBehavioursCache = GetComponents<NetworkBehaviour>();
+            networkBehavioursCache = Actor.GetScripts<NetworkBehaviour>();
             if (networkBehavioursCache.Length > byte.MaxValue)
             {
-                logger.LogError($"Only {byte.MaxValue} NetworkBehaviour components are allowed for NetworkIdentity: {name} because we send the index as byte.", this);
+                logger.LogError($"Only {byte.MaxValue} NetworkBehaviour components are allowed for NetworkIdentity: {Actor.Name} because we send the index as byte.", this);
                 // Log error once then resize array so that NetworkIdentity does not throw exceptions later
                 Array.Resize(ref networkBehavioursCache, byte.MaxValue);
             }
@@ -256,13 +255,13 @@ namespace Mirror
             {
                 if (visibilityCache == null)
                 {
-                    visibilityCache = GetComponent<NetworkVisibility>();
+                    visibilityCache = Actor.GetScript<NetworkVisibility>();
                 }
                 return visibilityCache;
             }
         }
 
-        [SerializeField, HideInInspector] string m_AssetId;
+        [Serialize, HideInEditor] string m_AssetId;
 
 
         /// <summary>
@@ -398,7 +397,7 @@ namespace Mirror
         /// <summary>
         /// hasSpawned should always be false before runtime
         /// </summary>
-        [SerializeField, HideInInspector] bool hasSpawned;
+        [Serialize, HideInEditor] bool hasSpawned;
         public bool SpawnedFromInstantiate { get; private set; }
 
         void Awake()

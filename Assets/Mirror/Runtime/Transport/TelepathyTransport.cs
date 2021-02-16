@@ -109,15 +109,9 @@ namespace Mirror
             server.ReceiveQueueLimit = serverReceiveQueueLimitPerConnection;
 
             // allocate enabled check only once
-            enabledCheck = () => enabled;
+            enabledCheck = () => Enabled;
 
             Debug.Log("TelepathyTransport initialized!");
-        }
-
-        public override bool Available()
-        {
-            // C#'s built in TCP sockets run everywhere except on WebGL
-            return Application.platform != RuntimePlatform.WebGLPlayer;
         }
 
         // client
@@ -144,7 +138,7 @@ namespace Mirror
             // note: we need to check enabled in case we set it to false
             // when LateUpdate already started.
             // (https://github.com/vis2k/Mirror/pull/379)
-            if (!enabled)
+            if (!Enabled)
                 return;
 
             // process a maximum amount of client messages per tick
