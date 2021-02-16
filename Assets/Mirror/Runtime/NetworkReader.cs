@@ -259,35 +259,34 @@ namespace Mirror
         public static Vector2 ReadVector2(this NetworkReader reader) => new Vector2(reader.ReadSingle(), reader.ReadSingle());
         public static Vector3 ReadVector3(this NetworkReader reader) => new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         public static Vector4 ReadVector4(this NetworkReader reader) => new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-        public static Vector2Int ReadVector2Int(this NetworkReader reader) => new Vector2Int(reader.ReadInt32(), reader.ReadInt32());
-        public static Vector3Int ReadVector3Int(this NetworkReader reader) => new Vector3Int(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
         public static Color ReadColor(this NetworkReader reader) => new Color(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         public static Color32 ReadColor32(this NetworkReader reader) => new Color32(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         public static Quaternion ReadQuaternion(this NetworkReader reader) => new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-        public static Rect ReadRect(this NetworkReader reader) => new Rect(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+        public static Rectangle ReadRect(this NetworkReader reader) => new Rectangle(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         public static Plane ReadPlane(this NetworkReader reader) => new Plane(reader.ReadVector3(), reader.ReadSingle());
         public static Ray ReadRay(this NetworkReader reader) => new Ray(reader.ReadVector3(), reader.ReadVector3());
 
-        public static Matrix4x4 ReadMatrix4x4(this NetworkReader reader)
+        public static Matrix ReadMatrix4x4(this NetworkReader reader)
         {
-            return new Matrix4x4
+            return new Matrix
             {
-                m00 = reader.ReadSingle(),
-                m01 = reader.ReadSingle(),
-                m02 = reader.ReadSingle(),
-                m03 = reader.ReadSingle(),
-                m10 = reader.ReadSingle(),
-                m11 = reader.ReadSingle(),
-                m12 = reader.ReadSingle(),
-                m13 = reader.ReadSingle(),
-                m20 = reader.ReadSingle(),
-                m21 = reader.ReadSingle(),
-                m22 = reader.ReadSingle(),
-                m23 = reader.ReadSingle(),
-                m30 = reader.ReadSingle(),
-                m31 = reader.ReadSingle(),
-                m32 = reader.ReadSingle(),
-                m33 = reader.ReadSingle()
+                M11 = reader.ReadSingle(),
+                M12 = reader.ReadSingle(),
+                M13 = reader.ReadSingle(),
+                M14 = reader.ReadSingle(),
+                M21 = reader.ReadSingle(),
+                M22 = reader.ReadSingle(),
+                M23 = reader.ReadSingle(),
+                M24 = reader.ReadSingle(),
+                M31 = reader.ReadSingle(),
+                M32 = reader.ReadSingle(),
+                M33 = reader.ReadSingle(),
+                M34 = reader.ReadSingle(),
+                M41 = reader.ReadSingle(),
+                M42 = reader.ReadSingle(),
+                M43 = reader.ReadSingle(),
+                M44 = reader.ReadSingle(),
+
             };
         }
 
@@ -299,18 +298,12 @@ namespace Mirror
         }
 
         public static Guid ReadGuid(this NetworkReader reader) => new Guid(reader.ReadBytes(16));
-        public static Transform ReadTransform(this NetworkReader reader)
+        
+        public static Actor ReadGameObject(this NetworkReader reader)
         {
             // Don't use null propagation here as it could lead to MissingReferenceException
             NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-            return networkIdentity != null ? networkIdentity.transform : null;
-        }
-
-        public static GameObject ReadGameObject(this NetworkReader reader)
-        {
-            // Don't use null propagation here as it could lead to MissingReferenceException
-            NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-            return networkIdentity != null ? networkIdentity.gameObject : null;
+            return networkIdentity != null ? networkIdentity.Actor : null;
         }
 
         public static NetworkIdentity ReadNetworkIdentity(this NetworkReader reader)

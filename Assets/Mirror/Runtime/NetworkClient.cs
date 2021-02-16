@@ -73,7 +73,7 @@ namespace Mirror
             logger.Assert(Transport.activeTransport != null, "There was no active transport when calling NetworkClient.Connect, If you are calling Connect manually then make sure to set 'Transport.activeTransport' first");
 
             RegisterSystemHandlers(false);
-            Transport.activeTransport.enabled = true;
+            Transport.activeTransport.Actor.IsActive = true;
             AddTransportHandlers();
 
             connectState = ConnectState.Connecting;
@@ -94,7 +94,7 @@ namespace Mirror
             logger.Assert(Transport.activeTransport != null, "There was no active transport when calling NetworkClient.Connect, If you are calling Connect manually then make sure to set 'Transport.activeTransport' first");
 
             RegisterSystemHandlers(false);
-            Transport.activeTransport.enabled = true;
+            Transport.activeTransport.Actor.IsActive = true;
             AddTransportHandlers();
 
             connectState = ConnectState.Connecting;

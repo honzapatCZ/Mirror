@@ -1,13 +1,11 @@
 using System;
 using FlaxEngine;
-using UnityEngine.Events;
 
 namespace Mirror
 {
     /// <summary>
     /// Unity Event for the NetworkConnection
     /// </summary>
-    [Serializable] public class UnityEventNetworkConnection : UnityEvent<NetworkConnection> { }
 
     /// <summary>
     /// Base class for implementing component-based authentication during the Connect phase
@@ -21,13 +19,13 @@ namespace Mirror
         /// Notify subscribers on the server when a client is authenticated
         /// </summary>
         [Tooltip("Mirror has an internal subscriber to this event. You can add your own here.")]
-        public UnityEventNetworkConnection OnServerAuthenticated = new UnityEventNetworkConnection();
+        public Action<NetworkConnection> OnServerAuthenticated;
 
         /// <summary>
         /// Notify subscribers on the client when the client is authenticated
         /// </summary>
         [Tooltip("Mirror has an internal subscriber to this event. You can add your own here.")]
-        public UnityEventNetworkConnection OnClientAuthenticated = new UnityEventNetworkConnection();
+        public Action<NetworkConnection> OnClientAuthenticated;
 
         #region server
 

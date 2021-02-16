@@ -8,12 +8,12 @@ namespace Mirror
     public delegate void NetworkMessageDelegate(NetworkConnection conn, NetworkReader reader, int channelId);
 
     // Handles requests to spawn objects on the client
-    public delegate GameObject SpawnDelegate(Vector3 position, Guid assetId);
+    public delegate Actor SpawnDelegate(Vector3 position, Guid assetId);
 
-    public delegate GameObject SpawnHandlerDelegate(SpawnMessage msg);
+    public delegate Actor SpawnHandlerDelegate(SpawnMessage msg);
 
     // Handles requests to unspawn objects on the client
-    public delegate void UnSpawnDelegate(GameObject spawned);
+    public delegate void UnSpawnDelegate(Actor spawned);
 
     // invoke type for Cmd/Rpc
     public enum MirrorInvokeType

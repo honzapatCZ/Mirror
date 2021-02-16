@@ -314,84 +314,88 @@ namespace Mirror
 
         public static void WriteVector2(this NetworkWriter writer, Vector2 value)
         {
-            writer.WriteSingle(value.x);
-            writer.WriteSingle(value.y);
+            writer.WriteSingle(value.X);
+            writer.WriteSingle(value.Y);
         }
 
         public static void WriteVector3(this NetworkWriter writer, Vector3 value)
         {
-            writer.WriteSingle(value.x);
-            writer.WriteSingle(value.y);
-            writer.WriteSingle(value.z);
+            writer.WriteSingle(value.X);
+            writer.WriteSingle(value.Y);
+            writer.WriteSingle(value.Z);
         }
 
         public static void WriteVector4(this NetworkWriter writer, Vector4 value)
         {
-            writer.WriteSingle(value.x);
-            writer.WriteSingle(value.y);
-            writer.WriteSingle(value.z);
-            writer.WriteSingle(value.w);
-        }
-
-        public static void WriteVector2Int(this NetworkWriter writer, Vector2Int value)
-        {
-            writer.WriteInt32(value.x);
-            writer.WriteInt32(value.y);
-        }
-
-        public static void WriteVector3Int(this NetworkWriter writer, Vector3Int value)
-        {
-            writer.WriteInt32(value.x);
-            writer.WriteInt32(value.y);
-            writer.WriteInt32(value.z);
+            writer.WriteSingle(value.X);
+            writer.WriteSingle(value.Y);
+            writer.WriteSingle(value.Z);
+            writer.WriteSingle(value.W);
         }
 
         public static void WriteColor(this NetworkWriter writer, Color value)
         {
-            writer.WriteSingle(value.r);
-            writer.WriteSingle(value.g);
-            writer.WriteSingle(value.b);
-            writer.WriteSingle(value.a);
+            writer.WriteSingle(value.R);
+            writer.WriteSingle(value.G);
+            writer.WriteSingle(value.B);
+            writer.WriteSingle(value.A);
         }
 
         public static void WriteColor32(this NetworkWriter writer, Color32 value)
         {
-            writer.WriteByte(value.r);
-            writer.WriteByte(value.g);
-            writer.WriteByte(value.b);
-            writer.WriteByte(value.a);
+            writer.WriteByte(value.R);
+            writer.WriteByte(value.G);
+            writer.WriteByte(value.B);
+            writer.WriteByte(value.A);
         }
 
         public static void WriteQuaternion(this NetworkWriter writer, Quaternion value)
         {
-            writer.WriteSingle(value.x);
-            writer.WriteSingle(value.y);
-            writer.WriteSingle(value.z);
-            writer.WriteSingle(value.w);
+            writer.WriteSingle(value.X);
+            writer.WriteSingle(value.Y);
+            writer.WriteSingle(value.Z);
+            writer.WriteSingle(value.W);
         }
 
-        public static void WriteRect(this NetworkWriter writer, Rect value)
+        public static void WriteRect(this NetworkWriter writer, Rectangle value)
         {
-            writer.WriteSingle(value.xMin);
-            writer.WriteSingle(value.yMin);
-            writer.WriteSingle(value.width);
-            writer.WriteSingle(value.height);
+            writer.WriteSingle(value.X);
+            writer.WriteSingle(value.Y);
+            writer.WriteSingle(value.Width);
+            writer.WriteSingle(value.Height);
         }
 
         public static void WritePlane(this NetworkWriter writer, Plane value)
         {
-            writer.WriteVector3(value.normal);
-            writer.WriteSingle(value.distance);
+            writer.WriteVector3(value.Normal);
+            writer.WriteSingle(value.D);
         }
 
         public static void WriteRay(this NetworkWriter writer, Ray value)
         {
-            writer.WriteVector3(value.origin);
-            writer.WriteVector3(value.direction);
+            writer.WriteVector3(value.Position);
+            writer.WriteVector3(value.Direction);
         }
 
-        public static void WriteMatrix4x4(this NetworkWriter writer, Matrix4x4 value)
+        public static void WriteMatrix4x4(this NetworkWriter writer, Matrix value)
         {
+            writer.WriteSingle(value.M11);
+            writer.WriteSingle(value.M12);
+            writer.WriteSingle(value.M13);
+            writer.WriteSingle(value.M14);
+            writer.WriteSingle(value.M21);
+            writer.WriteSingle(value.M22);
+            writer.WriteSingle(value.M23);
+            writer.WriteSingle(value.M24);
+            writer.WriteSingle(value.M31);
+            writer.WriteSingle(value.M32);
+            writer.WriteSingle(value.M33);
+            writer.WriteSingle(value.M34);
+            writer.WriteSingle(value.M41);
+            writer.WriteSingle(value.M42);
+            writer.WriteSingle(value.M43);
+            writer.WriteSingle(value.M44);
+            /*
             writer.WriteSingle(value.m00);
             writer.WriteSingle(value.m01);
             writer.WriteSingle(value.m02);
@@ -408,6 +412,7 @@ namespace Mirror
             writer.WriteSingle(value.m31);
             writer.WriteSingle(value.m32);
             writer.WriteSingle(value.m33);
+            */
         }
 
         public static void WriteGuid(this NetworkWriter writer, Guid value)
@@ -437,33 +442,15 @@ namespace Mirror
             writer.WriteByte((byte)value.ComponentIndex);
         }
 
-        public static void WriteTransform(this NetworkWriter writer, Transform value)
-        {
-            if (value == null)
-            {
-                writer.WriteUInt32(0);
-                return;
-            }
-            NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
-            if (identity != null)
-            {
-                writer.WriteUInt32(identity.netId);
-            }
-            else
-            {
-                logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-                writer.WriteUInt32(0);
-            }
-        }
 
-        public static void WriteGameObject(this NetworkWriter writer, GameObject value)
+        public static void WriteGameObject(this NetworkWriter writer, Actor value)
         {
             if (value == null)
             {
                 writer.WriteUInt32(0);
                 return;
             }
-            NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+            NetworkIdentity identity = value.GetScript<NetworkIdentity>();
             if (identity != null)
             {
                 writer.WriteUInt32(identity.netId);

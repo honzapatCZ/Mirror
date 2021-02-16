@@ -3,14 +3,7 @@ using FlaxEngine;
 
 namespace Mirror
 {
-    // Deprecated 10/06/2020
-    [Obsolete("Implement NetworkMessage instead. Use extension methods instead of Serialize/Deserialize, see https://github.com/vis2k/Mirror/pull/2317", true)]
-    public interface IMessageBase { }
-
-    // Deprecated 10/06/2020
-    [Obsolete("Implement NetworkMessage instead. Use extension methods instead of Serialize/Deserialize, see https://github.com/vis2k/Mirror/pull/2317", true)]
-    public class MessageBase : IMessageBase { }
-
+   
     public interface NetworkMessage { }
 
     #region Public System Messages
@@ -22,7 +15,7 @@ namespace Mirror
 
     public struct SceneMessage : NetworkMessage
     {
-        public string sceneName;
+        public SceneReference sceneName;
         // Normal = 0, LoadAdditive = 1, UnloadAdditive = 2
         public SceneOperation sceneOperation;
         public bool customHandling;

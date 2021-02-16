@@ -135,11 +135,12 @@ namespace Mirror
                     if (identity.sceneId != 0)
                     {
                         identity.Reset();
-                        identity.gameObject.SetActive(false);
+                        identity.Actor.IsActive = (false);
                     }
                     else
                     {
-                        GameObject.Destroy(identity.gameObject);
+                        FlaxEngine.Object.Destroy(identity.Actor);
+                        //GameObject.Destroy(identity.gameObject);
                     }
                 }
             }
@@ -720,7 +721,7 @@ namespace Mirror
         /// <param name="assetId"></param>
         /// <param name="keepAuthority">Does the previous player remain attached to this connection?</param>
         /// <returns>True if connection was successfully replaced for player.</returns>
-        public static bool ReplacePlayerForConnection(NetworkConnection conn, GameObject player, Guid assetId, bool keepAuthority = false)
+        public static bool ReplacePlayerForConnection(NetworkConnection conn, Actor player, Guid assetId, bool keepAuthority = false)
         {
             if (GetNetworkIdentity(player, out NetworkIdentity identity))
             {
@@ -737,7 +738,7 @@ namespace Mirror
         /// <param name="player">Player object spawned for the player.</param>
         /// <param name="keepAuthority">Does the previous player remain attached to this connection?</param>
         /// <returns>True if connection was successfully replaced for player.</returns>
-        public static bool ReplacePlayerForConnection(NetworkConnection conn, GameObject player, bool keepAuthority = false)
+        public static bool ReplacePlayerForConnection(NetworkConnection conn, Actor player, bool keepAuthority = false)
         {
             return InternalReplacePlayerForConnection(conn, player, keepAuthority);
         }
@@ -750,7 +751,7 @@ namespace Mirror
         /// <param name="player">Player object spawned for the player.</param>
         /// <param name="assetId"></param>
         /// <returns>True if connection was successfully added for a connection.</returns>
-        public static bool AddPlayerForConnection(NetworkConnection conn, GameObject player, Guid assetId)
+        public static bool AddPlayerForConnection(NetworkConnection conn, Actor player, Guid assetId)
         {
             if (GetNetworkIdentity(player, out NetworkIdentity identity))
             {
@@ -778,9 +779,9 @@ namespace Mirror
             foreach (NetworkIdentity identity in NetworkIdentity.spawned.Values)
             {
                 // try with far away ones in ummorpg!
-                if (identity.gameObject.activeSelf) //TODO this is different
+                if (identity.Actor.IsActive) //TODO this is different
                 {
-                    if (logger.LogEnabled()) logger.Log("Sending spawn message for current server objects name='" + identity.name + "' netId=" + identity.netId + " sceneId=" + identity.sceneId.ToString("X"));
+                    if (logger.LogEnabled()) logger.Log("Sending spawn message for current server objects name='" + identity.Actor.Name + "' netId=" + identity.netId + " sceneId=" + identity.sceneId.ToString("X"));
 
                     bool visible = identity.OnCheckObserver(conn);
                     if (visible)
@@ -803,9 +804,9 @@ namespace Mirror
         /// <param name="conn">Connection which is adding the player.</param>
         /// <param name="player">Player object spawned for the player.</param>
         /// <returns>True if connection was successfully added for a connection.</returns>
-        public static bool AddPlayerForConnection(NetworkConnection conn, GameObject player)
+        public static bool AddPlayerForConnection(NetworkConnection conn, Actor player)
         {
-            NetworkIdentity identity = player.GetComponent<NetworkIdentity>();
+            NetworkIdentity identity = player.GetScript<NetworkIdentity>();
             if (identity == null)
             {
                 logger.LogWarning("AddPlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to " + player);
@@ -847,7 +848,7 @@ namespace Mirror
             if (identity.netId == 0)
             {
                 // If the object has not been spawned, then do a full spawn and update observers
-                Spawn(identity.gameObject, identity.connectionToClient);
+                Spawn(identity.Actor, identity.connectionToClient);
             }
             else
             {
@@ -856,9 +857,9 @@ namespace Mirror
             }
         }
 
-        internal static bool InternalReplacePlayerForConnection(NetworkConnection conn, GameObject player, bool keepAuthority)
+        internal static bool InternalReplacePlayerForConnection(NetworkConnection conn, Actor player, bool keepAuthority)
         {
-            NetworkIdentity identity = player.GetComponent<NetworkIdentity>();
+            NetworkIdentity identity = player.GetScript<NetworkIdentity>();
             if (identity == null)
             {
                 logger.LogError("ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to " + player);
@@ -895,7 +896,7 @@ namespace Mirror
             // IMPORTANT: do this in AddPlayerForConnection & ReplacePlayerForConnection!
             SpawnObserversForConnection(conn);
 
-            if (logger.LogEnabled()) logger.Log("Replacing playerGameObject object netId: " + player.GetComponent<NetworkIdentity>().netId + " asset ID " + player.GetComponent<NetworkIdentity>().assetId);
+            if (logger.LogEnabled()) logger.Log("Replacing playerGameObject object netId: " + player.GetScript<NetworkIdentity>().netId + " asset ID " + player.GetScript<NetworkIdentity>().assetId);
 
             Respawn(identity);
 
@@ -905,12 +906,12 @@ namespace Mirror
             return true;
         }
 
-        internal static bool GetNetworkIdentity(GameObject go, out NetworkIdentity identity)
+        internal static bool GetNetworkIdentity(Actor go, out NetworkIdentity identity)
         {
-            identity = go.GetComponent<NetworkIdentity>();
+            identity = go.GetScript<NetworkIdentity>();
             if (identity == null)
             {
-                logger.LogError($"GameObject {go.name} doesn't have NetworkIdentity.");
+                logger.LogError($"GameObject {go.Name} doesn't have NetworkIdentity.");
                 return false;
             }
             return true;
@@ -998,9 +999,9 @@ namespace Mirror
             if (conn.identity != null)
             {
                 if (destroyServerObject)
-                    Destroy(conn.identity.gameObject);
+                    Destroy(conn.identity.Actor);
                 else
-                    UnSpawn(conn.identity.gameObject);
+                    UnSpawn(conn.identity.Actor);
 
                 conn.identity = null;
             }
@@ -1041,7 +1042,7 @@ namespace Mirror
                 identity.HandleRemoteCall(msg.componentIndex, msg.functionHash, MirrorInvokeType.Command, networkReader, conn as NetworkConnectionToClient);
         }
 
-        internal static void SpawnObject(GameObject obj, NetworkConnection ownerConnection)
+        internal static void SpawnObject(Actor obj, NetworkConnection ownerConnection)
         {
             if (!active)
             {
@@ -1049,7 +1050,7 @@ namespace Mirror
                 return;
             }
 
-            NetworkIdentity identity = obj.GetComponent<NetworkIdentity>();
+            NetworkIdentity identity = obj.GetScript<NetworkIdentity>();
             if (identity == null)
             {
                 logger.LogError("SpawnObject " + obj + " has no NetworkIdentity. Please add a NetworkIdentity to " + obj);
@@ -1083,7 +1084,7 @@ namespace Mirror
                 return;
 
             // for easier debugging
-            if (logger.LogEnabled()) logger.Log("Server SendSpawnMessage: name=" + identity.name + " sceneId=" + identity.sceneId.ToString("X") + " netid=" + identity.netId);
+            if (logger.LogEnabled()) logger.Log("Server SendSpawnMessage: name=" + identity.Actor.Name + " sceneId=" + identity.sceneId.ToString("X") + " netid=" + identity.netId);
 
             // one writer for owner, one for observers
             using (PooledNetworkWriter ownerWriter = NetworkWriterPool.GetWriter(), observersWriter = NetworkWriterPool.GetWriter())
@@ -1100,9 +1101,9 @@ namespace Mirror
                     sceneId = identity.sceneId,
                     assetId = identity.assetId,
                     // use local values for VR support
-                    position = identity.transform.localPosition,
-                    rotation = identity.transform.localRotation,
-                    scale = identity.transform.localScale,
+                    position = identity.Actor.LocalPosition,
+                    rotation = identity.Actor.LocalOrientation,
+                    scale = identity.Actor.LocalScale,
 
                     payload = payload,
                 };
@@ -1153,7 +1154,7 @@ namespace Mirror
         /// </summary>
         /// <param name="obj">Game object with NetworkIdentity to spawn.</param>
         /// <param name="ownerConnection">The connection that has authority over the object</param>
-        public static void Spawn(GameObject obj, NetworkConnection ownerConnection = null)
+        public static void Spawn(Actor obj, NetworkConnection ownerConnection = null)
         {
             if (VerifyCanSpawn(obj))
             {
@@ -1167,9 +1168,9 @@ namespace Mirror
         /// </summary>
         /// <param name="obj">The object to spawn.</param>
         /// <param name="ownerPlayer">The player object to set Client Authority to.</param>
-        public static void Spawn(GameObject obj, GameObject ownerPlayer)
+        public static void Spawn(Actor obj, Actor ownerPlayer)
         {
-            NetworkIdentity identity = ownerPlayer.GetComponent<NetworkIdentity>();
+            NetworkIdentity identity = ownerPlayer.GetScript<NetworkIdentity>();
             if (identity == null)
             {
                 logger.LogError("Player object has no NetworkIdentity");
@@ -1192,7 +1193,7 @@ namespace Mirror
         /// <param name="obj">The object to spawn.</param>
         /// <param name="assetId">The assetId of the object to spawn. Used for custom spawn handlers.</param>
         /// <param name="ownerConnection">The connection that has authority over the object</param>
-        public static void Spawn(GameObject obj, Guid assetId, NetworkConnection ownerConnection = null)
+        public static void Spawn(Actor obj, Guid assetId, NetworkConnection ownerConnection = null)
         {
             if (VerifyCanSpawn(obj))
             {
@@ -1204,8 +1205,9 @@ namespace Mirror
             }
         }
 
-        static bool CheckForPrefab(GameObject obj)
+        static bool CheckForPrefab(Actor obj)
         {
+            return false;
 #if UNITY_EDITOR
     #if UNITY_2018_3_OR_NEWER
             return UnityEditor.PrefabUtility.IsPartOfPrefabAsset(obj);
@@ -1214,16 +1216,14 @@ namespace Mirror
     #else
             return (UnityEditor.PrefabUtility.GetPrefabParent(obj) == null) && (UnityEditor.PrefabUtility.GetPrefabObject(obj) != null);
     #endif
-#else
-            return false;
 #endif
         }
 
-        static bool VerifyCanSpawn(GameObject obj)
+        static bool VerifyCanSpawn(Actor obj)
         {
             if (CheckForPrefab(obj))
             {
-                logger.LogFormat(LogType.Error, "GameObject {0} is a prefab, it can't be spawned. This will cause errors in builds.", obj.name);
+                logger.LogFormat(LogType.Error, "GameObject {0} is a prefab, it can't be spawned. This will cause errors in builds.", obj.Name);
                 return false;
             }
 
@@ -1255,7 +1255,7 @@ namespace Mirror
             if (destroyServerObject)
             {
                 identity.destroyCalled = true;
-                UnityEngine.Object.Destroy(identity.gameObject);
+                FlaxEngine.Object.Destroy(identity.Actor);
             }
             // if we are destroying the server object we don't need to reset the identity
             // reseting it will cause isClient/isServer to be false in the OnDestroy call
@@ -1270,7 +1270,7 @@ namespace Mirror
         /// <para>In some cases it is useful to remove an object but not delete it on the server. For that, use NetworkServer.UnSpawn() instead of NetworkServer.Destroy().</para>
         /// </summary>
         /// <param name="obj">Game object to destroy.</param>
-        public static void Destroy(GameObject obj)
+        public static void Destroy(Actor obj)
         {
             if (obj == null)
             {
@@ -1290,7 +1290,7 @@ namespace Mirror
         /// <para>Unlike when calling NetworkServer.Destroy(), on the server the object will NOT be destroyed. This allows the server to re-use the object, even spawn it again later.</para>
         /// </summary>
         /// <param name="obj">The spawned object to be unspawned.</param>
-        public static void UnSpawn(GameObject obj)
+        public static void UnSpawn(Actor obj)
         {
             if (obj == null)
             {
@@ -1306,8 +1306,7 @@ namespace Mirror
 
         internal static bool ValidateSceneObject(NetworkIdentity identity)
         {
-            if (identity.gameObject.hideFlags == HideFlags.NotEditable ||
-                identity.gameObject.hideFlags == HideFlags.HideAndDontSave)
+            if (identity.Actor.HideFlags == HideFlags.FullyHidden || identity.Actor.HideFlags == HideFlags.HideInHierarchy || identity.Actor.HideFlags == HideFlags.DontSave)
                 return false;
 
 #if UNITY_EDITOR
@@ -1335,15 +1334,15 @@ namespace Mirror
             {
                 if (ValidateSceneObject(identity))
                 {
-                    if (logger.LogEnabled()) logger.Log("SpawnObjects sceneId:" + identity.sceneId.ToString("X") + " name:" + identity.gameObject.name);
-                    identity.gameObject.SetActive(true);
+                    if (logger.LogEnabled()) logger.Log("SpawnObjects sceneId:" + identity.sceneId.ToString("X") + " name:" + identity.Actor.Name);
+                    identity.Actor.IsActive = (true);
                 }
             }
 
             foreach (NetworkIdentity identity in identities)
             {
                 if (ValidateSceneObject(identity))
-                    Spawn(identity.gameObject);
+                    Spawn(identity.Actor);
             }
             return true;
         }
