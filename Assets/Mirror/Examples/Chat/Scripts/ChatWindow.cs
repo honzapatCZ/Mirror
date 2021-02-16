@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.Chat
 {
-    public class ChatWindow : MonoBehaviour
+    public class ChatWindow : Script
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(ChatWindow));
 

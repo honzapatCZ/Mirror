@@ -15,7 +15,7 @@ namespace Mirror
     ///     All transports should follow these rules so that they work correctly with mirror
     ///   </description></listheader>
     ///   <item><description>
-    ///     When Monobehaviour is disabled the Transport should not invoke callbacks
+    ///     When Script is disabled the Transport should not invoke callbacks
     ///   </description></item>
     ///   <item><description>
     ///     Callbacks should be invoked on main thread. It is best to do this from LateUpdate
@@ -37,7 +37,7 @@ namespace Mirror
     ///   </description></item>
     /// </list>
     /// </remarks>
-    public abstract class Transport : MonoBehaviour
+    public abstract class Transport : Script
     {
         /// <summary>
         /// The current transport used by Mirror.

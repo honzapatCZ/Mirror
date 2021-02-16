@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.Basic
 {
-    public class PlayerUI : MonoBehaviour
+    public class PlayerUI : Script
     {
         [Header("Player Components")]
         public Image image;

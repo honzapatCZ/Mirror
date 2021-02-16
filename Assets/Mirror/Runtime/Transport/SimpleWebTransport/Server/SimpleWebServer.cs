@@ -70,7 +70,7 @@ namespace Mirror.SimpleWeb
             return server.GetClientAddress(connectionId);
         }
 
-        public void ProcessMessageQueue(MonoBehaviour behaviour)
+        public void ProcessMessageQueue(Script behaviour)
         {
             int processedCount = 0;
             // check enabled every time in case behaviour was disabled after data

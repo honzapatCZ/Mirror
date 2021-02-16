@@ -3,9 +3,9 @@ using Mono.CecilX;
 namespace Mirror.Weaver
 {
     /// <summary>
-    /// only shows warnings in case we use SyncVars etc. for MonoBehaviour.
+    /// only shows warnings in case we use SyncVars etc. for Script.
     /// </summary>
-    static class MonoBehaviourProcessor
+    static class ScriptProcessor
     {
         public static void Process(TypeDefinition td)
         {

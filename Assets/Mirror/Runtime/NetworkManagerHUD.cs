@@ -12,7 +12,7 @@ namespace Mirror
     //[AddComponentMenu("Network/NetworkManagerHUD")]
     [RequireComponent(typeof(NetworkManager))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkManagerHUD.html")]
-    public class NetworkManagerHUD : MonoBehaviour
+    public class NetworkManagerHUD : Script
     {
         NetworkManager manager;
 

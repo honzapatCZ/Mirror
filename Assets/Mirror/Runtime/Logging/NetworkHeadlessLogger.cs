@@ -8,7 +8,7 @@ namespace Mirror.Logging
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkHeadlessLogger")]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkHeadlessLogger.html")]
-    public class NetworkHeadlessLogger : MonoBehaviour
+    public class NetworkHeadlessLogger : Script
     {
 #pragma warning disable CS0414 // unused private members
         [SerializeField] bool showExceptionStackTrace = false;

@@ -7,7 +7,7 @@ namespace Mirror.Cloud.Example
     /// <summary>
     /// This component should be put on the NetworkManager object
     /// </summary>
-    public class ApiUpdater : MonoBehaviour
+    public class ApiUpdater : Script
     {
         static readonly ILogger logger = LogFactory.GetLogger<ApiUpdater>();
 

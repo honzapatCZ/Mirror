@@ -7,7 +7,7 @@ namespace Mirror.Examples.Additive
     // - Network Identity with Server Only checked
     // These OnTrigger events only run on the server and will only send a message to the player
     // that entered the Zone to load the subscene assigned to the subscene property.
-    public class ZoneHandler : MonoBehaviour
+    public class ZoneHandler : Script
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(ZoneHandler));
 

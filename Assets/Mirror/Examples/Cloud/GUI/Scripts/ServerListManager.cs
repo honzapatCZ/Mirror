@@ -6,7 +6,7 @@ namespace Mirror.Cloud.Example
     /// <summary>
     /// Uses the ApiConnector on NetworkManager to update the Server list
     /// </summary>
-    public class ServerListManager : MonoBehaviour
+    public class ServerListManager : Script
     {
         [Header("UI")]
         [SerializeField] ServerListUI listUI = null;

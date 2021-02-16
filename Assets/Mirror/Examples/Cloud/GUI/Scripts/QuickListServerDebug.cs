@@ -6,7 +6,7 @@ namespace Mirror.Cloud.Example
     /// <summary>
     /// This Script can be used to test the list server without needing to use canvas or other UI
     /// </summary>
-    public class QuickListServerDebug : MonoBehaviour
+    public class QuickListServerDebug : Script
     {
         ApiConnector connector;
         ServerCollectionJson? collection;

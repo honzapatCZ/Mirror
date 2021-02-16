@@ -7,7 +7,7 @@ namespace Mirror.Discovery
     //[AddComponentMenu("Network/NetworkDiscoveryHUD")]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkDiscovery.html")]
     [RequireComponent(typeof(NetworkDiscovery))]
-    public class NetworkDiscoveryHUD : MonoBehaviour
+    public class NetworkDiscoveryHUD : Script
     {
         readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
         Vector2 scrollViewPos = Vector2.zero;

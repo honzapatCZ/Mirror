@@ -54,7 +54,7 @@ namespace Mirror
         {
             if (target == null) { Debug.LogWarning("NetworkBehaviourInspector had no target object"); return; }
 
-            // If target's base class is changed from NetworkBehaviour to MonoBehaviour
+            // If target's base class is changed from NetworkBehaviour to Script
             // then Unity temporarily keep using this Inspector causing things to break
             if (!(target is NetworkBehaviour)) { return; }
 

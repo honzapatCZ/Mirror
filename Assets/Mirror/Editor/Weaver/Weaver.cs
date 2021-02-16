@@ -78,11 +78,11 @@ namespace Mirror.Weaver
         }
 
 
-        static void CheckMonoBehaviour(TypeDefinition td)
+        static void CheckScript(TypeDefinition td)
         {
-            if (td.IsDerivedFrom<UnityEngine.MonoBehaviour>())
+            if (td.IsDerivedFrom<UnityEngine.Script>())
             {
-                MonoBehaviourProcessor.Process(td);
+                ScriptProcessor.Process(td);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Mirror.Weaver
 
             if (!td.IsDerivedFrom<NetworkBehaviour>())
             {
-                CheckMonoBehaviour(td);
+                CheckScript(td);
                 return false;
             }
 

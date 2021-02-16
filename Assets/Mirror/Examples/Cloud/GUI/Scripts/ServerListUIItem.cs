@@ -8,7 +8,7 @@ namespace Mirror.Cloud.Example
     /// <summary>
     /// Displays a server created by ServerListUI
     /// </summary>
-    public class ServerListUIItem : MonoBehaviour
+    public class ServerListUIItem : Script
     {
         [SerializeField] Text nameText = null;
         [SerializeField] Text namePlayers = null;

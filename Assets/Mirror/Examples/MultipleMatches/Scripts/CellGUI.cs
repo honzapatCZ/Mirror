@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.MultipleMatch
 {
-    public class CellGUI : MonoBehaviour
+    public class CellGUI : Script
     {
         public MatchController matchController;
         public CellValue cellValue;

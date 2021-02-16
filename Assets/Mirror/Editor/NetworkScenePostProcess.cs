@@ -6,7 +6,7 @@ using FlaxEngine;
 
 namespace Mirror
 {
-    public class NetworkScenePostProcess : MonoBehaviour
+    public class NetworkScenePostProcess : Script
     {
         [PostProcessScene]
         public static void OnPostProcessScene()

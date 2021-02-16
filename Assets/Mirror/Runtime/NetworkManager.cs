@@ -21,7 +21,7 @@ namespace Mirror
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkManager")]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkManager.html")]
-    public class NetworkManager : MonoBehaviour
+    public class NetworkManager : Script
     {
         static readonly ILogger logger = LogFactory.GetLogger<NetworkManager>();
 

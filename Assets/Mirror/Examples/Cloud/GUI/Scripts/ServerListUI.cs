@@ -7,7 +7,7 @@ namespace Mirror.Cloud.Example
     /// <summary>
     /// Displays the list of servers
     /// </summary>
-    public class ServerListUI : MonoBehaviour
+    public class ServerListUI : Script
     {
         [SerializeField] ServerListUIItem itemPrefab = null;
         [SerializeField] Transform parent = null;

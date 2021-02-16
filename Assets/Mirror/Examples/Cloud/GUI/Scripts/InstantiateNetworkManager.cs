@@ -5,7 +5,7 @@ namespace Mirror.Cloud.Examples
     /// <summary>
     /// Instantiate a new NetworkManager if one does not already exist
     /// </summary>
-    public class InstantiateNetworkManager : MonoBehaviour
+    public class InstantiateNetworkManager : Script
     {
         public GameObject prefab;
 

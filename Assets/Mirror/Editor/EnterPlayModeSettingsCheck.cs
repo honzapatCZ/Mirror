@@ -7,7 +7,7 @@ using FlaxEngine;
 
 namespace Mirror
 {
-    public class EnterPlayModeSettingsCheck : MonoBehaviour
+    public class EnterPlayModeSettingsCheck : Script
     {
         [InitializeOnLoadMethod]
         static void OnInitializeOnLoad()

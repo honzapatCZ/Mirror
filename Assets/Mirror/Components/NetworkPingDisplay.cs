@@ -8,7 +8,7 @@ namespace Mirror
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkPingDisplay")]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkPingDisplay.html")]
-    public class NetworkPingDisplay : MonoBehaviour
+    public class NetworkPingDisplay : Script
     {
         public bool showPing = true;
         [Tooltip("True shows the round trip time, from origin to destination, then back again. Set to false for time to server only.")]

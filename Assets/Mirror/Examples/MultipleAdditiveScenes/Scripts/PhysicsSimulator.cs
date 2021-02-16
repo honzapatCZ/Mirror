@@ -2,7 +2,7 @@
 
 namespace Mirror.Examples.MultipleAdditiveScenes
 {
-    public class PhysicsSimulator : MonoBehaviour
+    public class PhysicsSimulator : Script
     {
         PhysicsScene physicsScene;
         PhysicsScene2D physicsScene2D;

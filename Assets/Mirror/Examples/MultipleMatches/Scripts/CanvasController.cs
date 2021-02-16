@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.MultipleMatch
 {
-    public class CanvasController : MonoBehaviour
+    public class CanvasController : Script
     {
         /// <summary>
         /// Match Controllers listen for this to terminate their match and clean up

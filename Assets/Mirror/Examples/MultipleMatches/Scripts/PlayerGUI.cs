@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.MultipleMatch
 {
-    public class PlayerGUI : MonoBehaviour
+    public class PlayerGUI : Script
     {
         public Text playerName;
 

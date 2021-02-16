@@ -5,7 +5,7 @@ namespace Mirror.Examples.Pong
     /// <summary>
     /// Similar to NetworkManagerHUD but just quit buttons
     /// </summary>
-    public class QuitButtonHUD : MonoBehaviour
+    public class QuitButtonHUD : Script
     {
         void OnGUI()
         {

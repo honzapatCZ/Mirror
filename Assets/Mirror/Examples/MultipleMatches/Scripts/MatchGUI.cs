@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.MultipleMatch
 {
-    public class MatchGUI : MonoBehaviour
+    public class MatchGUI : Script
     {
         Guid matchId;
 

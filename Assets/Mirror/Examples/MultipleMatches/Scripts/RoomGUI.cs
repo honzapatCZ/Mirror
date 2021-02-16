@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Mirror.Examples.MultipleMatch
 {
-    public class RoomGUI : MonoBehaviour
+    public class RoomGUI : Script
     {
         static readonly ILogger logger = LogFactory.GetLogger(typeof(RoomGUI));
 
