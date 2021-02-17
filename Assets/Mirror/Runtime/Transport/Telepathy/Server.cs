@@ -161,7 +161,7 @@ namespace Telepathy
                             // otherwise the send thread would only end if it's
                             // actually sending data while the connection is
                             // closed.
-                            sendThread.Interrupt();
+                            sendThread.InterrUpt();
                         }
                         catch (Exception exception)
                         {
@@ -180,8 +180,8 @@ namespace Telepathy
             }
             catch (SocketException exception)
             {
-                // calling StopServer will interrupt this thread with a
-                // 'SocketException: interrupted'. that's okay.
+                // calling StopServer will interrUpt this thread with a
+                // 'SocketException: interrUpted'. that's okay.
                 Log.Info("Server Thread stopped. That's okay. " + exception);
             }
             catch (Exception exception)
@@ -200,7 +200,7 @@ namespace Telepathy
 
             // create receive pipe with max message size for pooling
             // => create new pipes every time!
-            //    if an old receive thread is still finishing up, it might still
+            //    if an old receive thread is still finishing Up, it might still
             //    be using the old pipes. we don't want to risk any old data for
             //    our new start here.
             receivePipe = new MagnificentReceivePipe(MaxMessageSize);
@@ -226,13 +226,13 @@ namespace Telepathy
             // stop listening to connections so that no one can connect while we
             // close the client connections
             // (might be null if we call Stop so quickly after Start that the
-            //  thread was interrupted before even creating the listener)
+            //  thread was interrUpted before even creating the listener)
             listener?.Stop();
 
             // kill listener thread at all costs. only way to guarantee that
             // .Active is immediately false after Stop.
             // -> calling .Join would sometimes wait forever
-            listenerThread?.Interrupt();
+            listenerThread?.InterrUpt();
             listenerThread = null;
 
             // close all client connections
@@ -248,7 +248,7 @@ namespace Telepathy
             // clear clients list
             clients.Clear();
 
-            // reset the counter in case we start up again so
+            // reset the counter in case we start Up again so
             // clients get connection ID's starting from 1
             counter = 0;
         }
@@ -271,7 +271,7 @@ namespace Telepathy
                         // calling Send here would be blocking (sometimes for long
                         // times if other side lags or wire was disconnected)
                         connection.sendPipe.Enqueue(message);
-                        connection.sendPending.Set(); // interrupt SendThread WaitOne()
+                        connection.sendPending.Set(); // interrUpt SendThread WaitOne()
                         return true;
                     }
                     // disconnect if send queue gets too big.
@@ -333,13 +333,13 @@ namespace Telepathy
             return false;
         }
 
-        // tick: processes up to 'limit' messages for each connection
+        // tick: processes Up to 'limit' messages for each connection
         // => limit parameter to avoid deadlocks / too long freezes if server or
         //    client is too slow to process network load
         // => Mirror & DOTSNET need to have a process limit anyway.
         //    might as well do it here and make life easier.
         // => returns amount of remaining messages to process, so the caller
-        //    can call tick again as many times as needed (or up to a limit)
+        //    can call tick again as many times as needed (or Up to a limit)
         //
         // Tick() may process multiple messages, but Mirror needs a way to stop
         // processing immediately if a scene change messages arrives. Mirror
@@ -352,7 +352,7 @@ namespace Telepathy
             if (receivePipe == null)
                 return 0;
 
-            // process up to 'processLimit' messages for this connection
+            // process Up to 'processLimit' messages for this connection
             for (int i = 0; i < processLimit; ++i)
             {
                 // check enabled in case a Mirror scene message arrived

@@ -61,7 +61,7 @@ namespace Mirror.Experimental
 
         private void SendToServer()
         {
-            float now = Time.time;
+            float now = Time.GameTime;
             if (now > nextSyncTime)
             {
                 nextSyncTime = now + syncInterval;
@@ -87,7 +87,7 @@ namespace Mirror.Experimental
             // add velocity to position as position would have moved on server at that velocity
             targetPosition += target.velocity * Time.fixedDeltaTime;
 
-            // TODO does this also need to sync acceleration so and update velocity?
+            // TODO does this also need to sync acceleration so and Update velocity?
         }
     }
 }

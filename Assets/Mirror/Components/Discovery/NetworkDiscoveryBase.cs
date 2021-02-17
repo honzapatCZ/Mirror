@@ -116,7 +116,7 @@ namespace Mirror.Discovery
         {
             StopDiscovery();
 
-            // Setup port -- may throw exception
+            // SetUp port -- may throw exception
             serverUdpClient = new UdpClient(serverBroadcastListenPort)
             {
                 EnableBroadcast = true,
@@ -229,7 +229,7 @@ namespace Mirror.Discovery
 
             try
             {
-                // Setup port
+                // SetUp port
                 clientUdpClient = new UdpClient(0)
                 {
                     EnableBroadcast = true,

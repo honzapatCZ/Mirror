@@ -101,7 +101,7 @@ namespace Mirror
 
         public void OnSerializeDelta(NetworkWriter writer)
         {
-            // write all the queued up changes
+            // write all the queued Up changes
             writer.WriteUInt32((uint)changes.Count);
 
             for (int i = 0; i < changes.Count; i++)

@@ -32,7 +32,7 @@ namespace kcp2k
 
             connection = new KcpClientConnection();
 
-            // setup events
+            // setUp events
             connection.OnAuthenticated = () =>
             {
                 Log.Info($"KCP: OnClientConnected");
@@ -68,12 +68,12 @@ namespace kcp2k
         public void Disconnect()
         {
             // only if connected
-            // otherwise we end up in a deadlock because of an open Mirror bug:
+            // otherwise we end Up in a deadlock because of an open Mirror bug:
             // https://github.com/vis2k/Mirror/issues/2353
             if (connected)
             {
                 // call Disconnect and let the connection handle it.
-                // DO NOT set it to null yet. it needs to be updated a few more
+                // DO NOT set it to null yet. it needs to be Updated a few more
                 // times first. let the connection handle it!
                 connection?.Disconnect();
             }
@@ -86,12 +86,12 @@ namespace kcp2k
             {
                 // recv on socket first
                 connection.RawReceive();
-                // then update
+                // then Update
                 connection.Tick();
             }
         }
 
-        // pause/unpause to safely support mirror scene handling and to
+        // pause/unpause to safely sUpport mirror scene handling and to
         // immediately pause the receive while loop if needed.
         public void Pause() => connection?.Pause();
         public void Unpause() => connection?.Unpause();

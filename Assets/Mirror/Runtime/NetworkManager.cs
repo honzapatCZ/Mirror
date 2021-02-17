@@ -63,12 +63,12 @@ namespace Mirror
         public int serverTickRate = 30;
 
         /// <summary>
-        /// batching is still optional until we improve mirror's update order.
+        /// batching is still optional until we improve mirror's Update order.
         /// right now it increases latency because:
-        ///   enabling batching flushes all state updates in same frame, but
+        ///   enabling batching flushes all state Updates in same frame, but
         ///   transport processes incoming messages afterwards so server would
         ///   batch them until next frame's flush
-        /// => disable it for super fast paced games
+        /// => disable it for sUper fast paced games
         /// => enable it for high scale / cpu heavy games
         /// </summary>
         [Tooltip("Batching greatly reduces CPU & Transport load, but increases latency by one frame time. Use for high scale games / CPU intensive games. Don't use for fast paced games.")]
@@ -79,7 +79,7 @@ namespace Mirror
         /// fewer transport calls give us significantly better performance/scale.
         /// if batch interval is 0, then we only batch until the Update() call
         /// </summary>
-        [Tooltip("Server can batch messages up to Transport.GetMaxPacketSize to significantly reduce transport calls and improve performance/scale.\nIf batch interval is 0, then we only batch until the Update() call. Otherwise we batch until interval elapsed (note that this increases latency).")]
+        [Tooltip("Server can batch messages Up to Transport.GetMaxPacketSize to significantly reduce transport calls and improve performance/scale.\nIf batch interval is 0, then we only batch until the Update() call. Otherwise we batch until interval elapsed (note that this increases latency).")]
         public float serverBatchInterval = 0;
 
         /// <summary>
@@ -116,21 +116,21 @@ namespace Mirror
         public string networkAddress = "localhost";
 
         /// <summary>
-        /// The maximum number of concurrent network connections to support.
+        /// The maximum number of concurrent network connections to sUpport.
         /// <para>This effects the memory usage of the network layer.</para>
         /// </summary>
         ////[FormerlySerializedAs("m_MaxConnections")]
         [Tooltip("Maximum number of concurrent connections.")]
         public int maxConnections = 100;
 
-        // This value is passed to NetworkServer in SetupServer
+        // This value is passed to NetworkServer in SetUpServer
         /// <summary>
         /// Should the server disconnect remote connections that have gone silent for more than Server Idle Timeout?
         /// </summary>
         [Tooltip("Server Only - Disconnects remote connections that have been silent for more than Server Idle Timeout")]
         public bool disconnectInactiveConnections;
 
-        // This value is passed to NetworkServer in SetupServer
+        // This value is passed to NetworkServer in SetUpServer
         /// <summary>
         /// Timeout in seconds since last message from a client after which server will auto-disconnect.
         /// <para>By default, clients send at least a Ping message every 2 seconds.</para>
@@ -204,7 +204,7 @@ namespace Mirror
         // helper enum to know if we started the networkmanager as server/client/host.
         // -> this is necessary because when StartHost changes server scene to
         //    online scene, FinishLoadScene is called and the host client isn't
-        //    connected yet (no need to connect it before server was fully set up).
+        //    connected yet (no need to connect it before server was fully set Up).
         //    in other words, we need this to know which mode we are running in
         //    during FinishLoadScene.
         public NetworkManagerMode mode { get; private set; }
@@ -216,7 +216,7 @@ namespace Mirror
         /// </summary>
         public virtual void OnValidate()
         {
-            // add transport if there is none yet. makes upgrading easier.
+            // add transport if there is none yet. makes Upgrading easier.
             if (transport == null)
             {
                 // was a transport added yet? if not, add one
@@ -227,7 +227,7 @@ namespace Mirror
                     logger.Log("NetworkManager: added default Transport because there was none yet.");
                 }
 #if UNITY_EDITOR
-                // For some insane reason, this line fails when building unless wrapped in this define. Stupid but true.
+                // For some insane reason, this line fails when building unless wrapped in this define. StUpid but true.
                 // error CS0234: The type or namespace name 'Undo' does not exist in the namespace 'UnityEditor' (are you missing an assembly reference?)
                 UnityEditor.Undo.RecordObject(gameObject, "Added default Transport");
 #endif
@@ -257,7 +257,7 @@ namespace Mirror
             // if client connection to server fails.
             networkSceneName = offlineScene;
 
-            // setup OnSceneLoaded callback
+            // setUp OnSceneLoaded callback
             Level.SceneLoaded += OnSceneLoaded;
             //SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -312,10 +312,10 @@ namespace Mirror
             return scenes.Count() > 0;
         }
 
-        // full server setup code, without spawning objects yet
-        void SetupServer()
+        // full server setUp code, without spawning objects yet
+        void SetUpServer()
         {
-            if (logger.LogEnabled()) logger.Log("NetworkManager SetupServer");
+            if (logger.LogEnabled()) logger.Log("NetworkManager SetUpServer");
             InitializeSingleton();
 
             //if (runInBackground)
@@ -385,7 +385,7 @@ namespace Mirror
             // and LoadScene do not finish loading immediately. as long as we
             // have the onlineScene feature, it will be asynchronous!
 
-            SetupServer();
+            SetUpServer();
 
             // scene change needed? then change scene and spawn afterwards.
             if (IsServerOnlineSceneChangeNeeded())
@@ -513,10 +513,10 @@ namespace Mirror
             // and LoadScene do not finish loading immediately. as long as we
             // have the onlineScene feature, it will be asynchronous!
 
-            // setup server first
-            SetupServer();
+            // setUp server first
+            SetUpServer();
 
-            // call OnStartHost AFTER SetupServer. this way we can use
+            // call OnStartHost AFTER SetUpServer. this way we can use
             // NetworkServer.Spawn etc. in there too. just like OnStartServer
             // is called after the server is actually properly started.
             OnStartHost();
@@ -554,7 +554,7 @@ namespace Mirror
             // -> this sets NetworkServer.localConnection.
             // -> localConnection needs to be set before SpawnObjects because:
             //    -> SpawnObjects calls OnStartServer in all NetworkBehaviours
-            //       -> OnStartServer might spawn an object and set [SyncVar(hook="OnColorChanged")] object.color = green;
+            //       -> OnStartServer might spawn an object and set [SyncVar(hook="OnColorChanged")] object.color = Green;
             //          -> this calls SyncVar.set (generated by Weaver), which has
             //             a custom case for host mode (because host mode doesn't
             //             get OnDeserialize calls, where SyncVar hooks are usually
@@ -748,7 +748,7 @@ namespace Mirror
             {
                 if (singleton != null)
                 {
-                    logger.LogWarning("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will be destroyed.");
+                    logger.LogWarning("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The dUplicate NetworkManager will be destroyed.");
                     Destroy(Actor);
 
                     // Return false to not allow collision-destroyed second instance to continue.
@@ -948,7 +948,7 @@ namespace Mirror
                 networkSceneName = newSceneName;
         }
 
-        // support additive scene loads:
+        // sUpport additive scene loads:
         //   NetworkScenePostProcess disables all scene objects on load, and
         //   * NetworkServer.SpawnObjects enables them again on the server when
         //     calling OnStartServer
@@ -1213,7 +1213,7 @@ namespace Mirror
 
             if (autoCreatePlayer && playerPrefab == null)
             {
-                logger.LogError("The PlayerPrefab is empty on the NetworkManager. Please setup a PlayerPrefab object.");
+                logger.LogError("The PlayerPrefab is empty on the NetworkManager. Please setUp a PlayerPrefab object.");
                 return;
             }
 
@@ -1324,7 +1324,7 @@ namespace Mirror
 
         /// <summary>
         /// Called on the server when a client is ready.
-        /// <para>The default implementation of this function calls NetworkServer.SetClientReady() to continue the network setup process.</para>
+        /// <para>The default implementation of this function calls NetworkServer.SetClientReady() to continue the network setUp process.</para>
         /// </summary>
         /// <param name="conn">Connection from client.</param>
         public virtual void OnServerReady(NetworkConnection conn)
@@ -1362,7 +1362,7 @@ namespace Mirror
 
         /// <summary>
         /// Called from ServerChangeScene immediately before SceneManager.LoadSceneAsync is executed
-        /// <para>This allows server to do work / cleanup / prep before the scene changes.</para>
+        /// <para>This allows server to do work / cleanUp / prep before the scene changes.</para>
         /// </summary>
         /// <param name="newSceneName">Name of the scene that's about to be loaded</param>
         public virtual void OnServerChangeScene(SceneReference newSceneName) { }
@@ -1425,7 +1425,7 @@ namespace Mirror
 
         /// <summary>
         /// Called from ClientChangeScene immediately before SceneManager.LoadSceneAsync is executed
-        /// <para>This allows client to do work / cleanup / prep before the scene changes.</para>
+        /// <para>This allows client to do work / cleanUp / prep before the scene changes.</para>
         /// </summary>
         /// <param name="newSceneName">Name of the scene that's about to be loaded</param>
         /// <param name="sceneOperation">Scene operation that's about to happen</param>

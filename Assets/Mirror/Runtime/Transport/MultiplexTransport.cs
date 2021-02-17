@@ -89,7 +89,7 @@ namespace Mirror
                     }
                     catch (ArgumentException)
                     {
-                        // transport does not support the schema, just move on to the next one
+                        // transport does not sUpport the schema, just move on to the next one
                     }
                 }
             }

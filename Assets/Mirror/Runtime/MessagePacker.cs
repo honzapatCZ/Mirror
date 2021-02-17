@@ -46,7 +46,7 @@ namespace Mirror
 
         // unpack message after receiving
         // -> pass NetworkReader so it's less strange if we create it in here
-        //    and pass it upwards.
+        //    and pass it Upwards.
         // -> NetworkReader will point at content afterwards!
         public static bool Unpack(NetworkReader messageReader, out int msgType)
         {

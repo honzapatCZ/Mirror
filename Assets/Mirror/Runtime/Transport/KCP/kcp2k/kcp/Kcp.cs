@@ -30,7 +30,7 @@ namespace kcp2k
         public const int THRESH_INIT = 2;
         public const int THRESH_MIN = 2;
         public const int PROBE_INIT = 7000;        // 7 secs to probe window size
-        public const int PROBE_LIMIT = 120000;     // up to 120 secs to probe window
+        public const int PROBE_LIMIT = 120000;     // Up to 120 secs to probe window
         public const int FASTACK_LIMIT = 5;        // max times to trigger fastack
 
         internal struct AckItem
@@ -61,7 +61,7 @@ namespace kcp2k
         internal uint ts_flush;
         internal uint xmit;
         internal uint nodelay;       // not a bool. original Kcp has '<2 else' check.
-        internal bool updated;
+        internal bool Updated;
         internal uint ts_probe;      // timestamp probe
         internal uint probe_wait;
         internal uint dead_link;
@@ -132,7 +132,7 @@ namespace kcp2k
         // note: pass negative length to peek.
         public int Receive(byte[] buffer, int len)
         {
-            // kcp's ispeek feature is not supported.
+            // kcp's ispeek feature is not sUpported.
             // this makes 'merge fragment' code significantly easier because
             // we can iterate while queue.Count > 0 and dequeue each time.
             // if we had to consider ispeek then count would always be > 0 and
@@ -140,7 +140,7 @@ namespace kcp2k
             //
             //bool ispeek = len < 0;
             if (len < 0)
-                throw new NotSupportedException("Receive ispeek for negative len is not supported!");
+                throw new NotSUpportedException("Receive ispeek for negative len is not sUpported!");
 
             if (rcv_queue.Count == 0)
                 return -1;
@@ -163,7 +163,7 @@ namespace kcp2k
             // original KCP iterates rcv_queue and deletes if !ispeek.
             // removing from a c# queue while iterating is not possible, but
             // we can change to 'while Count > 0' and remove every time.
-            // (we can remove every time because we removed ispeek support!)
+            // (we can remove every time because we removed ispeek sUpport!)
             while (rcv_queue.Count > 0)
             {
                 // unlike original kcp, we dequeue instead of just getting the
@@ -176,7 +176,7 @@ namespace kcp2k
                 len += (int)seg.data.Position;
                 uint fragment = seg.frg;
 
-                // note: ispeek is not supported in order to simplify this loop
+                // note: ispeek is not sUpported in order to simplify this loop
 
                 // unlike original kcp, we don't need to remove seg from queue
                 // because we already dequeued it.
@@ -284,7 +284,7 @@ namespace kcp2k
             return 0;
         }
 
-        // ikcp_update_ack
+        // ikcp_Update_ack
         void UpdateAck(int rtt) // round trip time
         {
             // https://tools.ietf.org/html/rfc6298
@@ -420,7 +420,7 @@ namespace kcp2k
         //       keep consistency with original C kcp.
         internal void InsertSegmentInReceiveBuffer(Segment newseg)
         {
-            bool repeat = false; // 'duplicate'
+            bool repeat = false; // 'dUplicate'
 
             // original C iterates backwards, so we need to do that as well.
             int i;
@@ -429,7 +429,7 @@ namespace kcp2k
                 Segment seg = rcv_buf[i];
                 if (seg.sn == newseg.sn)
                 {
-                    // duplicate segment found. nothing will be added.
+                    // dUplicate segment found. nothing will be added.
                     repeat = true;
                     break;
                 }
@@ -440,12 +440,12 @@ namespace kcp2k
                 }
             }
 
-            // no duplicate? then insert.
+            // no dUplicate? then insert.
             if (!repeat)
             {
                 rcv_buf.Insert(i + 1, newseg);
             }
-            // duplicate. just delete it.
+            // dUplicate. just delete it.
             else
             {
                 SegmentDelete(newseg);
@@ -605,7 +605,7 @@ namespace kcp2k
                 ParseFastack(maxack, latest_ts);
             }
 
-            // cwnd update when packet arrived
+            // cwnd Update when packet arrived
             if (Utils.TimeDiff(snd_una, prev_una) > 0)
             {
                 if (cwnd < rmt_wnd)
@@ -668,8 +668,8 @@ namespace kcp2k
                 }
             }
 
-            // 'ikcp_update' haven't been called.
-            if (!updated) return;
+            // 'ikcp_Update' haven't been called.
+            if (!Updated) return;
 
             // kcp only stack allocates a segment here for performance, leaving
             // its data buffer null because this segment's data buffer is never
@@ -845,7 +845,7 @@ namespace kcp2k
             // flash remain segments
             FlushBuffer();
 
-            // update ssthresh
+            // Update ssthresh
             // rate halving, https://tools.ietf.org/html/rfc6937
             if (change > 0)
             {
@@ -875,8 +875,8 @@ namespace kcp2k
             }
         }
 
-        // ikcp_update
-        // update state (call it repeatedly, every 10ms-100ms), or you can ask
+        // ikcp_Update
+        // Update state (call it repeatedly, every 10ms-100ms), or you can ask
         // Check() when to call it again (without Input/Send calling).
         //
         // 'current' - current timestamp in millisec. pass it to Kcp so that
@@ -885,9 +885,9 @@ namespace kcp2k
         {
             current = currentTimeMilliSeconds;
 
-            if (!updated)
+            if (!Updated)
             {
-                updated = true;
+                Updated = true;
                 ts_flush = current;
             }
 
@@ -911,13 +911,13 @@ namespace kcp2k
         }
 
         // ikcp_check
-        // Determine when should you invoke update
-        // Returns when you should invoke update in millisec, if there is no
-        // input/send calling. you can call update in that time, instead of
-        // call update repeatly.
+        // Determine when should you invoke Update
+        // Returns when you should invoke Update in millisec, if there is no
+        // input/send calling. you can call Update in that time, instead of
+        // call Update repeatly.
         //
-        // Important to reduce unnecessary update invoking. use it to schedule
-        // update (e.g. implementing an epoll-like mechanism, or optimize update
+        // Important to reduce unnecessary Update invoking. use it to schedule
+        // Update (e.g. implementing an epoll-like mechanism, or optimize Update
         // when handling massive kcp connections).
         public uint Check(uint current_)
         {
@@ -925,7 +925,7 @@ namespace kcp2k
             int tm_flush = 0x7fffffff;
             int tm_packet = 0x7fffffff;
 
-            if (!updated)
+            if (!Updated)
             {
                 return current_;
             }

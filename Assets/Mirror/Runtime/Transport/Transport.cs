@@ -152,7 +152,7 @@ namespace Mirror
         public Action<int> OnServerDisconnected = (connId) => Debug.LogWarning("OnServerDisconnected called with no handler");
 
         /// <summary>
-        /// Determines if the server is up and running
+        /// Determines if the server is Up and running
         /// </summary>
         /// <returns>true if the transport is ready for connections from clients</returns>
         public abstract bool ServerActive();
@@ -209,8 +209,8 @@ namespace Mirror
         /// <summary>
         /// The maximum batch(!) size for a given channel.
         /// Uses GetMaxPacketSize by default.
-        /// Some transports like kcp support large max packet sizes which should
-        /// not be used for batching all the time because they end up being too
+        /// Some transports like kcp sUpport large max packet sizes which should
+        /// not be used for batching all the time because they end Up being too
         /// slow (head of line blocking etc.).
         /// </summary>
         /// <param name="channelId">channel id</param>
@@ -229,7 +229,7 @@ namespace Mirror
         // -> in other words: use LateUpdate!
         // -> uMMORPG 480 CCU stress test: when bot machine stops, it causes
         //    'Observer not ready for ...' log messages when using Update
-        // -> occupying a public Update() function will cause Warnings if a
+        // -> occUpying a public Update() function will cause Warnings if a
         //    transport uses Update.
         //
         // IMPORTANT: set script execution order to >1000 to call Transport's

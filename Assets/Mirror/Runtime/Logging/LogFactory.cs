@@ -12,7 +12,7 @@ namespace Mirror
         /// <summary>
         /// logHandler used for new loggers
         /// </summary>
-        static ILogHandler defaultLogHandler = Debug.unityLogger;
+        static ILogHandler defaultLogHandler = Debug.Logger.LogHandler;
 
         /// <summary>
         /// if true sets all log level to LogType.Log
@@ -38,8 +38,8 @@ namespace Mirror
 
             logger = new Logger(defaultLogHandler)
             {
-                // by default, log warnings and up
-                filterLogType = debugMode ? LogType.Log : defaultLogLevel
+                // by default, log warnings and Up
+                FilterLogType = debugMode ? LogType.Info : defaultLogLevel
             };
 
             loggers[loggerName] = logger;
@@ -55,7 +55,7 @@ namespace Mirror
 
             foreach (ILogger logger in loggers.Values)
             {
-                logger.filterLogType = LogType.Log;
+                logger.FilterLogType = LogType.Info;
             }
         }
 
@@ -69,7 +69,7 @@ namespace Mirror
 
             foreach (ILogger logger in loggers.Values)
             {
-                logger.logHandler = logHandler;
+                logger.LogHandler = logHandler;
             }
         }
     }
@@ -85,7 +85,7 @@ namespace Mirror
         public static void Assert(this ILogger logger, bool condition, string message)
         {
             if (!condition)
-                logger.Log(LogType.Assert, message);
+                logger.Log(LogType.Fatal, message);
         }
 
         public static void LogWarning(this ILogger logger, object message)
@@ -93,7 +93,7 @@ namespace Mirror
             logger.Log(LogType.Warning, message);
         }
 
-        public static bool LogEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Log);
+        public static bool LogEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Info);
         public static bool WarnEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Warning);
         public static bool ErrorEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Error);
     }

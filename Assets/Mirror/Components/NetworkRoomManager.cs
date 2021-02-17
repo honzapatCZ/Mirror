@@ -147,7 +147,7 @@ namespace Mirror
 
         /// <summary>
         /// Called on the server when a client is ready.
-        /// <para>The default implementation of this function calls NetworkServer.SetClientReady() to continue the network setup process.</para>
+        /// <para>The default implementation of this function calls NetworkServer.SetClientReady() to continue the network setUp process.</para>
         /// </summary>
         /// <param name="conn">Connection from client.</param>
         public override void OnServerReady(NetworkConnection conn)
@@ -605,7 +605,7 @@ namespace Mirror
 
         /// <summary>
         /// This is called on the server when all the players in the room are ready.
-        /// <para>The default implementation of this function uses ServerChangeScene() to switch to the game player scene. By implementing this callback you can customize what happens when all the players in the room are ready, such as adding a countdown or a confirmation for a group leader.</para>
+        /// <para>The default implementation of this function uses ServerChangeScene() to switch to the game player scene. By implementing this callback you can customize what happens when all the players in the room are ready, such as adding a countdown or a confirmation for a groUp leader.</para>
         /// </summary>
         public virtual void OnRoomServerPlayersReady()
         {

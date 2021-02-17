@@ -64,7 +64,7 @@ namespace Mirror.Discovery
             }
             catch (NotImplementedException)
             {
-                Debug.LogError($"Transport {transport} does not support network discovery");
+                Debug.LogError($"Transport {transport} does not sUpport network discovery");
                 throw;
             }
         }
@@ -96,7 +96,7 @@ namespace Mirror.Discovery
             // we received a message from the remote endpoint
             response.EndPoint = endpoint;
 
-            // although we got a supposedly valid url, we may not be able to resolve
+            // although we got a sUpposedly valid url, we may not be able to resolve
             // the provided host
             // However we know the real ip address of the server because we just
             // received a packet from it,  so use that as host.

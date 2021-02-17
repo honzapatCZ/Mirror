@@ -31,7 +31,7 @@ namespace Mirror
         [Tooltip("Protect against allocation attacks by keeping the max message size small. Otherwise an attacker might send multiple fake packets with 2GB headers, causing the server to run out of memory after allocating multiple large packets.")]
         public int serverMaxMessageSize = 16 * 1024;
 
-        [Tooltip("Server processes a limit amount of messages per tick to avoid a deadlock where it might end up processing forever if messages come in faster than we can process them.")]
+        [Tooltip("Server processes a limit amount of messages per tick to avoid a deadlock where it might end Up processing forever if messages come in faster than we can process them.")]
         public int serverMaxReceivesPerTick = 10000;
 
         [Tooltip("Server send queue limit per connection for pending messages. Telepathy will disconnect a connection's queues reach that limit for load balancing. Better to kick one slow client than slowing down the whole server.")]
@@ -44,7 +44,7 @@ namespace Mirror
         [Tooltip("Protect against allocation attacks by keeping the max message size small. Otherwise an attacker host might send multiple fake packets with 2GB headers, causing the connected clients to run out of memory after allocating multiple large packets.")]
         public int clientMaxMessageSize = 16 * 1024;
 
-        [Tooltip("Client processes a limit amount of messages per tick to avoid a deadlock where it might end up processing forever if messages come in faster than we can process them.")]
+        [Tooltip("Client processes a limit amount of messages per tick to avoid a deadlock where it might end Up processing forever if messages come in faster than we can process them.")]
         public int clientMaxReceivesPerTick = 1000;
 
         [Tooltip("Client send queue limit for pending messages. Telepathy will disconnect if the connection's queues reach that limit in order to avoid ever growing latencies.")]

@@ -62,7 +62,7 @@ namespace Mirror.Cloud
                 ? Encoding.UTF8.GetBytes(json)
                 : null;
 
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.UploadHandler = new UploadHandlerRaw(bodyRaw);
 
             return request;
         }

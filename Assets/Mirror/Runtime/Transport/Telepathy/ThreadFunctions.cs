@@ -152,14 +152,14 @@ namespace Telepathy
             }
             catch (Exception exception)
             {
-                // something went wrong. the thread was interrupted or the
+                // something went wrong. the thread was interrUpted or the
                 // connection closed or we closed our own connection or ...
                 // -> either way we should stop gracefully
                 Log.Info("ReceiveLoop: finished receive function for connectionId=" + connectionId + " reason: " + exception);
             }
             finally
             {
-                // clean up no matter what
+                // clean Up no matter what
                 stream.Close();
                 client.Close();
 
@@ -209,7 +209,7 @@ namespace Telepathy
                             break;
                     }
 
-                    // don't choke up the CPU: wait until queue not empty anymore
+                    // don't choke Up the CPU: wait until queue not empty anymore
                     sendPending.WaitOne();
                 }
             }
@@ -217,20 +217,20 @@ namespace Telepathy
             {
                 // happens on stop. don't log anything.
             }
-            catch (ThreadInterruptedException)
+            catch (ThreadInterrUptedException)
             {
-                // happens if receive thread interrupts send thread.
+                // happens if receive thread interrUpts send thread.
             }
             catch (Exception exception)
             {
-                // something went wrong. the thread was interrupted or the
+                // something went wrong. the thread was interrUpted or the
                 // connection closed or we closed our own connection or ...
                 // -> either way we should stop gracefully
                 Log.Info("SendLoop Exception: connectionId=" + connectionId + " reason: " + exception);
             }
             finally
             {
-                // clean up no matter what
+                // clean Up no matter what
                 // we might get SocketExceptions when sending if the 'host has
                 // failed to respond' - in which case we should close the connection
                 // which causes the ReceiveLoop to end and fire the Disconnected

@@ -30,7 +30,7 @@ namespace Mirror.Cloud
 
         [Header("Events")]
 
-        [Tooltip("Triggered when server list updates")]
+        [Tooltip("Triggered when server list Updates")]
         [Serialize] System.Action<ServerCollectionJson> _onServerListUpdated;
         #endregion
 

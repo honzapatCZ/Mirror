@@ -45,9 +45,9 @@ namespace Mirror
 
         /// <summary>
         /// Returns true when a client's connection has been set to ready.
-        /// <para>A client that is ready receives state updates from the server, while a client that is not ready does not. This useful when the state of the game is not normal, such as a scene change or end-of-game.</para>
+        /// <para>A client that is ready receives state Updates from the server, while a client that is not ready does not. This useful when the state of the game is not normal, such as a scene change or end-of-game.</para>
         /// <para>This is read-only. To change the ready state of a client, use ClientScene.Ready(). The server is able to set the ready state of clients using NetworkServer.SetClientReady(), NetworkServer.SetClientNotReady() and NetworkServer.SetAllClientsNotReady().</para>
-        /// <para>This is done when changing scenes so that clients don't receive state update messages during scene loading.</para>
+        /// <para>This is done when changing scenes so that clients don't receive state Update messages during scene loading.</para>
         /// </summary>
         public static bool ready { get; set; }
 
@@ -92,7 +92,7 @@ namespace Mirror
             logger.Log("ClientScene.InternalAddPlayer");
 
             // NOTE: It can be "normal" when changing scenes for the player to be destroyed and recreated.
-            // But, the player structures are not cleaned up, we'll just replace the old player
+            // But, the player structures are not cleaned Up, we'll just replace the old player
             localPlayer = identity;
 
             // NOTE: we DONT need to set isClient=true here, because OnStartClient
@@ -574,7 +574,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Removes a registered spawn prefab that was setup with ClientScene.RegisterPrefab.
+        /// Removes a registered spawn prefab that was setUp with ClientScene.RegisterPrefab.
         /// </summary>
         /// <param name="prefab">The prefab to be removed from registration.</param>
         public static void UnregisterPrefab(Prefab prefab)
@@ -694,7 +694,7 @@ namespace Mirror
 
         /// <summary>
         /// Destroys all networked objects on the client.
-        /// <para>This can be used to clean up when a network connection is closed.</para>
+        /// <para>This can be used to clean Up when a network connection is closed.</para>
         /// </summary>
         public static void DestroyAllClientObjects()
         {
@@ -742,7 +742,7 @@ namespace Mirror
                 identity.Actor.IsActive = (true);
             }
 
-            // apply local values for VR support
+            // apply local values for VR sUpport
             identity.Actor.LocalPosition = msg.position;
             identity.Actor.LocalOrientation = msg.rotation;
             identity.Actor.LocalScale = msg.scale;

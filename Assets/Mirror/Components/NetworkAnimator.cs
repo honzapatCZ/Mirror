@@ -197,7 +197,7 @@ namespace Mirror
 
         void CheckSendRate()
         {
-            float now = Time.time;
+            float now = Time.GameTime;
             if (SendMessagesAllowed && syncInterval >= 0 && now > nextSendTime)
             {
                 nextSendTime = now + syncInterval;

@@ -123,7 +123,7 @@ namespace Mirror.RemoteCalls
         }
 
         /// <summary>
-        /// We need this in order to clean up tests
+        /// We need this in order to clean Up tests
         /// </summary>
         internal static void RemoveDelegate(int hash)
         {

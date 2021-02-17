@@ -60,9 +60,9 @@ namespace Telepathy
             // that we can call Connect() again immediately after Disconnect
             // -> calling .Join would sometimes wait forever, e.g. when
             //    calling Disconnect while trying to connect to a dead end
-            receiveThread?.Interrupt();
+            receiveThread?.InterrUpt();
 
-            // we interrupted the receive Thread, so we can't guarantee that
+            // we interrUpted the receive Thread, so we can't guarantee that
             // connecting was reset. let's do it manually.
             Connecting = false;
 
@@ -159,7 +159,7 @@ namespace Telepathy
                 // knows that the Connect failed. otherwise they will never know
                 state.receivePipe.Enqueue(0, EventType.Disconnected, default);
             }
-            catch (ThreadInterruptedException)
+            catch (ThreadInterrUptedException)
             {
                 // expected if Disconnect() aborts it
             }
@@ -184,14 +184,14 @@ namespace Telepathy
             // otherwise the send thread would only end if it's
             // actually sending data while the connection is
             // closed.
-            sendThread?.Interrupt();
+            sendThread?.InterrUpt();
 
             // Connect might have failed. thread might have been closed.
             // let's reset connecting state no matter what.
             state.Connecting = false;
 
-            // if we got here then we are done. ReceiveLoop cleans up already,
-            // but we may never get there if connect fails. so let's clean up
+            // if we got here then we are done. ReceiveLoop cleans Up already,
+            // but we may never get there if connect fails. so let's clean Up
             // here too.
             state.client?.Close();
         }
@@ -214,7 +214,7 @@ namespace Telepathy
             state.Connecting = true;
 
             // create a TcpClient with perfect IPv4, IPv6 and hostname resolving
-            // support.
+            // sUpport.
             //
             // * TcpClient(hostname, port): works but would connect (and block)
             //   already
@@ -273,7 +273,7 @@ namespace Telepathy
                         // calling Send here would be blocking (sometimes for long
                         // times if other side lags or wire was disconnected)
                         state.sendPipe.Enqueue(message);
-                        state.sendPending.Set(); // interrupt SendThread WaitOne()
+                        state.sendPending.Set(); // interrUpt SendThread WaitOne()
                         return true;
                     }
                     // disconnect if send queue gets too big.
@@ -302,13 +302,13 @@ namespace Telepathy
             return false;
         }
 
-        // tick: processes up to 'limit' messages
+        // tick: processes Up to 'limit' messages
         // => limit parameter to avoid deadlocks / too long freezes if server or
         //    client is too slow to process network load
         // => Mirror & DOTSNET need to have a process limit anyway.
         //    might as well do it here and make life easier.
         // => returns amount of remaining messages to process, so the caller
-        //    can call tick again as many times as needed (or up to a limit)
+        //    can call tick again as many times as needed (or Up to a limit)
         //
         // Tick() may process multiple messages, but Mirror needs a way to stop
         // processing immediately if a scene change messages arrives. Mirror
@@ -323,7 +323,7 @@ namespace Telepathy
             if (state == null)
                 return 0;
 
-            // process up to 'processLimit' messages
+            // process Up to 'processLimit' messages
             for (int i = 0; i < processLimit; ++i)
             {
                 // check enabled in case a Mirror scene message arrived

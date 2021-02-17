@@ -33,21 +33,21 @@ namespace Mirror
             //    flushed it because full. global time wouldn't allow that, so
             //    we would often flush in Send() and then flush again in Update
             //    even though we just flushed in Send().
-            // -> initialize with current NetworkTime so first update doesn't
+            // -> initialize with current NetworkTime so first Update doesn't
             //    calculate elapsed via 'now - 0'
-            internal double lastSendTime = NetworkTime.time;
+            internal double lastSendTime = NetworkTime.GameTime;
         }
         Dictionary<int, Batch> batches = new Dictionary<int, Batch>();
 
-        // batching is optional because due to mirror's non-optimal update order
+        // batching is optional because due to mirror's non-optimal Update order
         // it would increase latency.
 
-        // batching is still optional until we improve mirror's update order.
+        // batching is still optional until we improve mirror's Update order.
         // right now it increases latency because:
-        //   enabling batching flushes all state updates in same frame, but
+        //   enabling batching flushes all state Updates in same frame, but
         //   transport processes incoming messages afterwards so server would
         //   batch them until next frame's flush
-        // => disable it for super fast paced games
+        // => disable it for sUper fast paced games
         // => enable it for high scale / cpu heavy games
         bool batching;
 
@@ -90,7 +90,7 @@ namespace Mirror
                     PooledNetworkWriter message = batch.messages.Dequeue();
                     ArraySegment<byte> segment = message.ToArraySegment();
 
-                    // IF adding to writer would end up >= MTU then we should
+                    // IF adding to writer would end Up >= MTU then we should
                     // flush first. the goal is to always flush < MTU packets.
                     //
                     // IMPORTANT: if writer is empty and segment is > MTU
@@ -130,7 +130,7 @@ namespace Mirror
             }
 
             // reset send time for this channel's batch
-            batch.lastSendTime = NetworkTime.time;
+            batch.lastSendTime = NetworkTime.GameTime;
         }
 
         internal override void Send(ArraySegment<byte> segment, int channelId = Channels.DefaultReliable)
@@ -177,7 +177,7 @@ namespace Mirror
                 {
                     // enough time elapsed to flush this channel's batch?
                     // and not empty?
-                    double elapsed = NetworkTime.time - kvp.Value.lastSendTime;
+                    double elapsed = NetworkTime.GameTime - kvp.Value.lastSendTime;
                     if (elapsed >= batchInterval && kvp.Value.messages.Count > 0)
                     {
                         // send the batch. time will be reset internally.

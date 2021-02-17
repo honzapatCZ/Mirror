@@ -5,7 +5,7 @@ namespace Mirror.Cloud
     public interface IBaseApi
     {
         /// <summary>
-        /// Cleans up any data created by the instance
+        /// Cleans Up any data created by the instance
         /// <para>For Example: removing server from list</para>
         /// </summary>
         void Shutdown();

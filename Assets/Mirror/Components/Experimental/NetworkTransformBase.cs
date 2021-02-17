@@ -1,6 +1,6 @@
 // vis2k:
 // base class for NetworkTransform and NetworkTransformChild.
-// New method is simple and stupid. No more 1500 lines of code.
+// New method is simple and stUpid. No more 1500 lines of code.
 //
 // Server sends current data.
 // Client saves it and interpolates last and latest data points.
@@ -32,7 +32,7 @@ namespace Mirror.Experimental
         [SyncVar]
         public bool clientAuthority;
 
-        [Tooltip("Set to true if updates from server should be ignored by owner")]
+        [Tooltip("Set to true if Updates from server should be ignored by owner")]
         [SyncVar]
         public bool excludeOwnerUpdate = true;
 
@@ -70,15 +70,15 @@ namespace Mirror.Experimental
 
         [Tooltip("Changes to the transform must exceed these values to be transmitted on the network.")]
         [SyncVar]
-        public float localPositionSensitivity = .01f;
+        public float LocalPositionSensitivity = .01f;
 
         [Tooltip("If rotation exceeds this angle, it will be transmitted on the network")]
         [SyncVar]
-        public float localRotationSensitivity = .01f;
+        public float LocalOrientationSensitivity = .01f;
 
         [Tooltip("Changes to the transform must exceed these values to be transmitted on the network.")]
         [SyncVar]
-        public float localScaleSensitivity = .01f;
+        public float LocalScaleSensitivity = .01f;
 
         [Header("Diagnostics")]
 
@@ -88,14 +88,14 @@ namespace Mirror.Experimental
         public Vector3 lastScale;
 
         // client
-        // use local position/rotation for VR support
+        // use local position/rotation for VR sUpport
         [Serializable]
         public struct DataPoint
         {
             public float timeStamp;
-            public Vector3 localPosition;
-            public Quaternion localRotation;
-            public Vector3 localScale;
+            public Vector3 LocalPosition;
+            public Quaternion LocalOrientation;
+            public Vector3 LocalScale;
             public float movementSpeed;
 
             public bool isValid => timeStamp != 0;
@@ -138,7 +138,7 @@ namespace Mirror.Experimental
 
         void ServerUpdate()
         {
-            RpcMove(targetTransform.localPosition, Compression.CompressQuaternion(targetTransform.localRotation), targetTransform.localScale);
+            RpcMove(targetTransform.LocalPosition, Compression.CompressQuaternion(targetTransform.LocalOrientation), targetTransform.LocalScale);
         }
 
         void ClientAuthorityUpdate()
@@ -146,9 +146,9 @@ namespace Mirror.Experimental
             if (!isServer && HasEitherMovedRotatedScaled())
             {
                 // serialize
-                // local position/rotation for VR support
+                // local position/rotation for VR sUpport
                 // send to server
-                CmdClientToServerSync(targetTransform.localPosition, Compression.CompressQuaternion(targetTransform.localRotation), targetTransform.localScale);
+                CmdClientToServerSync(targetTransform.LocalPosition, Compression.CompressQuaternion(targetTransform.LocalOrientation), targetTransform.LocalScale);
             }
         }
 
@@ -157,8 +157,8 @@ namespace Mirror.Experimental
             // teleport or interpolate
             if (NeedsTeleport())
             {
-                // local position/rotation for VR support
-                ApplyPositionRotationScale(goal.localPosition, goal.localRotation, goal.localScale);
+                // local position/rotation for VR sUpport
+                ApplyPositionRotationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
 
                 // reset data points so we don't keep interpolating
                 start = new DataPoint();
@@ -166,10 +166,10 @@ namespace Mirror.Experimental
             }
             else
             {
-                // local position/rotation for VR support
-                ApplyPositionRotationScale(InterpolatePosition(start, goal, targetTransform.localPosition),
-                                           InterpolateRotation(start, goal, targetTransform.localRotation),
-                                           InterpolateScale(start, goal, targetTransform.localScale));
+                // local position/rotation for VR sUpport
+                ApplyPositionRotationScale(InterpolatePosition(start, goal, targetTransform.LocalPosition),
+                                           InterpolateRotation(start, goal, targetTransform.LocalOrientation),
+                                           InterpolateScale(start, goal, targetTransform.LocalScale));
             }
         }
 
@@ -182,21 +182,21 @@ namespace Mirror.Experimental
             bool changed = HasMoved || HasRotated || HasScaled;
             if (changed)
             {
-                // local position/rotation for VR support
-                if (syncPosition) lastPosition = targetTransform.localPosition;
-                if (syncRotation) lastRotation = targetTransform.localRotation;
-                if (syncScale) lastScale = targetTransform.localScale;
+                // local position/rotation for VR sUpport
+                if (syncPosition) lastPosition = targetTransform.LocalPosition;
+                if (syncRotation) lastRotation = targetTransform.LocalOrientation;
+                if (syncScale) lastScale = targetTransform.LocalScale;
             }
             return changed;
         }
 
-        // local position/rotation for VR support
+        // local position/rotation for VR sUpport
         // SqrMagnitude is faster than Distance per Unity docs
         // https://docs.unity3d.com/ScriptReference/Vector3-sqrMagnitude.html
 
-        bool HasMoved => syncPosition && Vector3.SqrMagnitude(lastPosition - targetTransform.localPosition) > localPositionSensitivity * localPositionSensitivity;
-        bool HasRotated => syncRotation && Quaternion.Angle(lastRotation, targetTransform.localRotation) > localRotationSensitivity;
-        bool HasScaled => syncScale && Vector3.SqrMagnitude(lastScale - targetTransform.localScale) > localScaleSensitivity * localScaleSensitivity;
+        bool HasMoved => syncPosition && Vector3.SqrMagnitude(lastPosition - targetTransform.LocalPosition) > LocalPositionSensitivity * LocalPositionSensitivity;
+        bool HasRotated => syncRotation && Quaternion.Angle(lastRotation, targetTransform.LocalOrientation) > LocalOrientationSensitivity;
+        bool HasScaled => syncScale && Vector3.SqrMagnitude(lastScale - targetTransform.LocalScale) > LocalScaleSensitivity * LocalScaleSensitivity;
 
         // teleport / lag / stuck detection
         // - checking distance is not enough since there could be just a tiny fence between us and the goal
@@ -204,10 +204,10 @@ namespace Mirror.Experimental
         bool NeedsTeleport()
         {
             // calculate time between the two data points
-            float startTime = start.isValid ? start.timeStamp : Time.time - Time.fixedDeltaTime;
-            float goalTime = goal.isValid ? goal.timeStamp : Time.time;
+            float startTime = start.isValid ? start.timeStamp : Time.GameTime - Time.fixedDeltaTime;
+            float goalTime = goal.isValid ? goal.timeStamp : Time.GameTime;
             float difference = goalTime - startTime;
-            float timeSinceGoalReceived = Time.time - goalTime;
+            float timeSinceGoalReceived = Time.GameTime - goalTime;
             return timeSinceGoalReceived > difference * 5;
         }
 
@@ -224,7 +224,7 @@ namespace Mirror.Experimental
 
             // server-only mode does no interpolation to save computations, but let's set the position directly
             if (isServer && !isClient)
-                ApplyPositionRotationScale(goal.localPosition, goal.localRotation, goal.localScale);
+                ApplyPositionRotationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
 
             RpcMove(position, packedRotation, scale);
         }
@@ -245,30 +245,30 @@ namespace Mirror.Experimental
             DataPoint temp = new DataPoint
             {
                 // deserialize position
-                localPosition = position,
-                localRotation = rotation,
-                localScale = scale,
-                timeStamp = Time.time
+                LocalPosition = position,
+                LocalOrientation = rotation,
+                LocalScale = scale,
+                timeStamp = Time.GameTime
             };
 
             // movement speed: based on how far it moved since last time has to be calculated before 'start' is overwritten
             temp.movementSpeed = EstimateMovementSpeed(goal, temp, targetTransform, Time.fixedDeltaTime);
 
             // reassign start wisely
-            // first ever data point? then make something up for previous one so that we can start interpolation without waiting for next.
+            // first ever data point? then make something Up for previous one so that we can start interpolation without waiting for next.
             if (start.timeStamp == 0)
             {
                 start = new DataPoint
                 {
-                    timeStamp = Time.time - Time.fixedDeltaTime,
-                    // local position/rotation for VR support
-                    localPosition = targetTransform.localPosition,
-                    localRotation = targetTransform.localRotation,
-                    localScale = targetTransform.localScale,
+                    timeStamp = Time.GameTime - Time.fixedDeltaTime,
+                    // local position/rotation for VR sUpport
+                    LocalPosition = targetTransform.LocalPosition,
+                    LocalOrientation = targetTransform.LocalOrientation,
+                    LocalScale = targetTransform.LocalScale,
                     movementSpeed = temp.movementSpeed
                 };
             }
-            // second or nth data point? then update previous
+            // second or nth data point? then Update previous
             // but: we start at where ever we are right now, so that it's perfectly smooth and we don't jump anywhere
             //
             //    example if we are at 'x':
@@ -298,19 +298,19 @@ namespace Mirror.Experimental
             //
             else
             {
-                float oldDistance = Vector3.Distance(start.localPosition, goal.localPosition);
-                float newDistance = Vector3.Distance(goal.localPosition, temp.localPosition);
+                float oldDistance = Vector3.Distance(start.LocalPosition, goal.LocalPosition);
+                float newDistance = Vector3.Distance(goal.LocalPosition, temp.LocalPosition);
 
                 start = goal;
 
-                // local position/rotation for VR support
+                // local position/rotation for VR sUpport
                 // teleport / lag / obstacle detection: only continue at current position if we aren't too far away
                 // XC  < AB + BC (see comments above)
-                if (Vector3.Distance(targetTransform.localPosition, start.localPosition) < oldDistance + newDistance)
+                if (Vector3.Distance(targetTransform.LocalPosition, start.LocalPosition) < oldDistance + newDistance)
                 {
-                    start.localPosition = targetTransform.localPosition;
-                    start.localRotation = targetTransform.localRotation;
-                    start.localScale = targetTransform.localScale;
+                    start.LocalPosition = targetTransform.LocalPosition;
+                    start.LocalOrientation = targetTransform.LocalOrientation;
+                    start.LocalScale = targetTransform.LocalScale;
                 }
             }
 
@@ -320,11 +320,11 @@ namespace Mirror.Experimental
 
         // try to estimate movement speed for a data point based on how far it moved since the previous one
         // - if this is the first time ever then we use our best guess:
-        //     - delta based on transform.localPosition
+        //     - delta based on transform.LocalPosition
         //     - elapsed based on send interval hoping that it roughly matches
         static float EstimateMovementSpeed(DataPoint from, DataPoint to, Transform transform, float sendInterval)
         {
-            Vector3 delta = to.localPosition - (from.localPosition != transform.localPosition ? from.localPosition : transform.localPosition);
+            Vector3 delta = to.LocalPosition - (from.LocalPosition != transform.LocalPosition ? from.LocalPosition : transform.LocalPosition);
             float elapsed = from.isValid ? to.timeStamp - from.timeStamp : sendInterval;
 
             // avoid NaN
@@ -334,10 +334,10 @@ namespace Mirror.Experimental
         // set position carefully depending on the target component
         void ApplyPositionRotationScale(Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            // local position/rotation for VR support
-            if (syncPosition) targetTransform.localPosition = position;
-            if (syncRotation) targetTransform.localRotation = rotation;
-            if (syncScale) targetTransform.localScale = scale;
+            // local position/rotation for VR sUpport
+            if (syncPosition) targetTransform.LocalPosition = position;
+            if (syncRotation) targetTransform.LocalOrientation = rotation;
+            if (syncScale) targetTransform.LocalScale = scale;
         }
 
         // where are we in the timeline between start and goal? [0,1]
@@ -357,7 +357,7 @@ namespace Mirror.Experimental
                 // Option 2: always += speed
                 // speed is 0 if we just started after idle, so always use max for best results
                 float speed = Mathf.Max(start.movementSpeed, goal.movementSpeed);
-                return Vector3.MoveTowards(currentPosition, goal.localPosition, speed * Time.deltaTime);
+                return Vector3.MoveTowards(currentPosition, goal.LocalPosition, speed * Time.deltaTime);
             }
 
             return currentPosition;
@@ -368,10 +368,10 @@ namespace Mirror.Experimental
             if (!interpolateRotation)
                 return defaultRotation;
 
-            if (start.localRotation != goal.localRotation)
+            if (start.LocalOrientation != goal.LocalOrientation)
             {
                 float t = CurrentInterpolationFactor(start, goal);
-                return Quaternion.Slerp(start.localRotation, goal.localRotation, t);
+                return Quaternion.Slerp(start.LocalOrientation, goal.LocalOrientation, t);
             }
 
             return defaultRotation;
@@ -382,10 +382,10 @@ namespace Mirror.Experimental
             if (!interpolateScale)
                 return currentScale;
 
-            if (start.localScale != goal.localScale)
+            if (start.LocalScale != goal.LocalScale)
             {
                 float t = CurrentInterpolationFactor(start, goal);
-                return Vector3.Lerp(start.localScale, goal.localScale, t);
+                return Vector3.Lerp(start.LocalScale, goal.LocalScale, t);
             }
 
             return currentScale;
@@ -397,8 +397,8 @@ namespace Mirror.Experimental
             {
                 float difference = goal.timeStamp - start.timeStamp;
 
-                // the moment we get 'goal', 'start' is supposed to start, so elapsed time is based on:
-                float elapsed = Time.time - goal.timeStamp;
+                // the moment we get 'goal', 'start' is sUpposed to start, so elapsed time is based on:
+                float elapsed = Time.GameTime - goal.timeStamp;
 
                 // avoid NaN
                 return difference > 0 ? elapsed / difference : 1;
@@ -409,51 +409,51 @@ namespace Mirror.Experimental
         #region Server Teleport (force move player)
 
         /// <summary>
-        /// This method will override this GameObject's current Transform.localPosition to the specified Vector3  and update all clients.
+        /// This method will override this GameObject's current Transform.LocalPosition to the specified Vector3  and Update all clients.
         /// <para>NOTE: position must be in LOCAL space if the transform has a parent</para>
         /// </summary>
-        /// <param name="localPosition">Where to teleport this GameObject</param>
+        /// <param name="LocalPosition">Where to teleport this GameObject</param>
         [Server]
-        public void ServerTeleport(Vector3 localPosition)
+        public void ServerTeleport(Vector3 LocalPosition)
         {
-            Quaternion localRotation = targetTransform.localRotation;
-            ServerTeleport(localPosition, localRotation);
+            Quaternion LocalOrientation = targetTransform.LocalOrientation;
+            ServerTeleport(LocalPosition, LocalOrientation);
         }
 
         /// <summary>
-        /// This method will override this GameObject's current Transform.localPosition and Transform.localRotation
-        /// to the specified Vector3 and Quaternion and update all clients.
-        /// <para>NOTE: localPosition must be in LOCAL space if the transform has a parent</para>
-        /// <para>NOTE: localRotation must be in LOCAL space if the transform has a parent</para>
+        /// This method will override this GameObject's current Transform.LocalPosition and Transform.LocalOrientation
+        /// to the specified Vector3 and Quaternion and Update all clients.
+        /// <para>NOTE: LocalPosition must be in LOCAL space if the transform has a parent</para>
+        /// <para>NOTE: LocalOrientation must be in LOCAL space if the transform has a parent</para>
         /// </summary>
-        /// <param name="localPosition">Where to teleport this GameObject</param>
-        /// <param name="localRotation">Which rotation to set this GameObject</param>
+        /// <param name="LocalPosition">Where to teleport this GameObject</param>
+        /// <param name="LocalOrientation">Which rotation to set this GameObject</param>
         [Server]
-        public void ServerTeleport(Vector3 localPosition, Quaternion localRotation)
+        public void ServerTeleport(Vector3 LocalPosition, Quaternion LocalOrientation)
         {
-            // To prevent applying the position updates received from client (if they have ClientAuth) while being teleported.
+            // To prevent applying the position Updates received from client (if they have ClientAuth) while being teleported.
             // clientAuthorityBeforeTeleport defaults to false when not teleporting, if it is true then it means that teleport
             // was previously called but not finished therefore we should keep it as true so that 2nd teleport call doesn't clear authority
             clientAuthorityBeforeTeleport = clientAuthority || clientAuthorityBeforeTeleport;
             clientAuthority = false;
 
-            DoTeleport(localPosition, localRotation);
+            DoTeleport(LocalPosition, LocalOrientation);
 
             // tell all clients about new values
-            RpcTeleport(localPosition, Compression.CompressQuaternion(localRotation), clientAuthorityBeforeTeleport);
+            RpcTeleport(LocalPosition, Compression.CompressQuaternion(LocalOrientation), clientAuthorityBeforeTeleport);
         }
 
-        void DoTeleport(Vector3 newLocalPosition, Quaternion newLocalRotation)
+        void DoTeleport(Vector3 newLocalPosition, Quaternion newLocalOrientation)
         {
-            targetTransform.localPosition = newLocalPosition;
-            targetTransform.localRotation = newLocalRotation;
+            targetTransform.LocalPosition = newLocalPosition;
+            targetTransform.LocalOrientation = newLocalOrientation;
 
             // Since we are overriding the position we don't need a goal and start.
             // Reset them to null for fresh start
             goal = new DataPoint();
             start = new DataPoint();
             lastPosition = newLocalPosition;
-            lastRotation = newLocalRotation;
+            lastRotation = newLocalOrientation;
         }
 
         [ClientRpc(channel = Channels.DefaultUnreliable)]
@@ -494,34 +494,34 @@ namespace Mirror.Experimental
         void OnDrawGizmos()
         {
             // draw start and goal points and a line between them
-            if (start.localPosition != goal.localPosition)
+            if (start.LocalPosition != goal.LocalPosition)
             {
                 DrawDataPointGizmo(start, Color.yellow);
-                DrawDataPointGizmo(goal, Color.green);
-                DrawLineBetweenDataPoints(start, goal, Color.cyan);
+                DrawDataPointGizmo(goal, Color.Green);
+                DrawLineBetweenDataPoints(start, goal, Color.Cyan);
             }
         }
 
         static void DrawDataPointGizmo(DataPoint data, Color color)
         {
-            // use a little offset because transform.localPosition might be in the ground in many cases
-            Vector3 offset = Vector3.up * 0.01f;
+            // use a little offset because transform.LocalPosition might be in the ground in many cases
+            Vector3 offset = Vector3.Up * 0.01f;
 
             // draw position
             Gizmos.color = color;
-            Gizmos.DrawSphere(data.localPosition + offset, 0.5f);
+            Gizmos.DrawSphere(data.LocalPosition + offset, 0.5f);
 
-            // draw forward and up like unity move tool
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(data.localPosition + offset, data.localRotation * Vector3.forward);
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(data.localPosition + offset, data.localRotation * Vector3.up);
+            // draw Forward and Up like unity move tool
+            Gizmos.color = Color.Blue;
+            Gizmos.DrawRay(data.LocalPosition + offset, data.LocalOrientation * Vector3.Forward);
+            Gizmos.color = Color.Green;
+            Gizmos.DrawRay(data.LocalPosition + offset, data.LocalOrientation * Vector3.Up);
         }
 
         static void DrawLineBetweenDataPoints(DataPoint data1, DataPoint data2, Color color)
         {
             Gizmos.color = color;
-            Gizmos.DrawLine(data1.localPosition, data2.localPosition);
+            Gizmos.DrawLine(data1.LocalPosition, data2.LocalPosition);
         }
 
         #endregion

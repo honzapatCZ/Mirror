@@ -55,11 +55,11 @@ namespace Mirror
 
         internal static void UpdateClient()
         {
-            if (Time.time - lastPingTime >= PingFrequency)
+            if (Time.GameTime - lastPingTime >= PingFrequency)
             {
                 NetworkPingMessage pingMessage = new NetworkPingMessage(LocalTime());
                 NetworkClient.Send(pingMessage, Channels.DefaultUnreliable);
-                lastPingTime = Time.time;
+                lastPingTime = Time.GameTime;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Mirror
 
         // Executed at the client when we receive a Pong message
         // find out how long it took since we sent the Ping
-        // and update time offset
+        // and Update time offset
         internal static void OnClientPong(NetworkPongMessage msg)
         {
             double now = LocalTime();

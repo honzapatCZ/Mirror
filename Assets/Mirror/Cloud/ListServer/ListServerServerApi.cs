@@ -22,7 +22,7 @@ namespace Mirror.Cloud.ListServerService
         /// </summary>
         bool sending;
         /// <summary>
-        /// If an update request was recently sent
+        /// If an Update request was recently sent
         /// </summary>
         bool skipNextPing;
         /// <summary>
@@ -77,7 +77,7 @@ namespace Mirror.Cloud.ListServerService
             };
             partialServer.Validate();
 
-            runner.StartCoroutine(updateServer(partialServer));
+            runner.StartCoroutine(UpdateServer(partialServer));
         }
 
         public void RemoveServer()
@@ -127,7 +127,7 @@ namespace Mirror.Cloud.ListServerService
             }
         }
 
-        IEnumerator updateServer(PartialServerJson server)
+        IEnumerator UpdateServer(PartialServerJson server)
         {
             // wait to not be sending
             while (sending)

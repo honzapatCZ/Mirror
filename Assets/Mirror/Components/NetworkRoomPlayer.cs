@@ -3,7 +3,7 @@ using FlaxEngine;
 namespace Mirror
 {
     /// <summary>
-    /// This component works in conjunction with the NetworkRoomManager to make up the multiplayer room system.
+    /// This component works in conjunction with the NetworkRoomManager to make Up the multiplayer room system.
     /// <para>The RoomPrefab object of the NetworkRoomManager must have this component on it. This component holds basic room player data required for the room to function. Game specific data for room players can be put in other components on the RoomPrefab or in scripts derived from NetworkRoomPlayer.</para>
     /// </summary>
     //[DisallowMultipleComponent]

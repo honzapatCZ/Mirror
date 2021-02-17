@@ -6,8 +6,8 @@ namespace Mirror.Logging
 #if FLAX_EDITOR
     public static class EditorLogSettingsLoader
     {
-        [InitializeOnLoadMethod]
-        static void Init()
+        [ExecuteInEditMode]
+        static void Start()
         {
             // load settings first time LogFactory is used in the editor
             LoadLogSettingsIntoDictionary();
@@ -34,13 +34,20 @@ namespace Mirror.Logging
 
             System.Guid firstGuid = assetGuids[0];
                         
-            cache = Content.Load<LogSettings>(firstGuid);
+            cache = Content.Load<JsonAsset>(firstGuid).CreateInstance() as LogSettings;
+            var asset = Content.Load<JsonAsset>(firstGuid);
+            if (asset.CreateInstance() is LogSettings result)
+                cache = result;
+            else 
+                cache = new LogSettings();
 
             if (assetGuids.Length > 2)
             {
-                Debug.LogWarning("Found more than one LogSettings, Delete extra settings. Using first asset found: " + path);
+                AssetInfo info;
+                Content.GetAssetInfo(firstGuid, out info);
+                Debug.LogWarning("Found more than one LogSettings, Delete extra settings. Using first asset found: " + info.Path);
             }
-            Debug.Assert(cache != null, "Failed to load asset at: " + path);
+            Debug.Assert(cache != null, "Failed to load LogSettings");
 
             return cache;
         }

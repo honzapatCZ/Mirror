@@ -36,7 +36,7 @@ namespace Mirror
 
             string text = string.Format(format, (int)((NetworkTime.rtt / rttMultiplier) * 1000));
 
-            // leave here or create special method to update fontSize and textColor
+            // leave here or create special method to Update fontSize and textColor
             style.fontSize = fontSize;
             style.normal.textColor = textColor;
 

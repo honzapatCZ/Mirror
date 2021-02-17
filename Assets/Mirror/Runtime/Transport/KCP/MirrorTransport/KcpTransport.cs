@@ -18,16 +18,16 @@ namespace kcp2k
         public ushort Port = 7777;
         [Tooltip("NoDelay is recommended to reduce latency. This also scales better without buffers getting full.")]
         public bool NoDelay = true;
-        [Tooltip("KCP internal update interval. 100ms is KCP default, but a lower interval is recommended to minimize latency and to scale to more networked entities.")]
+        [Tooltip("KCP internal Update interval. 100ms is KCP default, but a lower interval is recommended to minimize latency and to scale to more networked entities.")]
         public uint Interval = 10;
         [Header("Advanced")]
         [Tooltip("KCP fastresend parameter. Faster resend for the cost of higher bandwidth. 0 in normal mode, 2 in turbo mode.")]
         public int FastResend = 2;
         [Tooltip("KCP congestion window. Enabled in normal mode, disabled in turbo mode. Disable this for high scale games if connections get chocked regularly.")]
         public bool CongestionWindow = false; // KCP 'NoCongestionWindow' is false by default. here we negate it for ease of use.
-        [Tooltip("KCP window size can be modified to support higher loads.")]
+        [Tooltip("KCP window size can be modified to sUpport higher loads.")]
         public uint SendWindowSize = 4096; //Kcp.WND_SND; 32 by default. Mirror sends a lot, so we need a lot more.
-        [Tooltip("KCP window size can be modified to support higher loads.")]
+        [Tooltip("KCP window size can be modified to sUpport higher loads.")]
         public uint ReceiveWindowSize = 4096; //Kcp.WND_RCV; 128 by default. Mirror sends a lot, so we need a lot more.
 
         // server & client
@@ -113,7 +113,7 @@ namespace kcp2k
             // scene change messages disable transports to stop them from
             // processing while changing the scene.
             // -> we need to check enabled here
-            // -> and in kcp's internal loops, see Awake() OnCheckEnabled setup!
+            // -> and in kcp's internal loops, see Awake() OnCheckEnabled setUp!
             // (see also: https://github.com/vis2k/Mirror/pull/379)
             if (!Enabled)
                 return;
@@ -229,7 +229,7 @@ namespace kcp2k
 
         // PrettyBytes function from DOTSNET
         // pretty prints bytes as KB/MB/GB/etc.
-        // long to support > 2GB
+        // long to sUpport > 2GB
         // divides by floats to return "2.5MB" etc.
         public static string PrettyBytes(long bytes)
         {
@@ -286,7 +286,7 @@ namespace kcp2k
         {
             if (ServerActive())
             {
-                string log = "kcp SERVER @ time: " + NetworkTime.time + "\n";
+                string log = "kcp SERVER @ time: " + NetworkTime.GameTime + "\n";
                 log += $"  connections: {server.connections.Count}\n";
                 log += $"  MaxSendRate (avg): {PrettyBytes(GetAverageMaxSendRate())}/s\n";
                 log += $"  MaxRecvRate (avg): {PrettyBytes(GetAverageMaxReceiveRate())}/s\n";
@@ -299,7 +299,7 @@ namespace kcp2k
 
             if (ClientConnected())
             {
-                string log = "kcp CLIENT @ time: " + NetworkTime.time + "\n";
+                string log = "kcp CLIENT @ time: " + NetworkTime.GameTime + "\n";
                 log += $"  MaxSendRate: {PrettyBytes(client.connection.MaxSendRate)}/s\n";
                 log += $"  MaxRecvRate: {PrettyBytes(client.connection.MaxReceiveRate)}/s\n";
                 log += $"  SendQueue: {client.connection.SendQueueCount}\n";

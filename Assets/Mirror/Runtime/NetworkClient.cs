@@ -15,7 +15,7 @@ namespace Mirror
     /// <summary>
     /// This is a network client class used by the networking system. It contains a NetworkConnection that is used to connect to a network server.
     /// <para>The <see cref="NetworkClient">NetworkClient</see> handle connection state, messages handlers, and connection configuration. There can be many <see cref="NetworkClient">NetworkClient</see> instances in a process at a time, but only one that is connected to a game server (<see cref="NetworkServer">NetworkServer</see>) that uses spawned objects.</para>
-    /// <para><see cref="NetworkClient">NetworkClient</see> has an internal update function where it handles events from the transport layer. This includes asynchronous connect events, disconnect events and incoming data from a server.</para>
+    /// <para><see cref="NetworkClient">NetworkClient</see> has an internal Update function where it handles events from the transport layer. This includes asynchronous connect events, disconnect events and incoming data from a server.</para>
     /// <para>The <see cref="NetworkManager">NetworkManager</see> has a NetworkClient instance that it uses for games that it starts, but the NetworkClient may be used by itself.</para>
     /// </summary>
     public static class NetworkClient
@@ -79,7 +79,7 @@ namespace Mirror
             connectState = ConnectState.Connecting;
             Transport.activeTransport.ClientConnect(address);
 
-            // setup all the handlers
+            // setUp all the handlers
             connection = new NetworkConnectionToServer();
             connection.SetHandlers(handlers);
         }
@@ -100,7 +100,7 @@ namespace Mirror
             connectState = ConnectState.Connecting;
             Transport.activeTransport.ClientConnect(uri);
 
-            // setup all the handlers
+            // setUp all the handlers
             connection = new NetworkConnectionToServer();
             connection.SetHandlers(handlers);
         }
@@ -277,7 +277,7 @@ namespace Mirror
             // remote connection?
             else
             {
-                // only update things while connected
+                // only Update things while connected
                 if (active && connectState == ConnectState.Connected)
                 {
                     NetworkTime.UpdateClient();
@@ -300,7 +300,7 @@ namespace Mirror
                 RegisterHandler<ObjectSpawnStartedMessage>((conn, msg) => { });
                 // host mode doesn't need spawning
                 RegisterHandler<ObjectSpawnFinishedMessage>((conn, msg) => { });
-                // host mode doesn't need state updates
+                // host mode doesn't need state Updates
                 RegisterHandler<UpdateVarsMessage>((conn, msg) => { });
             }
             else
@@ -399,7 +399,7 @@ namespace Mirror
             // disconnect the client connection.
             // we do NOT call Transport.Shutdown, because someone only called
             // NetworkClient.Shutdown. we can't assume that the server is
-            // supposed to be shut down too!
+            // sUpposed to be shut down too!
             Transport.activeTransport.ClientDisconnect();
         }
     }

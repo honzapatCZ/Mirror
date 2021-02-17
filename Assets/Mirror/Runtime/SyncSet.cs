@@ -92,7 +92,7 @@ namespace Mirror
 
         public void OnSerializeDelta(NetworkWriter writer)
         {
-            // write all the queued up changes
+            // write all the queued Up changes
             writer.WriteUInt32((uint)changes.Count);
 
             for (int i = 0; i < changes.Count; i++)
@@ -278,11 +278,11 @@ namespace Mirror
 
         public bool IsProperSubsetOf(IEnumerable<T> other) => objects.IsProperSubsetOf(other);
 
-        public bool IsProperSupersetOf(IEnumerable<T> other) => objects.IsProperSupersetOf(other);
+        public bool IsProperSUpersetOf(IEnumerable<T> other) => objects.IsProperSUpersetOf(other);
 
         public bool IsSubsetOf(IEnumerable<T> other) => objects.IsSubsetOf(other);
 
-        public bool IsSupersetOf(IEnumerable<T> other) => objects.IsSupersetOf(other);
+        public bool IsSUpersetOf(IEnumerable<T> other) => objects.IsSUpersetOf(other);
 
         public bool Overlaps(IEnumerable<T> other) => objects.Overlaps(other);
 

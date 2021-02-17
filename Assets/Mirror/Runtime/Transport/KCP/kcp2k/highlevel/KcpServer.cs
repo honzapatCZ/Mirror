@@ -18,7 +18,7 @@ namespace kcp2k
         // NoDelay is recommended to reduce latency. This also scales better
         // without buffers getting full.
         public bool NoDelay;
-        // KCP internal update interval. 100ms is KCP default, but a lower
+        // KCP internal Update interval. 100ms is KCP default, but a lower
         // interval is recommended to minimize latency and to scale to more
         // networked entities.
         public uint Interval;
@@ -29,7 +29,7 @@ namespace kcp2k
         // ease of use. This can be disabled for high scale games if connections
         // choke regularly.
         public bool CongestionWindow;
-        // KCP window size can be modified to support higher loads.
+        // KCP window size can be modified to sUpport higher loads.
         // for example, Mirror Benchmark requires:
         //   128, 128 for 4k monsters
         //   512, 512 for 10k monsters
@@ -40,7 +40,7 @@ namespace kcp2k
         // state
         Socket socket;
 #if UNITY_SWITCH
-        // switch does not support ipv6
+        // switch does not sUpport ipv6
         EndPoint newClientEP = new IPEndPoint(IPAddress.Any, 0);
 #else
         EndPoint newClientEP = new IPEndPoint(IPAddress.IPv6Any, 0);
@@ -88,7 +88,7 @@ namespace kcp2k
 
             // listen
 #if UNITY_SWITCH
-            // Switch does not support ipv6
+            // Switch does not sUpport ipv6
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(new IPEndPoint(IPAddress.Any, port));
 #else
@@ -166,7 +166,7 @@ namespace kcp2k
                             //
                             // for now, this is fine.
 
-                            // setup authenticated event that also adds to connections
+                            // setUp authenticated event that also adds to connections
                             connection.OnAuthenticated = () =>
                             {
                                 // only send handshake to client AFTER we received his
@@ -179,12 +179,12 @@ namespace kcp2k
                                 connections.Add(connectionId, connection);
                                 Log.Info($"KCP: server added connection({connectionId}): {newClientEP}");
 
-                                // setup Data + Disconnected events only AFTER the
+                                // setUp Data + Disconnected events only AFTER the
                                 // handshake. we don't want to fire OnServerDisconnected
                                 // every time we receive invalid random data from the
                                 // internet.
 
-                                // setup data event
+                                // setUp data event
                                 connection.OnData = (message) =>
                                 {
                                     // call mirror event
@@ -192,11 +192,11 @@ namespace kcp2k
                                     OnData.Invoke(connectionId, message);
                                 };
 
-                                // setup disconnected event
+                                // setUp disconnected event
                                 connection.OnDisconnected = () =>
                                 {
                                     // flag for removal
-                                    // (can't remove directly because connection is updated
+                                    // (can't remove directly because connection is Updated
                                     //  and event is called while iterating all connections)
                                     connectionsToRemove.Add(connectionId);
 
@@ -211,7 +211,7 @@ namespace kcp2k
                             };
 
                             // now input the message & tick
-                            // connected event was set up.
+                            // connected event was set Up.
                             // tick will process the first message and adds the
                             // connection if it was the handshake.
                             connection.RawInput(rawReceiveBuffer, msgLength);
@@ -259,7 +259,7 @@ namespace kcp2k
             socket = null;
         }
 
-        // pause/unpause to safely support mirror scene handling and to
+        // pause/unpause to safely sUpport mirror scene handling and to
         // immediately pause the receive while loop if needed.
         public void Pause()
         {

@@ -353,7 +353,7 @@ namespace Mirror
                 return gameObjectField;
             }
 
-            // client always looks up based on netId because objects might get in and out of range
+            // client always looks Up based on netId because objects might get in and out of range
             // over and over again, which shouldn't null them forever
             if (NetworkIdentity.spawned.TryGetValue(netId, out NetworkIdentity identity) && identity != null)
                 return gameObjectField = identity.gameObject;
@@ -412,7 +412,7 @@ namespace Mirror
                 return identityField;
             }
 
-            // client always looks up based on netId because objects might get in and out of range
+            // client always looks Up based on netId because objects might get in and out of range
             // over and over again, which shouldn't null them forever
             NetworkIdentity.spawned.TryGetValue(netId, out identityField);
             return identityField;
@@ -476,7 +476,7 @@ namespace Mirror
                 return behaviourField;
             }
 
-            // client always looks up based on netId because objects might get in and out of range
+            // client always looks Up based on netId because objects might get in and out of range
             // over and over again, which shouldn't null them forever
 
             if (!NetworkIdentity.spawned.TryGetValue(syncNetBehaviour.netId, out NetworkIdentity identity))
@@ -534,7 +534,7 @@ namespace Mirror
         #endregion
 
         /// <summary>
-        /// Used to set the behaviour as dirty, so that a network update will be sent for the object.
+        /// Used to set the behaviour as dirty, so that a network Update will be sent for the object.
         /// these are masks, not bit numbers, ie. 0x004 not 2
         /// </summary>
         /// <param name="dirtyBit">Bit mask to set.</param>
@@ -545,11 +545,11 @@ namespace Mirror
 
         /// <summary>
         /// This clears all the dirty bits that were set on this script by SetDirtyBits();
-        /// <para>This is automatically invoked when an update is sent for this object, but can be called manually as well.</para>
+        /// <para>This is automatically invoked when an Update is sent for this object, but can be called manually as well.</para>
         /// </summary>
         public void ClearAllDirtyBits()
         {
-            lastSyncTime = Time.time;
+            lastSyncTime = Time.GameTime;
             syncVarDirtyBits = 0L;
 
             // flush all unsynchronized changes in syncobjects
@@ -579,7 +579,7 @@ namespace Mirror
 
         public bool IsDirty()
         {
-            if (Time.time - lastSyncTime >= syncInterval)
+            if (Time.GameTime - lastSyncTime >= syncInterval)
             {
                 return syncVarDirtyBits != 0L || AnySyncObjectDirty();
             }
@@ -590,9 +590,9 @@ namespace Mirror
         /// Virtual function to override to send custom serialization data. The corresponding function to send serialization data is OnDeserialize().
         /// </summary>
         /// <remarks>
-        /// <para>The initialState flag is useful to differentiate between the first time an object is serialized and when incremental updates can be sent. The first time an object is sent to a client, it must include a full state snapshot, but subsequent updates can save on bandwidth by including only incremental changes. Note that SyncVar hook functions are not called when initialState is true, only for incremental updates.</para>
+        /// <para>The initialState flag is useful to differentiate between the first time an object is serialized and when incremental Updates can be sent. The first time an object is sent to a client, it must include a full state snapshot, but subsequent Updates can save on bandwidth by including only incremental changes. Note that SyncVar hook functions are not called when initialState is true, only for incremental Updates.</para>
         /// <para>If a class has SyncVars, then an implementation of this function and OnDeserialize() are added automatically to the class. So a class that has SyncVars cannot also have custom serialization functions.</para>
-        /// <para>The OnSerialize function should return true to indicate that an update should be sent. If it returns true, then the dirty bits for that script are set to zero, if it returns false then the dirty bits are not changed. This allows multiple changes to a script to be accumulated over time and sent when the system is ready, instead of every frame.</para>
+        /// <para>The OnSerialize function should return true to indicate that an Update should be sent. If it returns true, then the dirty bits for that script are set to zero, if it returns false then the dirty bits are not changed. This allows multiple changes to a script to be accumulated over time and sent when the system is ready, instead of every frame.</para>
         /// </remarks>
         /// <param name="writer">Writer to use to write to the stream.</param>
         /// <param name="initialState">If this is being called to send initial state.</param>
@@ -757,12 +757,12 @@ namespace Mirror
 
         /// <summary>
         /// This is invoked on clients when the server has caused this object to be destroyed.
-        /// <para>This can be used as a hook to invoke effects or do client specific cleanup.</para>
+        /// <para>This can be used as a hook to invoke effects or do client specific cleanUp.</para>
         /// </summary>
         public virtual void OnStopClient() { }
 
         /// <summary>
-        /// Called when the local player object has been set up.
+        /// Called when the local player object has been set Up.
         /// <para>This happens after OnStartClient(), as it is triggered by an ownership message from the server. This is an appropriate place to activate components or functionality that should only be active for the local player, such as cameras and input.</para>
         /// </summary>
         public virtual void OnStartLocalPlayer() { }

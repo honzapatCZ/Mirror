@@ -160,7 +160,7 @@ namespace Mirror.Experimental
         [Server]
         void SyncToClients()
         {
-            // only update if they have changed more than Sensitivity
+            // only Update if they have changed more than Sensitivity
 
             Vector3 currentVelocity = syncVelocity ? target.velocity : default;
             Vector3 currentAngularVelocity = syncAngularVelocity ? target.angularVelocity : default;
@@ -206,7 +206,7 @@ namespace Mirror.Experimental
         [Client]
         void SendVelocity()
         {
-            float now = Time.time;
+            float now = Time.GameTime;
             if (now < previousValue.nextSyncTime)
                 return;
 
@@ -231,7 +231,7 @@ namespace Mirror.Experimental
             }
 
 
-            // only update syncTime if either has changed
+            // only Update syncTime if either has changed
             if (angularVelocityChanged || velocityChanged)
             {
                 previousValue.nextSyncTime = now + syncInterval;

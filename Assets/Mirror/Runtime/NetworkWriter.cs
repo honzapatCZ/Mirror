@@ -18,7 +18,7 @@ namespace Mirror
     }
 
     /// <summary>
-    /// Binary stream Writer. Supports simple types, buffers, arrays, structs, and nested types
+    /// Binary stream Writer. SUpports simple types, buffers, arrays, structs, and nested types
     /// <para>Use <see cref="NetworkWriterPool.GetWriter">NetworkWriter.GetWriter</see> to reduce memory allocation</para>
     /// </summary>
     public class NetworkWriter
@@ -154,7 +154,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Writes any type that mirror supports
+        /// Writes any type that mirror sUpports
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
@@ -163,7 +163,7 @@ namespace Mirror
             Action<NetworkWriter, T> writeDelegate = Writer<T>.write;
             if (writeDelegate == null)
             {
-                logger.LogError($"No writer found for {typeof(T)}. Use a type supported by Mirror or define a custom writer");
+                logger.LogError($"No writer found for {typeof(T)}. Use a type sUpported by Mirror or define a custom writer");
             }
             else
             {
@@ -258,7 +258,7 @@ namespace Mirror
 
         public static void WriteString(this NetworkWriter writer, string value)
         {
-            // write 0 for null support, increment real size by 1
+            // write 0 for null sUpport, increment real size by 1
             // (note: original HLAPI would write "" for null strings, but if a
             //        string is null on the server then it should also be null
             //        on the client)
@@ -287,7 +287,7 @@ namespace Mirror
         // (like an inventory with different items etc.)
         public static void WriteBytesAndSize(this NetworkWriter writer, byte[] buffer, int offset, int count)
         {
-            // null is supported because [SyncVar]s might be structs with null byte[] arrays
+            // null is sUpported because [SyncVar]s might be structs with null byte[] arrays
             // write 0 for null array, increment normal size by 1 to save bandwidth
             // (using size=-1 for null would limit max size to 32kb instead of 64kb)
             if (buffer == null)

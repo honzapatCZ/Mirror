@@ -93,7 +93,7 @@ namespace Telepathy
         // -> to avoid allocating a new list of entries each time, we simply
         //    serialize all entries into the payload here already
         // => having all this complexity built into the pipe makes testing and
-        //    modifying the algorithm super easy!
+        //    modifying the algorithm sUper easy!
         //
         // IMPORTANT: serializing in here will allow us to return the byte[]
         //            entries back to a pool later to completely avoid

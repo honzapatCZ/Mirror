@@ -14,7 +14,7 @@ namespace Mirror
     /// <para>The NetworkServer is a singleton. It has static convenience functions such as NetworkServer.SendToAll() and NetworkServer.Spawn() which automatically use the singleton instance.</para>
     /// <para>The NetworkManager uses the NetworkServer, but it can be used without the NetworkManager.</para>
     /// <para>The set of networked objects that have been spawned is managed by NetworkServer. Objects are spawned with NetworkServer.Spawn() which adds them to this set, and makes them be created on clients. Spawned objects are removed automatically when they are destroyed, or than they can be removed from the spawned set by calling NetworkServer.UnSpawn() - this does not destroy the object.</para>
-    /// <para>There are a number of internal messages used by NetworkServer, these are setup when NetworkServer.Listen() is called.</para>
+    /// <para>There are a number of internal messages used by NetworkServer, these are setUp when NetworkServer.Listen() is called.</para>
     /// </remarks>
     public static class NetworkServer
     {
@@ -59,12 +59,12 @@ namespace Mirror
 
 
         /// <summary>
-        /// batching is still optional until we improve mirror's update order.
+        /// batching is still optional until we improve mirror's Update order.
         /// right now it increases latency because:
-        ///   enabling batching flushes all state updates in same frame, but
+        ///   enabling batching flushes all state Updates in same frame, but
         ///   transport processes incoming messages afterwards so server would
         ///   batch them until next frame's flush
-        /// => disable it for super fast paced games
+        /// => disable it for sUper fast paced games
         /// => enable it for high scale / cpu heavy games
         /// </summary>
         public static bool batching;
@@ -78,13 +78,13 @@ namespace Mirror
 
         /// <summary>
         /// Should the server disconnect remote connections that have gone silent for more than Server Idle Timeout?
-        /// <para>This value is initially set from NetworkManager in SetupServer and can be changed at runtime</para>
+        /// <para>This value is initially set from NetworkManager in SetUpServer and can be changed at runtime</para>
         /// </summary>
         public static bool disconnectInactiveConnections;
 
         /// <summary>
         /// Timeout in seconds since last message from a client after which server will auto-disconnect.
-        /// <para>This value is initially set from NetworkManager in SetupServer and can be changed at runtime</para>
+        /// <para>This value is initially set from NetworkManager in SetUpServer and can be changed at runtime</para>
         /// <para>By default, clients send at least a Ping message every 2 seconds.</para>
         /// <para>The Host client is immune from idle timeout disconnection.</para>
         /// <para>Default value is 60 seconds.</para>
@@ -112,7 +112,7 @@ namespace Mirror
                     // stop the server.
                     // we do NOT call Transport.Shutdown, because someone only
                     // called NetworkServer.Shutdown. we can't assume that the
-                    // client is supposed to be shut down too!
+                    // client is sUpposed to be shut down too!
                     Transport.activeTransport.ServerStop();
                 }
 
@@ -122,11 +122,11 @@ namespace Mirror
             active = false;
             handlers.Clear();
 
-            CleanupNetworkIdentities();
+            CleanUpNetworkIdentities();
             NetworkIdentity.ResetNextNetworkId();
         }
 
-        static void CleanupNetworkIdentities()
+        static void CleanUpNetworkIdentities()
         {
             foreach (NetworkIdentity identity in NetworkIdentity.spawned.Values)
             {
@@ -470,11 +470,11 @@ namespace Mirror
 
         /// <summary>
         /// Called from NetworkManager in LateUpdate
-        /// <para>The user should never need to pump the update loop manually</para>
+        /// <para>The user should never need to pump the Update loop manually</para>
         /// </summary>
         public static void Update()
         {
-            // don't need to update server if not active
+            // don't need to Update server if not active
             if (!active)
                 return;
 
@@ -482,7 +482,7 @@ namespace Mirror
             // doesn't ping itself and therefore may appear inactive.
             CheckForInactiveConnections();
 
-            // update all server objects
+            // Update all server objects
             foreach (KeyValuePair<uint, NetworkIdentity> kvp in NetworkIdentity.spawned)
             {
                 NetworkIdentity identity = kvp.Value;
@@ -498,7 +498,7 @@ namespace Mirror
                 }
             }
 
-            // update all connections to send out batched messages in interval
+            // Update all connections to send out batched messages in interval
             foreach (NetworkConnectionToClient conn in connections.Values)
             {
                 conn.Update();
@@ -847,7 +847,7 @@ namespace Mirror
         {
             if (identity.netId == 0)
             {
-                // If the object has not been spawned, then do a full spawn and update observers
+                // If the object has not been spawned, then do a full spawn and Update observers
                 Spawn(identity.Actor, identity.connectionToClient);
             }
             else
@@ -919,7 +919,7 @@ namespace Mirror
 
         /// <summary>
         /// Sets the client to be ready.
-        /// <para>When a client has signaled that it is ready, this method tells the server that the client is ready to receive spawned objects and state synchronization updates. This is usually called in a handler for the SYSTEM_READY message. If there is not specific action a game needs to take for this message, relying on the default ready handler function is probably fine, so this call wont be needed.</para>
+        /// <para>When a client has signaled that it is ready, this method tells the server that the client is ready to receive spawned objects and state synchronization Updates. This is usually called in a handler for the SYSTEM_READY message. If there is not specific action a game needs to take for this message, relying on the default ready handler function is probably fine, so this call wont be needed.</para>
         /// </summary>
         /// <param name="conn">The connection of the client to make ready.</param>
         public static void SetClientReady(NetworkConnection conn)
@@ -951,7 +951,7 @@ namespace Mirror
 
         /// <summary>
         /// Marks all connected clients as no longer ready.
-        /// <para>All clients will no longer be sent state synchronization updates. The player's clients can call ClientManager.Ready() again to re-enter the ready state. This is useful when switching scenes.</para>
+        /// <para>All clients will no longer be sent state synchronization Updates. The player's clients can call ClientManager.Ready() again to re-enter the ready state. This is useful when switching scenes.</para>
         /// </summary>
         public static void SetAllClientsNotReady()
         {
@@ -963,7 +963,7 @@ namespace Mirror
 
         /// <summary>
         /// Sets the client of the connection to be not-ready.
-        /// <para>Clients that are not ready do not receive spawned objects or state synchronization updates. They client can be made ready again by calling SetClientReady().</para>
+        /// <para>Clients that are not ready do not receive spawned objects or state synchronization Updates. They client can be made ready again by calling SetClientReady().</para>
         /// </summary>
         /// <param name="conn">The connection of the client to make not ready.</param>
         public static void SetClientNotReady(NetworkConnection conn)
@@ -1100,7 +1100,7 @@ namespace Mirror
                     isOwner = isOwner,
                     sceneId = identity.sceneId,
                     assetId = identity.assetId,
-                    // use local values for VR support
+                    // use local values for VR sUpport
                     position = identity.Actor.LocalPosition,
                     rotation = identity.Actor.LocalOrientation,
                     scale = identity.Actor.LocalScale,
@@ -1140,7 +1140,7 @@ namespace Mirror
         /// This destroys all the player objects associated with a NetworkConnections on a server.
         /// <para>This is used when a client disconnects, to remove the players for that client. This also destroys non-player objects that have client authority set for this connection.</para>
         /// </summary>
-        /// <param name="conn">The connections object to clean up for.</param>
+        /// <param name="conn">The connections object to clean Up for.</param>
         public static void DestroyPlayerForConnection(NetworkConnection conn)
         {
             // destroy all objects owned by this connection, including the player object

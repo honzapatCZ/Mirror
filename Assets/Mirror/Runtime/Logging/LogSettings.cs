@@ -4,7 +4,7 @@ using FlaxEngine;
 
 namespace Mirror.Logging
 {
-    public class LogSettings : ScriptableObject
+    public class LogSettings //: ScriptableObject
     {
         public List<LoggerSettings> loglevels = new List<LoggerSettings>();
 
@@ -30,7 +30,7 @@ namespace Mirror.Logging
 
             foreach (KeyValuePair<string, ILogger> kvp in dictionary)
             {
-                settings.loglevels.Add(new LogSettings.LoggerSettings { name = kvp.Key, logLevel = kvp.Value.filterLogType });
+                settings.loglevels.Add(new LogSettings.LoggerSettings { name = kvp.Key, logLevel = kvp.Value.FilterLogType });
             }
 
 #if UNITY_EDITOR
@@ -50,13 +50,13 @@ namespace Mirror.Logging
             {
                 if (dictionary.TryGetValue(logLevel.name, out ILogger logger))
                 {
-                    logger.filterLogType = logLevel.logLevel;
+                    logger.FilterLogType = logLevel.logLevel;
                 }
                 else
                 {
-                    logger = new Logger(Debug.unityLogger)
+                    logger = new Logger(Debug.Logger.LogHandler)
                     {
-                        filterLogType = logLevel.logLevel
+                        FilterLogType = logLevel.logLevel
                     };
 
                     dictionary[logLevel.name] = logger;

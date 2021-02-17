@@ -9,7 +9,7 @@ namespace kcp2k
         {
             this.socket = socket;
             this.remoteEndpoint = remoteEndpoint;
-            SetupKcp(noDelay, interval, fastResend, congestionWindow, sendWindowSize, receiveWindowSize);
+            SetUpKcp(noDelay, interval, fastResend, congestionWindow, sendWindowSize, receiveWindowSize);
         }
 
         protected override void RawSend(byte[] data, int length)

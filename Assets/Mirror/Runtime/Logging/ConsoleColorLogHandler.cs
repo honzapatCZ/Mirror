@@ -12,7 +12,7 @@ namespace Mirror.Logging
             this.showExceptionStackTrace = showExceptionStackTrace;
         }
 
-        public void LogException(Exception exception, UnityEngine.Object context)
+        public void LogException(Exception exception, FlaxEngine.Object context)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Exception: {exception.Message}");
@@ -23,13 +23,12 @@ namespace Mirror.Logging
             Console.ResetColor();
         }
 
-        public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args)
+        public void LogFormat(LogType logType, FlaxEngine.Object context, string format, params object[] args)
         {
             switch (logType)
             {
-                case LogType.Exception:
                 case LogType.Error:
-                case LogType.Assert:
+                case LogType.Fatal:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LogType.Warning:

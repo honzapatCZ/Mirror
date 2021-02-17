@@ -18,7 +18,7 @@ namespace Telepathy
         // thread safe pipe to send messages from main thread to send thread
         public readonly MagnificentSendPipe sendPipe;
 
-        // ManualResetEvent to wake up the send thread. better than Thread.Sleep
+        // ManualResetEvent to wake Up the send thread. better than Thread.Sleep
         // -> call Set() if everything was sent
         // -> call Reset() if there is something to send again
         // -> call WaitOne() to block until Reset was called

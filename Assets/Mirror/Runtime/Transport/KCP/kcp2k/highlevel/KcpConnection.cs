@@ -90,7 +90,7 @@ namespace kcp2k
 
         // if we send more than kcp can handle, we will get ever growing
         // send/recv buffers and queues and minutes of latency.
-        // => if a connection can't keep up, it should be disconnected instead
+        // => if a connection can't keep Up, it should be disconnected instead
         //    to protect the server under heavy load, and because there is no
         //    point in growing to gigabytes of memory or minutes of latency!
         // => 2k isn't enough. we reach 2k when spawning 4k monsters at once
@@ -125,9 +125,9 @@ namespace kcp2k
 
         // NoDelay, interval, window size are the most important configurations.
         // let's force require the parameters so we don't forget it anywhere.
-        protected void SetupKcp(bool noDelay, uint interval = Kcp.INTERVAL, int fastResend = 0, bool congestionWindow = true, uint sendWindowSize = Kcp.WND_SND, uint receiveWindowSize = Kcp.WND_RCV)
+        protected void SetUpKcp(bool noDelay, uint interval = Kcp.INTERVAL, int fastResend = 0, bool congestionWindow = true, uint sendWindowSize = Kcp.WND_SND, uint receiveWindowSize = Kcp.WND_RCV)
         {
-            // set up kcp over reliable channel (that's what kcp is for)
+            // set Up kcp over reliable channel (that's what kcp is for)
             kcp = new Kcp(0, RawSendReliable);
             // set nodelay.
             // note that kcp uses 'nocwnd' internally so we negate the parameter
@@ -211,7 +211,7 @@ namespace kcp2k
             int msgSize = kcp.PeekSize();
             if (msgSize > 0)
             {
-                // only allow receiving up to buffer sized messages.
+                // only allow receiving Up to buffer sized messages.
                 // otherwise we would get BlockCopy ArgumentException anyway.
                 if (msgSize <= kcpMessageBuffer.Length)
                 {
@@ -610,7 +610,7 @@ namespace kcp2k
         // get remote endpoint
         public EndPoint GetRemoteEndPoint() => remoteEndpoint;
 
-        // pause/unpause to safely support mirror scene handling and to
+        // pause/unpause to safely sUpport mirror scene handling and to
         // immediately pause the receive while loop if needed.
         public void Pause() => paused = true;
         public void Unpause()

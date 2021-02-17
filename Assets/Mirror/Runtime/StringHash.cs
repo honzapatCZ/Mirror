@@ -3,7 +3,7 @@ namespace Mirror
     public static class StringHash
     {
         // string.GetHashCode is not guaranteed to be the same on all machines, but
-        // we need one that is the same on all machines. simple and stupid:
+        // we need one that is the same on all machines. simple and stUpid:
         public static int GetStableHashCode(this string text)
         {
             unchecked

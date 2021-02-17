@@ -22,7 +22,7 @@ namespace kcp2k
             remoteEndpoint = new IPEndPoint(ipAddress[0], port);
             socket = new Socket(remoteEndpoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
             socket.Connect(remoteEndpoint);
-            SetupKcp(noDelay, interval, fastResend, congestionWindow, sendWindowSize, receiveWindowSize);
+            SetUpKcp(noDelay, interval, fastResend, congestionWindow, sendWindowSize, receiveWindowSize);
 
             // client should send handshake to server as very first message
             SendHandshake();
@@ -30,7 +30,7 @@ namespace kcp2k
             RawReceive();
         }
 
-        // call from transport update
+        // call from transport Update
         public void RawReceive()
         {
             try

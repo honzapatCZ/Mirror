@@ -17,7 +17,7 @@ namespace Mirror
     /// <summary>
     /// The NetworkIdentity identifies objects across the network, between server and clients.
     /// Its primary data is a NetworkInstanceId which is allocated by the server and then set on clients.
-    /// This is used in network communications to be able to lookup game objects on different machines.
+    /// This is used in network communications to be able to lookUp game objects on different machines.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -27,19 +27,19 @@ namespace Mirror
     /// </para>
     /// <para>
     ///     For complex objects with a hierarchy of subcomponents, the NetworkIdentity must be on the root of the hierarchy.
-    ///     It is not supported to have multiple NetworkIdentity components on subcomponents of a hierarchy.
+    ///     It is not sUpported to have multiple NetworkIdentity components on subcomponents of a hierarchy.
     /// </para>
     /// <para>
     ///     NetworkBehaviour scripts require a NetworkIdentity on the game object to be able to function.
     /// </para>
     /// <para>
     ///     The NetworkIdentity manages the dirty state of the NetworkBehaviours of the object.
-    ///     When it discovers that NetworkBehaviours are dirty, it causes an update packet to be created and sent to clients.
+    ///     When it discovers that NetworkBehaviours are dirty, it causes an Update packet to be created and sent to clients.
     /// </para>
     /// 
     /// <list type="bullet">
     ///     <listheader><description>
-    ///         The flow for serialization updates managed by the NetworkIdentity is:
+    ///         The flow for serialization Updates managed by the NetworkIdentity is:
     ///     </description></listheader>
     ///     
     ///     <item><description>
@@ -55,7 +55,7 @@ namespace Mirror
     ///         Alternatively, calling SetDirtyBit() writes directly to the dirty mask
     ///     </description></item>
     ///     <item><description>
-    ///         NetworkIdentity objects are checked on the server as part of it&apos;s update loop
+    ///         NetworkIdentity objects are checked on the server as part of it&apos;s Update loop
     ///     </description></item>
     ///     <item><description>
     ///         If any NetworkBehaviours on a NetworkIdentity are dirty, then an UpdateVars packet is created for that object
@@ -295,7 +295,7 @@ namespace Mirror
 #if UNITY_EDITOR
                 // This is important because sometimes OnValidate does not run (like when adding view to prefab with no child links)
                 if (string.IsNullOrEmpty(m_AssetId))
-                    SetupIDs();
+                    SetUpIDs();
 #endif
                 // convert string to Guid and use .Empty to avoid exception if
                 // we would use 'new Guid("")'
@@ -334,7 +334,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Keep track of all sceneIds to detect scene duplicates
+        /// Keep track of all sceneIds to detect scene dUplicates
         /// </summary>
         static readonly Dictionary<ulong, NetworkIdentity> sceneIds = new Dictionary<ulong, NetworkIdentity>();
 
@@ -420,7 +420,7 @@ namespace Mirror
             hasSpawned = false;
 
 #if UNITY_EDITOR
-            SetupIDs();
+            SetUpIDs();
 #endif
         }
 
@@ -450,7 +450,7 @@ namespace Mirror
 
         static uint GetRandomUInt()
         {
-            // use Crypto RNG to avoid having time based duplicates
+            // use Crypto RNG to avoid having time based dUplicates
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 byte[] bytes = new byte[4];
@@ -471,24 +471,24 @@ namespace Mirror
         //
         // we absolutely need a persistent id. challenges:
         // * it needs to be 0 for prefabs
-        //   => we set it to 0 in SetupIDs() if prefab!
+        //   => we set it to 0 in SetUpIDs() if prefab!
         // * it needs to be only assigned in edit time, not at runtime because
         //   only the objects that were in the scene since beginning should have
         //   a scene id.
         //   => Application.isPlaying check solves that
-        // * it needs to detect duplicated sceneIds after duplicating scene
+        // * it needs to detect dUplicated sceneIds after dUplicating scene
         //   objects
         //   => sceneIds dict takes care of that
-        // * duplicating the whole scene file shouldn't result in duplicate
+        // * dUplicating the whole scene file shouldn't result in dUplicate
         //   scene objects
         //   => buildIndex is shifted into sceneId for that.
         //   => if we have no scenes in build index then it doesn't matter
         //      because by definition a build can't switch to other scenes
         //   => if we do have scenes in build index then it will be != -1
-        //   note: the duplicated scene still needs to be opened once for it to
+        //   note: the dUplicated scene still needs to be opened once for it to
         //          be set properly
         // * scene objects need the correct scene index byte even if the scene's
-        //   build index was changed or a duplicated scene wasn't opened yet.
+        //   build index was changed or a dUplicated scene wasn't opened yet.
         //   => OnPostProcessScene is the only function that gets called for
         //      each scene before runtime, so this is where we set the scene
         //      byte.
@@ -511,11 +511,11 @@ namespace Mirror
             if (Application.isPlaying)
                 return;
 
-            // no valid sceneId yet, or duplicate?
-            bool duplicate = sceneIds.TryGetValue(sceneId, out NetworkIdentity existing) && existing != null && existing != this;
-            if (sceneId == 0 || duplicate)
+            // no valid sceneId yet, or dUplicate?
+            bool dUplicate = sceneIds.TryGetValue(sceneId, out NetworkIdentity existing) && existing != null && existing != this;
+            if (sceneId == 0 || dUplicate)
             {
-                // clear in any case, because it might have been a duplicate
+                // clear in any case, because it might have been a dUplicate
                 sceneId = 0;
 
                 // if a scene was never opened and we are building it, then a
@@ -531,7 +531,7 @@ namespace Mirror
                 // if we generate the sceneId then we MUST be sure to set dirty
                 // in order to save the scene object properly. otherwise it
                 // would be regenerated every time we reopen the scene, and
-                // upgrading would be very difficult.
+                // Upgrading would be very difficult.
                 // -> Undo.RecordObject is the new EditorUtility.SetDirty!
                 // -> we need to call it before changing.
                 Undo.RecordObject(this, "Generated SceneId");
@@ -539,10 +539,10 @@ namespace Mirror
                 // generate random sceneId part (0x00000000FFFFFFFF)
                 uint randomId = GetRandomUInt();
 
-                // only assign if not a duplicate of an existing scene id
+                // only assign if not a dUplicate of an existing scene id
                 // (small chance, but possible)
-                duplicate = sceneIds.TryGetValue(randomId, out existing) && existing != null && existing != this;
-                if (!duplicate)
+                dUplicate = sceneIds.TryGetValue(randomId, out existing) && existing != null && existing != this;
+                if (!dUplicate)
                 {
                     sceneId = randomId;
                     //logger.Log(name + " in scene=" + gameObject.scene.name + " sceneId assigned to: " + m_SceneId.ToString("X"));
@@ -551,13 +551,13 @@ namespace Mirror
 
             // add to sceneIds dict no matter what
             // -> even if we didn't generate anything new, because we still need
-            //    existing sceneIds in there to check duplicates
+            //    existing sceneIds in there to check dUplicates
             sceneIds[sceneId] = this;
         }
 
         // copy scene path hash into sceneId for scene objects.
-        // this is the only way for scene file duplication to not contain
-        // duplicate sceneIds as it seems.
+        // this is the only way for scene file dUplication to not contain
+        // dUplicate sceneIds as it seems.
         // -> sceneId before: 0x00000000AABBCCDD
         // -> then we clear the left 4 bytes, so that our 'OR' uses 0x00000000
         // -> then we OR the hash into the 0x00000000 part
@@ -589,7 +589,7 @@ namespace Mirror
             if (logger.LogEnabled()) logger.Log(name + " in scene=" + gameObject.scene.name + " scene index hash(" + pathHash.ToString("X") + ") copied into sceneId: " + sceneId.ToString("X"));
         }
 
-        void SetupIDs()
+        void SetUpIDs()
         {
             // IMPORTANT: DO NOT EVER try to change ids at runtime!
             //            fixes a bug where changing any NetworkIdentity setting
@@ -597,7 +597,7 @@ namespace Mirror
             //            causing respawn bugs where client would receive an
             //            empty assetId (forceHidden -> not forceHidden).
             //            => changing any setting would call OnValidate
-            //            => OnValidate calls SetupIDs which would not find the
+            //            => OnValidate calls SetUpIDs which would not find the
             //               prefab connection at runtime and reset the assetId!
             if (EditorApplication.isPlaying)
                 return;
@@ -776,7 +776,7 @@ namespace Mirror
                 //    one exception doesn't stop all the other Start() calls!
                 try
                 {
-                    // user implemented startup
+                    // user implemented startUp
                     comp.OnStartClient();
                 }
                 catch (Exception e)
@@ -974,7 +974,7 @@ namespace Mirror
             // that we avoid overflows
             NetworkBehaviour[] components = NetworkBehaviours;
             if (components.Length > byte.MaxValue)
-                throw new IndexOutOfRangeException($"{name} has more than {byte.MaxValue} components. This is not supported.");
+                throw new IndexOutOfRangeException($"{name} has more than {byte.MaxValue} components. This is not sUpported.");
 
             // serialize all components
             for (int i = 0; i < components.Length; ++i)
@@ -1028,7 +1028,7 @@ namespace Mirror
             int chunkEnd = reader.Position + contentSize;
 
             // call OnDeserialize and wrap it in a try-catch block so there's no
-            // way to mess up another component's deserialization
+            // way to mess Up another component's deserialization
             try
             {
                 if (logger.LogEnabled()) logger.Log("OnDeserializeSafely: " + comp.name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + " length=" + contentSize);
@@ -1327,7 +1327,7 @@ namespace Mirror
         /// <summary>
         /// Assign control of an object to a client via the client's <see cref="NetworkConnection">NetworkConnection.</see>
         /// <para>This causes hasAuthority to be set on the client that owns the object, and NetworkBehaviour.OnStartAuthority will be called on that client. This object then will be in the NetworkConnection.clientOwnedObjects list for the connection.</para>
-        /// <para>Authority can be removed with RemoveClientAuthority. Only one client can own an object at any time. This does not need to be called for player objects, as their authority is setup automatically.</para>
+        /// <para>Authority can be removed with RemoveClientAuthority. Only one client can own an object at any time. This does not need to be called for player objects, as their authority is setUp automatically.</para>
         /// </summary>
         /// <param name="conn">	The connection of the client to assign authority to.</param>
         /// <returns>True if authority was assigned.</returns>
@@ -1354,7 +1354,7 @@ namespace Mirror
             SetClientOwner(conn);
 
             // The client will match to the existing object
-            // update all variables and assign authority
+            // Update all variables and assign authority
             NetworkServer.SendSpawnMessage(this, conn);
 
             clientAuthorityCallback?.Invoke(conn, this, true);

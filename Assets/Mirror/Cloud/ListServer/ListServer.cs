@@ -45,7 +45,7 @@ namespace Mirror.Cloud.ListServerService
     public interface IListServerClientApi : IBaseApi
     {
         /// <summary>
-        /// Called when the server list is updated
+        /// Called when the server list is Updated
         /// </summary>
         event UnityAction<ServerCollectionJson> onServerListUpdated;
 

@@ -27,7 +27,7 @@ namespace Mirror
     }
 
     /// <summary>
-    /// Binary stream Reader. Supports simple types, buffers, arrays, structs, and nested types
+    /// Binary stream Reader. SUpports simple types, buffers, arrays, structs, and nested types
     /// <para>Use <see cref="NetworkReaderPool.GetReader">NetworkReaderPool.GetReader</see> to reduce memory allocation</para>
     /// <para>
     /// Note: This class is intended to be extremely pedantic,
@@ -49,7 +49,7 @@ namespace Mirror
         //     0.0% CPU time,  32KB memory, 0.02ms
 
         // internal buffer
-        // byte[] pointer would work, but we use ArraySegment to also support
+        // byte[] pointer would work, but we use ArraySegment to also sUpport
         // the ArraySegment constructor
         internal ArraySegment<byte> buffer;
 
@@ -128,7 +128,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Reads any data type that mirror supports
+        /// Reads any data type that mirror sUpports
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -137,7 +137,7 @@ namespace Mirror
             Func<NetworkReader, T> readerDelegate = Reader<T>.read;
             if (readerDelegate == null)
             {
-                logger.LogError($"No reader found for {typeof(T)}. Use a type supported by Mirror or define a custom reader");
+                logger.LogError($"No reader found for {typeof(T)}. Use a type sUpported by Mirror or define a custom reader");
                 return default;
             }
             return readerDelegate(this);
@@ -218,7 +218,7 @@ namespace Mirror
             // read number of bytes
             ushort size = reader.ReadUInt16();
 
-            // null support, see NetworkWriter
+            // null sUpport, see NetworkWriter
             if (size == 0)
                 return null;
 

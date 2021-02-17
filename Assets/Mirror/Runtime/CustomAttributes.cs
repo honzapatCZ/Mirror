@@ -5,7 +5,7 @@ namespace Mirror
 {
     /// <summary>
     /// SyncVars are used to synchronize a variable from the server to all clients automatically.
-    /// <para>Value must be changed on server, not directly by clients.  Hook parameter allows you to define a client-side method to be invoked when the client gets an update from the server.</para>
+    /// <para>Value must be changed on server, not directly by clients.  Hook parameter allows you to define a client-side method to be invoked when the client gets an Update from the server.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class SyncVarAttribute : Attribute//PropertyAttribute

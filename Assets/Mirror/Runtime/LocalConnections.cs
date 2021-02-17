@@ -53,7 +53,7 @@ namespace Mirror
             writer.WriteBytesAndSizeSegment(segment);
             packetCount++;
 
-            // update buffer in case writer's length has changed
+            // Update buffer in case writer's length has changed
             reader.buffer = writer.ToArraySegment();
         }
 

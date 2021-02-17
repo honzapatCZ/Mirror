@@ -19,9 +19,9 @@ namespace Mirror
         public int visRange = 10;
 
         /// <summary>
-        /// How often (in seconds) that this object should update the list of observers that can see it.
+        /// How often (in seconds) that this object should Update the list of observers that can see it.
         /// </summary>
-        [Tooltip("How often (in seconds) that this object should update the list of observers that can see it.")]
+        [Tooltip("How often (in seconds) that this object should Update the list of observers that can see it.")]
         public float visUpdateInterval = 1;
 
         /// <summary>
