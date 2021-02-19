@@ -29,14 +29,14 @@ namespace Mirror
         /// </summary>
         [Header("Configuration")]
         ////[FormerlySerializedAs("m_DontDestroyOnLoad")]
-        //[Tooltip("Should the Network Manager object be persisted through scene changes?")]
-        //public bool dontDestroyOnLoad = true;
+        [Tooltip("Should the Network Manager object be persisted through scene changes?")]
+        public bool dontDestroyOnLoad = true;
 
         /// <summary>
         /// Controls whether the program runs when it is in the background.
         /// <para>This is required when multiple instances of a program using networking are running on the same machine, such as when testing using localhost. But this is not recommended when deploying to mobile platforms.</para>
         /// </summary>
-        ////[FormerlySerializedAs("m_RunInBackground")]
+        ///[FormerlySerializedAs("m_RunInBackground")]
         //[Tooltip("Should the server or client keep running in the background?")]
         //public bool runInBackground = true;
 
@@ -220,17 +220,26 @@ namespace Mirror
             if (transport == null)
             {
                 // was a transport added yet? if not, add one
+                /*
                 transport = Actor.GetScript<Transport>();
                 if (transport == null)
                 {
                     transport = Actor.AddScript<KcpTransport>();
                     logger.Log("NetworkManager: added default Transport because there was none yet.");
                 }
-#if UNITY_EDITOR
+                */
                 // For some insane reason, this line fails when building unless wrapped in this define. StUpid but true.
                 // error CS0234: The type or namespace name 'Undo' does not exist in the namespace 'UnityEditor' (are you missing an assembly reference?)
-                UnityEditor.Undo.RecordObject(gameObject, "Added default Transport");
-#endif
+                //UnityEditor.Undo.RecordObject(gameObject, "Added default Transport");
+                using (new FlaxEditor.UndoBlock(FlaxEditor.Editor.Instance.Undo, this, "Change Log Settings"))
+                {
+                    transport = Actor.GetScript<Transport>();
+                    if (transport == null)
+                    {
+                        transport = Actor.AddScript<KcpTransport>();
+                        logger.Log("NetworkManager: added default Transport because there was none yet.");
+                    }
+                }
             }
 
             // always >= 0
@@ -246,8 +255,9 @@ namespace Mirror
         /// <summary>
         /// virtual so that inheriting classes' Awake() can call base.Awake() too
         /// </summary>
-        public virtual void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             // Don't allow collision-destroyed second instance to continue.
             if (!InitializeSingleton()) return;
 
@@ -757,7 +767,12 @@ namespace Mirror
                 logger.Log("NetworkManager created singleton (DontDestroyOnLoad)");
                 singleton = this;
                 
-                if (Application.isPlaying) DontDestroyOnLoad(gameObject);
+                //if (Application.isPlaying)
+                {
+                    //DontDestroyOnLoad(Actor);
+                    Debug.LogWarning("Making dontdestroyonload by using parent = null, which in turn completely removes it from any levels");
+                    Actor.SetParent(null, false);
+                }
             }
             else
             {
@@ -815,8 +830,9 @@ namespace Mirror
         /// <summary>
         /// virtual so that inheriting classes' OnDestroy() can call base.OnDestroy() too
         /// </summary>
-        public virtual void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
             logger.Log("NetworkManager destroyed");
         }
 
@@ -862,7 +878,6 @@ namespace Mirror
 
             //Level.LoadSceneAsync(Content.Load<SceneAsset>().);
             Level.ChangeSceneAsync(newSceneName);
-
             // ServerChangeScene can be called when stopping the server
             // when this happens the server is not active so does not need to tell clients about the change
             if (NetworkServer.active)
@@ -1110,7 +1125,7 @@ namespace Mirror
             if (logger.LogEnabled()) logger.Log("RegisterStartPosition: (" + start + ") " + start.Translation);
             startPositions.Add(start);
 
-            // reorder the list so that round-robin spawning uses the start positions
+            // reorder the list so that round-robin spawning uses the start Positions
             // in hierarchy order.  This assumes all objects with NetworkStartPosition
             // component are siblings, either in the scene root or together as children
             // under a single parent in the scene.
@@ -1129,7 +1144,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// This finds a spawn position based on NetworkStartPosition objects in the scene.
+        /// This finds a spawn Position based on NetworkStartPosition objects in the scene.
         /// <para>This is used by the default implementation of OnServerAddPlayer.</para>
         /// </summary>
         /// <returns>Returns the transform to spawn a player at, or null.</returns>

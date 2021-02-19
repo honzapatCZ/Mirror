@@ -278,11 +278,11 @@ namespace Mirror
 
         public bool IsProperSubsetOf(IEnumerable<T> other) => objects.IsProperSubsetOf(other);
 
-        public bool IsProperSUpersetOf(IEnumerable<T> other) => objects.IsProperSUpersetOf(other);
+        public bool IsProperSupersetOf(IEnumerable<T> other) => objects.IsProperSupersetOf(other);
 
         public bool IsSubsetOf(IEnumerable<T> other) => objects.IsSubsetOf(other);
 
-        public bool IsSUpersetOf(IEnumerable<T> other) => objects.IsSUpersetOf(other);
+        public bool IsSupersetOf(IEnumerable<T> other) => objects.IsSupersetOf(other);
 
         public bool Overlaps(IEnumerable<T> other) => objects.Overlaps(other);
 

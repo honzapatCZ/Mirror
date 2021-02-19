@@ -20,7 +20,7 @@ namespace Mirror
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandAttribute : Attribute
     {
-        // this is zero
+        // this is Zero
         public int channel = Channels.DefaultReliable;
         public bool ignoreAuthority = false;
     }
@@ -31,7 +31,7 @@ namespace Mirror
     [AttributeUsage(AttributeTargets.Method)]
     public class ClientRpcAttribute : Attribute
     {
-        // this is zero
+        // this is Zero
         public int channel = Channels.DefaultReliable;
         public bool excludeOwner = false;
     }
@@ -42,7 +42,7 @@ namespace Mirror
     [AttributeUsage(AttributeTargets.Method)]
     public class TargetRpcAttribute : Attribute
     {
-        // this is zero
+        // this is Zero
         public int channel = Channels.DefaultReliable;
     }
 

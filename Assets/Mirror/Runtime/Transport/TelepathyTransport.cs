@@ -61,8 +61,9 @@ namespace Mirror
         // let's only allocate it once.
         Func<bool> enabledCheck;
 
-        void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             // create client & server
             client = new Telepathy.Client(clientMaxMessageSize);
             server = new Telepathy.Server(serverMaxMessageSize);
@@ -131,8 +132,8 @@ namespace Mirror
         // IMPORTANT: set script execution order to >1000 to call Transport's
         //            LateUpdate after all others. Fixes race condition where
         //            e.g. in uSurvival Transport would apply Cmds before
-        //            ShoulderRotation.LateUpdate, resulting in projectile
-        //            spawns at the point before shoulder rotation.
+        //            ShoulderOrientation.LateUpdate, resulting in projectile
+        //            spawns at the point before shoulder Orientation.
         public void LateUpdate()
         {
             // note: we need to check enabled in case we set it to false
@@ -218,6 +219,11 @@ namespace Mirror
                 return "Telepathy Client port: " + port;
             }
             return "Telepathy (inactive/disconnected)";
+        }
+
+        public override bool Available()
+        {
+            return true;
         }
     }
 }

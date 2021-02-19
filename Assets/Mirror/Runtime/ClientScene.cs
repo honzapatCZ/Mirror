@@ -216,7 +216,10 @@ namespace Mirror
             spawnableObjects.Clear();
             
             // finds all NetworkIdentity currently loaded by unity (includes disabled objects)
-            NetworkIdentity[] allIdentities = Resources.FindObjectsOfTypeAll<NetworkIdentity>();
+            //NetworkIdentity[] allIdentities = Resources.FindObjectsOfTypeAll<NetworkIdentity>();
+            NetworkIdentity[] allIdentities = Level.GetScripts<NetworkIdentity>();
+            Debug.LogWarning("Using Level.FindScripts which may not be everything");
+
             foreach (NetworkIdentity identity in allIdentities)
             {
                 // add all unspawned NetworkIdentities to spawnable objects
@@ -258,6 +261,8 @@ namespace Mirror
                 logger.LogError($"Can not Register '{prefab.Actor.Name}' because it has a sceneId, make sure you are passing in the original prefab and not an instance in the scene.");
                 return;
             }
+
+            Debug.LogWarning("Not checking children, so an error could easily happen");
             /*//////Check for single Network identity on whole object
             NetworkIdentity[] identities = prefab.GetComponentsInChildren<NetworkIdentity>();
             if (identities.Length > 1)
@@ -367,7 +372,7 @@ namespace Mirror
                 return;
             }
 
-            RegisterPrefab(prefab, newAssetId, msg => spawnHandler(msg.position, msg.assetId), unspawnHandler);
+            RegisterPrefab(prefab, newAssetId, msg => spawnHandler(msg.Position, msg.assetId), unspawnHandler);
         }
 
         /// <summary>
@@ -415,7 +420,7 @@ namespace Mirror
                 return;
             }
 
-            RegisterPrefab(prefab, msg => spawnHandler(msg.position, msg.assetId), unspawnHandler);
+            RegisterPrefab(prefab, msg => spawnHandler(msg.Position, msg.assetId), unspawnHandler);
         }
 
         /// <summary>
@@ -615,7 +620,7 @@ namespace Mirror
                 return;
             }
 
-            RegisterSpawnHandler(assetId, msg => spawnHandler(msg.position, msg.assetId), unspawnHandler);
+            RegisterSpawnHandler(assetId, msg => spawnHandler(msg.Position, msg.assetId), unspawnHandler);
         }
 
         /// <summary>
@@ -743,8 +748,8 @@ namespace Mirror
             }
 
             // apply local values for VR sUpport
-            identity.Actor.LocalPosition = msg.position;
-            identity.Actor.LocalOrientation = msg.rotation;
+            identity.Actor.LocalPosition = msg.Position;
+            identity.Actor.LocalOrientation = msg.Orientation;
             identity.Actor.LocalScale = msg.scale;
             identity.hasAuthority = msg.isOwner;
             identity.netId = msg.netId;
@@ -775,7 +780,7 @@ namespace Mirror
 
         internal static void OnSpawn(SpawnMessage msg)
         {
-            if (logger.LogEnabled()) logger.Log($"Client spawn handler instantiating netId={msg.netId} assetID={msg.assetId} sceneId={msg.sceneId:X} pos={msg.position}");
+            if (logger.LogEnabled()) logger.Log($"Client spawn handler instantiating netId={msg.netId} assetID={msg.assetId} sceneId={msg.sceneId:X} pos={msg.Position}");
 
             if (FindOrSpawnObject(msg, out NetworkIdentity identity))
             {
@@ -824,10 +829,10 @@ namespace Mirror
         {
             if (GetPrefab(msg.assetId, out Prefab prefab))
             {
-                Actor obj = PrefabManager.SpawnPrefab(prefab, msg.position, msg.rotation);
+                Actor obj = PrefabManager.SpawnPrefab(prefab, msg.Position, msg.Orientation);
                 if (logger.LogEnabled())
                 {
-                    logger.Log("Client spawn handler instantiating [netId:" + msg.netId + " asset ID:" + msg.assetId + " pos:" + msg.position + " rotation: " + msg.rotation + "]");
+                    logger.Log("Client spawn handler instantiating [netId:" + msg.netId + " asset ID:" + msg.assetId + " pos:" + msg.Position + " Orientation: " + msg.Orientation + "]");
                 }
 
                 return obj.GetScript<NetworkIdentity>();

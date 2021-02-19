@@ -152,7 +152,7 @@ namespace Telepathy
             }
             catch (Exception exception)
             {
-                // something went wrong. the thread was interrUpted or the
+                // something went wrong. the thread was Interrupted or the
                 // connection closed or we closed our own connection or ...
                 // -> either way we should stop gracefully
                 Log.Info("ReceiveLoop: finished receive function for connectionId=" + connectionId + " reason: " + exception);
@@ -217,13 +217,13 @@ namespace Telepathy
             {
                 // happens on stop. don't log anything.
             }
-            catch (ThreadInterrUptedException)
+            catch (ThreadInterruptedException)
             {
-                // happens if receive thread interrUpts send thread.
+                // happens if receive thread Interrupts send thread.
             }
             catch (Exception exception)
             {
-                // something went wrong. the thread was interrUpted or the
+                // something went wrong. the thread was Interrupted or the
                 // connection closed or we closed our own connection or ...
                 // -> either way we should stop gracefully
                 Log.Info("SendLoop Exception: connectionId=" + connectionId + " reason: " + exception);

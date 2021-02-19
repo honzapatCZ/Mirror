@@ -184,7 +184,7 @@ namespace Telepathy
                     // decrease counter for this connectionId
                     queueCounter[entry.connectionId]--;
 
-                    // remove if zero. don't want to keep old connectionIds in
+                    // remove if Zero. don't want to keep old connectionIds in
                     // there forever, it would cause slowly growing memory.
                     if (queueCounter[entry.connectionId] == 0)
                         queueCounter.Remove(entry.connectionId);

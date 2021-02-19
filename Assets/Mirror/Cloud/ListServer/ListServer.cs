@@ -1,5 +1,5 @@
 using System;
-using UnityEngine.Events;
+//using UnityEngine.Events;
 
 namespace Mirror.Cloud.ListServerService
 {
@@ -47,7 +47,7 @@ namespace Mirror.Cloud.ListServerService
         /// <summary>
         /// Called when the server list is Updated
         /// </summary>
-        event UnityAction<ServerCollectionJson> onServerListUpdated;
+        event System.Action<ServerCollectionJson> onServerListUpdated;
 
         /// <summary>
         /// Get the server list once

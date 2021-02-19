@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using FlaxEngine;
 
 namespace Mirror
@@ -8,7 +10,7 @@ namespace Mirror
     /// <para>Any object with this component on it will not be visible to players more than a (configurable) distance away.</para>
     /// </summary>
     //[AddComponentMenu("Network/NetworkProximityChecker")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkProximityChecker.html")]
     public class NetworkProximityChecker : NetworkVisibility
     {
@@ -31,14 +33,27 @@ namespace Mirror
         [Tooltip("Enable to force this object to be hidden from players.")]
         public bool forceHidden;
 
+        CancellationTokenSource rebuildObserversTask;
 
         public override void OnStartServer()
         {
-            InvokeRepeating(nameof(RebuildObservers), 0, visUpdateInterval);
+            rebuildObserversTask?.Cancel();
+            rebuildObserversTask = new CancellationTokenSource();
+
+            Task.Run( async () =>
+            {
+                while (true)
+                {
+                    RebuildObservers();
+                    await Task.Delay(Mathf.RoundToInt(visUpdateInterval * 1000));
+                }
+            }, rebuildObserversTask.Token);
+            //InvokeRepeating(nameof(RebuildObservers), 0, visUpdateInterval);
         }
         public override void OnStopServer()
         {
-            CancelInvoke(nameof(RebuildObservers));
+            //CancelInvoke(nameof(RebuildObservers));
+            rebuildObserversTask.Cancel();
         }
 
         void RebuildObservers()
@@ -57,7 +72,7 @@ namespace Mirror
             if (forceHidden)
                 return false;
 
-            return Vector3.Distance(conn.identity.transform.position, transform.position) < visRange;
+            return Vector3.Distance(conn.identity.Actor.Position, Actor.Position) < visRange;
         }
 
         /// <summary>
@@ -73,7 +88,7 @@ namespace Mirror
                 return;
 
             // 'transform.' calls GetComponent, only do it once
-            Vector3 position = transform.position;
+            Vector3 Position = Actor.Position;
 
             // brute force distance check
             // -> only player connections can be observers, so it's enough if we
@@ -87,7 +102,7 @@ namespace Mirror
                 if (conn != null && conn.identity != null)
                 {
                     // check distance
-                    if (Vector3.Distance(conn.identity.transform.position, position) < visRange)
+                    if (Vector3.Distance(conn.identity.Actor.Position, Position) < visRange)
                     {
                         observers.Add(conn);
                     }

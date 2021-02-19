@@ -168,7 +168,7 @@ namespace Mirror
         /// <param name="connectionId">The client connection id to send the data to</param>
         /// <param name="channelId">The channel to be used.  Transports can use channels to implement
         /// other features such as unreliable, encryption, compression, etc...</param>
-        /// <param name="data"></param>
+        /// <param name="segment"></param>
         public abstract void ServerSend(int connectionId, int channelId, ArraySegment<byte> segment);
 
         /// <summary>
@@ -235,8 +235,8 @@ namespace Mirror
         // IMPORTANT: set script execution order to >1000 to call Transport's
         //            LateUpdate after all others. Fixes race condition where
         //            e.g. in uSurvival Transport would apply Cmds before
-        //            ShoulderRotation.LateUpdate, resulting in projectile
-        //            spawns at the point before shoulder rotation.
+        //            ShoulderOrientation.LateUpdate, resulting in projectile
+        //            spawns at the point before shoulder Orientation.
 #pragma warning disable UNT0001 // Empty Unity message
         public void Update() { }
 #pragma warning restore UNT0001 // Empty Unity message

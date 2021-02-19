@@ -13,7 +13,7 @@ namespace Mirror
     /// <para>The NetworkAnimator synchronizes all animation parameters of the selected Animator. It does not automatically synchronize triggers. The function SetTrigger can by used by an object with authority to fire an animation trigger on other clients.</para>
     /// </remarks>
     //[AddComponentMenu("Network/NetworkAnimator")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkAnimator.html")]
     public class NetworkAnimator : NetworkBehaviour
     {
@@ -29,9 +29,8 @@ namespace Mirror
         //[FormerlySerializedAs("m_Animator")]
         [Header("Animator")]
         [Tooltip("Animator that will have parameters synchronized")]
-        public Animator animator;
-
-
+        public AnimatedModel animator;
+                
         /// <summary>
         /// Syncs animator.speed
         /// </summary>
@@ -43,7 +42,7 @@ namespace Mirror
         int[] lastIntParameters;
         float[] lastFloatParameters;
         bool[] lastBoolParameters;
-        AnimatorControllerParameter[] parameters;
+        AnimGraphParameter[] parameters;
 
         // multiple layers
         int[] animationHash;
@@ -77,9 +76,9 @@ namespace Mirror
         {
             // store the animator parameters in a variable - the "Animator.parameters" getter allocates
             // a new parameter array every time it is accessed so we should avoid doing it in a loop
-            parameters = animator.parameters
-                .Where(par => !animator.IsParameterControlledByCurve(par.nameHash))
-                .ToArray();
+            parameters = animator.Parameters;
+            //    .Where(par => !animator.IsParameterControlledByCurve(par.nameHash))
+            //    .ToArray();
             lastIntParameters = new int[parameters.Length];
             lastFloatParameters = new float[parameters.Length];
             lastBoolParameters = new bool[parameters.Length];
@@ -94,7 +93,7 @@ namespace Mirror
             if (!SendMessagesAllowed)
                 return;
 
-            if (!animator.enabled)
+            if (!animator.IsActive)
                 return;
 
             CheckSendRate();
@@ -134,7 +133,6 @@ namespace Mirror
                 }
             }
         }
-
         void CmdSetAnimatorSpeed(float newSpeed)
         {
             // set animator
@@ -177,7 +175,7 @@ namespace Mirror
                 }
                 return change;
             }
-
+            
             AnimatorStateInfo st = animator.GetCurrentAnimatorStateInfo(layerId);
             if (st.fullPathHash != animationHash[layerId])
             {
@@ -242,7 +240,7 @@ namespace Mirror
             // usually transitions will be triggered by parameters, if not, play anims directly.
             // NOTE: this plays "animations", not transitions, so any transitions will be skipped.
             // NOTE: there is no API to play a transition(?)
-            if (stateHash != 0 && animator.enabled)
+            if (stateHash != 0 && animator.IsActive)
             {
                 animator.Play(stateHash, layerId, normalizedTime);
             }
@@ -262,13 +260,13 @@ namespace Mirror
 
         void HandleAnimTriggerMsg(int hash)
         {
-            if (animator.enabled)
+            if (animator.IsActive)
                 animator.SetTrigger(hash);
         }
 
         void HandleAnimResetTriggerMsg(int hash)
         {
-            if (animator.enabled)
+            if (animator.IsActive)
                 animator.ResetTrigger(hash);
         }
 

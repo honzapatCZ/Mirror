@@ -10,11 +10,11 @@ namespace Mirror.Discovery
     public class NetworkDiscoveryHUD : Script
     {
         readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
-        Vector2 scrollViewPos = Vector2.zero;
+        Vector2 scrollViewPos = Vector2.Zero;
 
         public NetworkDiscovery networkDiscovery;
 
-#if UNITY_EDITOR
+#if FLAX_EDITOR
         void OnValidate()
         {
             if (networkDiscovery == null)

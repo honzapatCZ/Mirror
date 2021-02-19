@@ -13,22 +13,25 @@ namespace Mirror.Logging
         [Header("Log Settings Asset")]
         [Serialize] internal LogSettings settings;
 
-#if UNITY_EDITOR
+#if FLAX_EDITOR
         // called when component is added to GameObject
         void Reset()
         {
             LogSettings existingSettings = EditorLogSettingsLoader.FindLogSettings();
             if (existingSettings != null)
             {
-                settings = existingSettings;
-
-                UnityEditor.EditorUtility.SetDirty(this);
+                using (new FlaxEditor.UndoBlock(FlaxEditor.Editor.Instance.Undo, this, "Change Log Settings"))
+                {
+                    settings = existingSettings;
+                }
+                //UnityEditor.EditorUtility.SetDirty(this);
             }
         }
 #endif
 
-        void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             RefreshDictionary();
         }
 

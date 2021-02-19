@@ -14,7 +14,7 @@ namespace Mirror
         [Tooltip("True shows the round trip time, from origin to destination, then back again. Set to false for time to server only.")]
         public bool showRoundTripTime = true;
         private int rttMultiplier = 1;
-        public Vector2 position = new Vector2(200, 0);
+        public Vector2 Position = new Vector2(200, 0);
         public int fontSize = 24;
         public Color textColor = new Color32(255, 255, 255, 80);
         public string format = "{0}ms";
@@ -42,7 +42,7 @@ namespace Mirror
 
             int width = Screen.width;
             int height = Screen.height;
-            Rect rect = new Rect(position.x, position.y, width - 200, height * 2 / 100);
+            Rect rect = new Rect(Position.x, Position.y, width - 200, height * 2 / 100);
 
             GUI.Label(rect, text, style);
         }

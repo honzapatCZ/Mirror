@@ -7,10 +7,10 @@ namespace Mirror.Experimental
     public class NetworkLerpRigidbody : NetworkBehaviour
     {
         [Header("Settings")]
-        [Serialize] internal Rigidbody target = null;
-        [Tooltip("How quickly current velocity approaches target velocity")]
-        [Serialize] float lerpVelocityAmount = 0.5f;
-        [Tooltip("How quickly current position approaches target position")]
+        [Serialize] internal RigidBody target = null;
+        [Tooltip("How quickly current LinearVelocity approaches target LinearVelocity")]
+        [Serialize] float lerpLinearVelocityAmount = 0.5f;
+        [Tooltip("How quickly current Position approaches target Position")]
         [Serialize] float lerpPositionAmount = 0.5f;
 
         [Tooltip("Set to true if moves come from owner client, set to false if moves always come from server")]
@@ -20,7 +20,7 @@ namespace Mirror.Experimental
 
 
         [SyncVar()]
-        Vector3 targetVelocity;
+        Vector3 targetLinearVelocity;
 
         [SyncVar()]
         Vector3 targetPosition;
@@ -37,7 +37,7 @@ namespace Mirror.Experimental
         {
             if (target == null)
             {
-                target = GetComponent<Rigidbody>();
+                target = Actor as RigidBody;
             }
         }
 
@@ -55,8 +55,8 @@ namespace Mirror.Experimental
 
         private void SyncToClients()
         {
-            targetVelocity = target.velocity;
-            targetPosition = target.position;
+            targetLinearVelocity = target.LinearVelocity;
+            targetPosition = target.Position;
         }
 
         private void SendToServer()
@@ -65,29 +65,29 @@ namespace Mirror.Experimental
             if (now > nextSyncTime)
             {
                 nextSyncTime = now + syncInterval;
-                CmdSendState(target.velocity, target.position);
+                CmdSendState(target.LinearVelocity, target.Position);
             }
         }
 
         [Command]
-        private void CmdSendState(Vector3 velocity, Vector3 position)
+        private void CmdSendState(Vector3 LinearVelocity, Vector3 Position)
         {
-            target.velocity = velocity;
-            target.position = position;
-            targetVelocity = velocity;
-            targetPosition = position;
+            target.LinearVelocity = LinearVelocity;
+            target.Position = Position;
+            targetLinearVelocity = LinearVelocity;
+            targetPosition = Position;
         }
 
         void FixedUpdate()
         {
             if (IgnoreSync) { return; }
 
-            target.velocity = Vector3.Lerp(target.velocity, targetVelocity, lerpVelocityAmount);
-            target.position = Vector3.Lerp(target.position, targetPosition, lerpPositionAmount);
-            // add velocity to position as position would have moved on server at that velocity
-            targetPosition += target.velocity * Time.fixedDeltaTime;
+            target.LinearVelocity = Vector3.Lerp(target.LinearVelocity, targetLinearVelocity, lerpLinearVelocityAmount);
+            target.Position = Vector3.Lerp(target.Position, targetPosition, lerpPositionAmount);
+            // add LinearVelocity to Position as Position would have moved on server at that LinearVelocity
+            targetPosition += target.LinearVelocity * Time.UnscaledDeltaTime;
 
-            // TODO does this also need to sync acceleration so and Update velocity?
+            // TODO does this also need to sync acceleration so and Update LinearVelocity?
         }
     }
 }

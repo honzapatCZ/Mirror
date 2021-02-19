@@ -77,13 +77,13 @@ namespace Mirror
         /// </summary>
         public Guid assetId;
         /// <summary>
-        /// Local position
+        /// Local Position
         /// </summary>
-        public Vector3 position;
+        public Vector3 Position;
         /// <summary>
-        /// Local rotation
+        /// Local Orientation
         /// </summary>
-        public Quaternion rotation;
+        public Quaternion Orientation;
         /// <summary>
         /// Local scale
         /// </summary>

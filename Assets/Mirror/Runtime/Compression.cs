@@ -34,14 +34,14 @@ namespace Mirror
     /// 
     /// <list type="bullet">
     /// <listheader><description>
-    ///     RotationPrecision <br/>
+    ///     OrientationPrecision <br/>
     ///     <code>
     ///     2/sqrt(2) / (2^bitCount - 1)
     ///     </code>
     /// </description></listheader>
     /// 
     /// <item><description>
-    ///     rotation precision +-0.00138 in range [-1,+1]
+    ///     Orientation precision +-0.00138 in range [-1,+1]
     ///     <code>
     ///     10 bits per value
     ///     2 + 10 * 3 = 32 bits => send 4 bytes

@@ -29,7 +29,7 @@ namespace Mirror
         /// </summary>
         /// <remarks>
         /// <para>On a server, this Id is unique for every connection on the server. On a client this Id is local to the client, it is not the same as the Id on the server for this connection.</para>
-        /// <para>Transport layers connections begin at one. So on a client with a single connection to a server, the connectionId of that connection will be one. In NetworkServer, the connectionId of the local connection is zero.</para>
+        /// <para>Transport layers connections begin at one. So on a client with a single connection to a server, the connectionId of that connection will be one. In NetworkServer, the connectionId of the local connection is Zero.</para>
         /// <para>Clients do not know their connectionId on the server, and do not know the connectionId of other clients on the server.</para>
         /// </remarks>
         public readonly int connectionId;
@@ -107,7 +107,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// This sends a network message with a message ID on the connection. This message is sent on channel zero, which by default is the reliable channel.
+        /// This sends a network message with a message ID on the connection. This message is sent on channel Zero, which by default is the reliable channel.
         /// </summary>
         /// <typeparam name="T">The message type to unregister.</typeparam>
         /// <param name="msg">The message to send.</param>
@@ -139,8 +139,8 @@ namespace Mirror
 
             if (segment.Count == 0)
             {
-                // zero length packets getting into the packet queues are bad.
-                logger.LogError("NetworkConnection.ValidatePacketSize: cannot send zero bytes");
+                // Zero length packets getting into the packet queues are bad.
+                logger.LogError("NetworkConnection.ValidatePacketSize: cannot send Zero bytes");
                 return false;
             }
 
@@ -215,6 +215,7 @@ namespace Mirror
         /// This function allows custom network connection classes to process data from the network before it is passed to the application.
         /// </summary>
         /// <param name="buffer">The data received.</param>
+        /// <param name="channelId"></param>
         internal void TransportReceive(ArraySegment<byte> buffer, int channelId)
         {
             if (buffer.Count < MessagePacker.HeaderSize)

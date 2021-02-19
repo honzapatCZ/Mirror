@@ -15,8 +15,9 @@ namespace Mirror
         // the first transport that is available on this platform
         Transport available;
 
-        public void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             if (transports == null || transports.Length == 0)
             {
                 throw new Exception("FallbackTransport requires at least 1 underlying transport");

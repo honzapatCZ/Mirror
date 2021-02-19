@@ -699,6 +699,7 @@ namespace Mirror
         /// <typeparam name="T">Message type</typeparam>
         /// <param name="identity"></param>
         /// <param name="msg"></param>
+        /// <param name="channelId"></param>
         public static void SendToClientOfPlayer<T>(NetworkIdentity identity, T msg, int channelId = Channels.DefaultReliable)
             where T : struct, NetworkMessage
         {
@@ -1101,8 +1102,8 @@ namespace Mirror
                     sceneId = identity.sceneId,
                     assetId = identity.assetId,
                     // use local values for VR sUpport
-                    position = identity.Actor.LocalPosition,
-                    rotation = identity.Actor.LocalOrientation,
+                    Position = identity.Actor.LocalPosition,
+                    Orientation = identity.Actor.LocalOrientation,
                     scale = identity.Actor.LocalScale,
 
                     payload = payload,
@@ -1207,8 +1208,10 @@ namespace Mirror
 
         static bool CheckForPrefab(Actor obj)
         {
-            return false;
-#if UNITY_EDITOR
+            Debug.LogWarning("Check for prefab WCHICH may not work was called with obj " + obj + " the result of checkForPrefab is " + obj.Scene == null);
+            return obj.Scene == null;
+            /*
+#if FLAX_EDITOR
     #if UNITY_2018_3_OR_NEWER
             return UnityEditor.PrefabUtility.IsPartOfPrefabAsset(obj);
     #elif UNITY_2018_2_OR_NEWER
@@ -1217,6 +1220,7 @@ namespace Mirror
             return (UnityEditor.PrefabUtility.GetPrefabParent(obj) == null) && (UnityEditor.PrefabUtility.GetPrefabObject(obj) != null);
     #endif
 #endif
+            */
         }
 
         static bool VerifyCanSpawn(Actor obj)
@@ -1308,11 +1312,12 @@ namespace Mirror
         {
             if (identity.Actor.HideFlags == HideFlags.FullyHidden || identity.Actor.HideFlags == HideFlags.HideInHierarchy || identity.Actor.HideFlags == HideFlags.DontSave)
                 return false;
-
-#if UNITY_EDITOR
-            if (UnityEditor.EditorUtility.IsPersistent(identity.gameObject))
+            /*
+#if FLAX_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(identity.Actor))
                 return false;
 #endif
+            */
 
             // If not a scene object
             return identity.sceneId != 0;
@@ -1329,7 +1334,11 @@ namespace Mirror
             if (!active)
                 return false;
 
-            NetworkIdentity[] identities = Resources.FindObjectsOfTypeAll<NetworkIdentity>();
+            //NetworkIdentity[] identities = Resources.FindObjectsOfTypeAll<NetworkIdentity>();
+            NetworkIdentity[] identities = Level.GetScripts<NetworkIdentity>();
+            Debug.LogWarning("Using Level.FindScripts which may not be everything");
+
+
             foreach (NetworkIdentity identity in identities)
             {
                 if (ValidateSceneObject(identity))

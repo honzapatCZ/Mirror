@@ -1,13 +1,10 @@
 using System;
 using System.Net;
 using FlaxEngine;
-using UnityEngine.Events;
+//using UnityEngine.Events;
 
 namespace Mirror.Discovery
 {
-    [Serializable]
-    public class ServerFoundUnityEvent : UnityEvent<ServerResponse> { };
-
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkDiscovery")]
     public class NetworkDiscovery : NetworkDiscoveryBase<ServerRequest, ServerResponse>
@@ -20,7 +17,7 @@ namespace Mirror.Discovery
         public Transport transport;
 
         [Tooltip("Invoked when a server is found")]
-        public ServerFoundUnityEvent OnServerFound;
+        public Action<ServerResponse> OnServerFound;
 
         public override void Start()
         {

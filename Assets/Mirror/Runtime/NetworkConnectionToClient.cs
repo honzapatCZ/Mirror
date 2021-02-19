@@ -35,7 +35,7 @@ namespace Mirror
             //    even though we just flushed in Send().
             // -> initialize with current NetworkTime so first Update doesn't
             //    calculate elapsed via 'now - 0'
-            internal double lastSendTime = NetworkTime.GameTime;
+            internal double lastSendTime = NetworkTime.time;
         }
         Dictionary<int, Batch> batches = new Dictionary<int, Batch>();
 
@@ -130,7 +130,7 @@ namespace Mirror
             }
 
             // reset send time for this channel's batch
-            batch.lastSendTime = NetworkTime.GameTime;
+            batch.lastSendTime = NetworkTime.time;
         }
 
         internal override void Send(ArraySegment<byte> segment, int channelId = Channels.DefaultReliable)
@@ -177,7 +177,7 @@ namespace Mirror
                 {
                     // enough time elapsed to flush this channel's batch?
                     // and not empty?
-                    double elapsed = NetworkTime.GameTime - kvp.Value.lastSendTime;
+                    double elapsed = NetworkTime.time - kvp.Value.lastSendTime;
                     if (elapsed >= batchInterval && kvp.Value.messages.Count > 0)
                     {
                         // send the batch. time will be reset internally.

@@ -45,13 +45,13 @@ namespace Mirror
         /// The scene to use for the room. This is similar to the offlineScene of the NetworkManager.
         /// </summary>
         [Scene]
-        public string RoomScene;
+        public SceneReference RoomScene;
 
         /// <summary>
         /// The scene to use for the playing the game from the room. This is similar to the onlineScene of the NetworkManager.
         /// </summary>
         [Scene]
-        public string GameplayScene;
+        public SceneReference GameplayScene;
 
         /// <summary>
         /// List of players that are in the Room
@@ -182,7 +182,7 @@ namespace Mirror
             Actor gamePlayer = OnRoomServerCreateGamePlayer(conn, roomPlayer);
             if (gamePlayer == null)
             {
-                // get start position from base class
+                // get start Position from base class
                 Transform startPos = GetStartPosition();
                 gamePlayer = startPos != null ? PrefabManager.SpawnPrefab(playerPrefab, startPos.Translation, startPos.Orientation) : PrefabManager.SpawnPrefab(playerPrefab, Vector3.Zero, Quaternion.Identity);
             }
@@ -299,7 +299,7 @@ namespace Mirror
             base.OnServerDisconnect(conn);
         }
 
-        // Sequential index used in round-robin deployment of players into instances and score positioning
+        // Sequential index used in round-robin deployment of players into instances and score Positioning
         public int clientIndex;
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Mirror
                 if (newRoomGameObject == null)
                 {
                     newRoomGameObject = PrefabManager.SpawnPrefab(roomPlayerPrefab, Vector3.Zero, Quaternion.Identity);
-                    //newRoomGameObject = Level.SpawnActor(newRoomGameObject.GetDefaultInstance(), ) Instantiate(roomPlayerPrefab.gameObject, Vector3.zero, Quaternion.identity);
+                    //newRoomGameObject = Level.SpawnActor(newRoomGameObject.GetDefaultInstance(), ) Instantiate(roomPlayerPrefab.gameObject, Vector3.Zero, Quaternion.identity);
 
                 }
                 NetworkServer.AddPlayerForConnection(conn, newRoomGameObject);
@@ -351,9 +351,9 @@ namespace Mirror
         /// <para>Clients that connect to this server will automatically switch to this scene. This is called automatically if onlineScene or offlineScene are set, but it can be called from user code to switch scenes again while the game is in progress. This automatically sets clients to be not-ready. The clients must call NetworkClient.Ready() again to participate in the new scene.</para>
         /// </summary>
         /// <param name="newSceneName"></param>
-        public override void ServerChangeScene(string newSceneName)
+        public override void ServerChangeScene(SceneReference newSceneName)
         {
-            if (newSceneName == RoomScene)
+            if (newSceneName.ID == RoomScene.ID)
             {
                 foreach (NetworkRoomPlayer roomPlayer in roomSlots)
                 {
@@ -381,9 +381,9 @@ namespace Mirror
         /// Called on the server when a scene is completed loaded, when the scene load was initiated by the server with ServerChangeScene().
         /// </summary>
         /// <param name="sceneName">The name of the new scene.</param>
-        public override void OnServerSceneChanged(string sceneName)
+        public override void OnServerSceneChanged(SceneReference sceneName)
         {
-            if (sceneName != RoomScene)
+            if (sceneName.ID != RoomScene.ID)
             {
                 // call SceneLoadedForPlayer on any players that become ready while we were loading the scene.
                 foreach (PendingPlayer pending in pendingPlayers)
@@ -401,13 +401,13 @@ namespace Mirror
         /// </summary>
         public override void OnStartServer()
         {
-            if (string.IsNullOrEmpty(RoomScene))
+            if (RoomScene.ID == null)
             {
                 logger.LogError("NetworkRoomManager RoomScene is empty. Set the RoomScene in the inspector for the NetworkRoomManager");
                 return;
             }
 
-            if (string.IsNullOrEmpty(GameplayScene))
+            if (GameplayScene.ID == null)
             {
                 logger.LogError("NetworkRoomManager PlayScene is empty. Set the PlayScene in the inspector for the NetworkRoomManager");
                 return;
@@ -553,7 +553,7 @@ namespace Mirror
         /// This is called on the server when a networked scene finishes loading.
         /// </summary>
         /// <param name="sceneName">Name of the new scene.</param>
-        public virtual void OnRoomServerSceneChanged(string sceneName) { }
+        public virtual void OnRoomServerSceneChanged(SceneReference sceneName) { }
 
         /// <summary>
         /// This allows customization of the creation of the room-player object on the server.
@@ -581,7 +581,7 @@ namespace Mirror
         /// <summary>
         /// This allows customization of the creation of the GamePlayer object on the server.
         /// <para>This is only called for subsequent GamePlay scenes after the first one.</para>
-        /// <para>See <see cref="OnRoomServerCreateGamePlayer(NetworkConnection, GameObject)">OnRoomServerCreateGamePlayer(NetworkConnection, GameObject)</see> to customize the player object for the initial GamePlay scene.</para>
+        /// <para>See <see cref="OnRoomServerCreateGamePlayer(NetworkConnection, Actor)">OnRoomServerCreateGamePlayer(NetworkConnection, GameObject)</see> to customize the player object for the initial GamePlay scene.</para>
         /// </summary>
         /// <param name="conn">The connection the player object is for.</param>
         public virtual void OnRoomServerAddPlayer(NetworkConnection conn)
@@ -648,7 +648,6 @@ namespace Mirror
         /// <summary>
         /// This is called on the client when a client is started.
         /// </summary>
-        /// <param name="roomClient">The connection for the room.</param>
         public virtual void OnRoomStartClient() { }
 
         /// <summary>

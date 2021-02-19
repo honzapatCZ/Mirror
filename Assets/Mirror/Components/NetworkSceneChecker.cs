@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using FlaxEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 namespace Mirror
 {
@@ -11,7 +11,7 @@ namespace Mirror
     /// </summary>
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkSceneChecker")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkSceneChecker.html")]
     public class NetworkSceneChecker : NetworkVisibility
     {
@@ -30,9 +30,10 @@ namespace Mirror
         Scene currentScene;
 
         [ServerCallback]
-        void Awake()
+        public override void OnAwake()
         {
-            currentScene = gameObject.scene;
+            base.OnAwake();
+            currentScene = Actor.Scene;
             if (logger.LogEnabled()) logger.Log($"NetworkSceneChecker.Awake currentScene: {currentScene}");
         }
 
@@ -53,7 +54,7 @@ namespace Mirror
         [ServerCallback]
         void Update()
         {
-            if (currentScene == gameObject.scene)
+            if (currentScene == Actor.Scene)
                 return;
 
             // This object is in a new scene so observers in the prior scene
@@ -66,7 +67,7 @@ namespace Mirror
             RebuildSceneObservers();
 
             // Set this to the new scene this object just entered
-            currentScene = gameObject.scene;
+            currentScene = Actor.Scene;
 
             // Make sure this new scene is in the dictionary
             if (!sceneCheckerObjects.ContainsKey(currentScene))
@@ -97,7 +98,7 @@ namespace Mirror
             if (forceHidden)
                 return false;
 
-            return conn.identity.gameObject.scene == gameObject.scene;
+            return conn.identity.Actor.Scene == Actor.Scene;
         }
 
         /// <summary>

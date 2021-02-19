@@ -4,8 +4,8 @@
 //
 // Server sends current data.
 // Client saves it and interpolates last and latest data points.
-//   Update handles transform movement / rotation
-//   FixedUpdate handles rigidbody movement / rotation
+//   Update handles transform movement / Orientation
+//   FixedUpdate handles rigidbody movement / Orientation
 //
 // Notes:
 // * Built-in Teleport detection in case of lags / teleport / obstacles
@@ -41,7 +41,7 @@ namespace Mirror
         [Header("Sensitivity")]
         [Tooltip("Changes to the transform must exceed these values to be transmitted on the network.")]
         public float LocalPositionSensitivity = .01f;
-        [Tooltip("If rotation exceeds this angle, it will be transmitted on the network")]
+        [Tooltip("If Orientation exceeds this angle, it will be transmitted on the network")]
         public float LocalOrientationSensitivity = .01f;
         [Tooltip("Changes to the transform must exceed these values to be transmitted on the network.")]
         public float LocalScaleSensitivity = .01f;
@@ -51,14 +51,14 @@ namespace Mirror
 
         // server
         Vector3 lastPosition;
-        Quaternion lastRotation;
+        Quaternion lastOrientation;
         Vector3 lastScale;
 
         // client
         public class DataPoint
         {
             public float timeStamp;
-            // use local position/rotation for VR sUpport
+            // use local Position/Orientation for VR sUpport
             public Vector3 LocalPosition;
             public Quaternion LocalOrientation;
             public Vector3 LocalScale;
@@ -73,19 +73,19 @@ namespace Mirror
 
         // serialization is needed by OnSerialize and by manual sending from authority
         // public only for tests
-        public static void SerializeIntoWriter(NetworkWriter writer, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static void SerializeIntoWriter(NetworkWriter writer, Vector3 Position, Quaternion Orientation, Vector3 scale)
         {
-            // serialize position, rotation, scale
-            // => compress rotation from 4*4=16 to 4 bytes
+            // serialize Position, Orientation, scale
+            // => compress Orientation from 4*4=16 to 4 bytes
             // => less bandwidth = better CCU tests / scale
-            writer.WriteVector3(position);
-            writer.WriteUInt32(Compression.CompressQuaternion(rotation));
+            writer.WriteVector3(Position);
+            writer.WriteUInt32(Compression.CompressQuaternion(Orientation));
             writer.WriteVector3(scale);
         }
 
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {
-            // use local position/rotation/scale for VR sUpport
+            // use local Position/Orientation/scale for VR sUpport
             SerializeIntoWriter(writer, targetComponent.LocalPosition, targetComponent.LocalOrientation, targetComponent.LocalScale);
             return true;
         }
@@ -109,8 +109,8 @@ namespace Mirror
             // put it into a data point immediately
             DataPoint temp = new DataPoint
             {
-                // deserialize position, rotation, scale
-                // (rotation is compressed)
+                // deserialize Position, Orientation, scale
+                // (Orientation is compressed)
                 LocalPosition = reader.ReadVector3(),
                 LocalOrientation = Compression.DecompressQuaternion(reader.ReadUInt32()),
                 LocalScale = reader.ReadVector3(),
@@ -129,7 +129,7 @@ namespace Mirror
                 start = new DataPoint
                 {
                     timeStamp = Time.GameTime - syncInterval,
-                    // local position/rotation for VR sUpport
+                    // local Position/Orientation for VR sUpport
                     LocalPosition = targetComponent.LocalPosition,
                     LocalOrientation = targetComponent.LocalOrientation,
                     LocalScale = targetComponent.LocalScale,
@@ -173,9 +173,9 @@ namespace Mirror
                 start = goal;
 
                 // teleport / lag / obstacle detection: only continue at current
-                // position if we aren't too far away
+                // Position if we aren't too far away
                 //
-                // local position/rotation for VR sUpport
+                // local Position/Orientation for VR sUpport
                 if (Vector3.Distance(targetComponent.LocalPosition, start.LocalPosition) < oldDistance + newDistance)
                 {
                     start.LocalPosition = targetComponent.LocalPosition;
@@ -207,9 +207,9 @@ namespace Mirror
                 DeserializeFromReader(networkReader);
 
             // server-only mode does no interpolation to save computations,
-            // but let's set the position directly
+            // but let's set the Position directly
             if (isServer && !isClient)
-                ApplyPositionRotationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
+                ApplyPositionOrientationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
 
             // set dirty so that OnSerialize broadcasts it
             SetDirtyBit(1UL);
@@ -239,26 +239,28 @@ namespace Mirror
                 // will happen, it's not that smooth. especially noticeable if
                 // the camera automatically follows the player
                 //   float t = CurrentInterpolationFactor();
-                //   return Vector3.Lerp(start.position, goal.position, t);
+                //   return Vector3.Lerp(start.Position, goal.Position, t);
 
                 // Option 2: always += speed
                 // -> speed is 0 if we just started after idle, so always use max
                 //    for best results
                 float speed = Mathf.Max(start.movementSpeed, goal.movementSpeed);
+
+                //return Vector3.MoveTowards(currentPosition, goal.LocalPosition, speed * Time.DeltaTime);
+                return currentPosition + Vector3.Normalize(goal.LocalPosition - currentPosition) * Mathf.Min(Vector3.Distance(currentPosition, goal.LocalPosition) / 2, speed * Time.DeltaTime);
                 
-                return Vector3.MoveTowards(currentPosition, goal.LocalPosition, speed * Time.DeltaTime);
             }
             return currentPosition;
         }
 
-        static Quaternion InterpolateRotation(DataPoint start, DataPoint goal, Quaternion defaultRotation)
+        static Quaternion InterpolateOrientation(DataPoint start, DataPoint goal, Quaternion defaultOrientation)
         {
             if (start != null)
             {
                 float t = CurrentInterpolationFactor(start, goal);
                 return Quaternion.Slerp(start.LocalOrientation, goal.LocalOrientation, t);
             }
-            return defaultRotation;
+            return defaultOrientation;
         }
 
         static Vector3 InterpolateScale(DataPoint start, DataPoint goal, Vector3 currentScale)
@@ -290,10 +292,10 @@ namespace Mirror
         bool HasEitherMovedRotatedScaled()
         {
             // moved or rotated or scaled?
-            // local position/rotation/scale for VR sUpport
+            // local Position/Orientation/scale for VR sUpport
             bool moved = Vector3.Distance(lastPosition, targetComponent.LocalPosition) > LocalPositionSensitivity;
             bool scaled = Vector3.Distance(lastScale, targetComponent.LocalScale) > LocalScaleSensitivity;            
-            bool rotated = Quaternion.AngleBetween(lastRotation, targetComponent.LocalOrientation) > LocalOrientationSensitivity;
+            bool rotated = Quaternion.AngleBetween(lastOrientation, targetComponent.LocalOrientation) > LocalOrientationSensitivity;
 
             // save last for next frame to compare
             // (only if change was detected. otherwise slow moving objects might
@@ -302,20 +304,20 @@ namespace Mirror
             bool change = moved || rotated || scaled;
             if (change)
             {
-                // local position/rotation for VR sUpport
+                // local Position/Orientation for VR sUpport
                 lastPosition = targetComponent.LocalPosition;
-                lastRotation = targetComponent.LocalOrientation;
+                lastOrientation = targetComponent.LocalOrientation;
                 lastScale = targetComponent.LocalScale;
             }
             return change;
         }
 
-        // set position carefully depending on the target component
-        void ApplyPositionRotationScale(Vector3 position, Quaternion rotation, Vector3 scale)
+        // set Position carefully depending on the target component
+        void ApplyPositionOrientationScale(Vector3 Position, Quaternion Orientation, Vector3 scale)
         {
-            // local position/rotation for VR sUpport
-            targetComponent.LocalPosition = position;
-            targetComponent.LocalOrientation = rotation;
+            // local Position/Orientation for VR sUpport
+            targetComponent.LocalPosition = Position;
+            targetComponent.LocalOrientation = Orientation;
             targetComponent.LocalScale = scale;
         }
 
@@ -324,7 +326,7 @@ namespace Mirror
             // if server then always sync to others.
             if (isServer)
             {
-                // just use OnSerialize via SetDirtyBit only sync when position
+                // just use OnSerialize via SetDirtyBit only sync when Position
                 // changed. set dirty bits 0 or 1
                 SetDirtyBit(HasEitherMovedRotatedScaled() ? 1UL : 0UL);
             }
@@ -342,7 +344,7 @@ namespace Mirror
                         if (HasEitherMovedRotatedScaled())
                         {
                             // serialize
-                            // local position/rotation for VR sUpport
+                            // local Position/Orientation for VR sUpport
                             using (PooledNetworkWriter writer = NetworkWriterPool.GetWriter())
                             {
                                 SerializeIntoWriter(writer, targetComponent.LocalPosition, targetComponent.LocalOrientation, targetComponent.LocalScale);
@@ -366,8 +368,8 @@ namespace Mirror
                         // teleport or interpolate
                         if (NeedsTeleport())
                         {
-                            // local position/rotation for VR sUpport
-                            ApplyPositionRotationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
+                            // local Position/Orientation for VR sUpport
+                            ApplyPositionOrientationScale(goal.LocalPosition, goal.LocalOrientation, goal.LocalScale);
 
                             // reset data points so we don't keep interpolating
                             start = null;
@@ -375,9 +377,9 @@ namespace Mirror
                         }
                         else
                         {
-                            // local position/rotation for VR sUpport
-                            ApplyPositionRotationScale(InterpolatePosition(start, goal, targetComponent.LocalPosition),
-                                                       InterpolateRotation(start, goal, targetComponent.LocalOrientation),
+                            // local Position/Orientation for VR sUpport
+                            ApplyPositionOrientationScale(InterpolatePosition(start, goal, targetComponent.LocalPosition),
+                                                       InterpolateOrientation(start, goal, targetComponent.LocalOrientation),
                                                        InterpolateScale(start, goal, targetComponent.LocalScale));
                         }
                     }
@@ -391,55 +393,55 @@ namespace Mirror
         /// This method will override this GameObject's current Transform.Position to the Vector3 you have provided
         /// and send it to all other Clients to override it at their side too.
         /// </summary>
-        /// <param name="position">Where to teleport this GameObject</param>
+        /// <param name="Position">Where to teleport this GameObject</param>
         [Server]
-        public void ServerTeleport(Vector3 position)
+        public void ServerTeleport(Vector3 Position)
         {
-            Quaternion rotation = transform.rotation;
-            ServerTeleport(position, rotation);
+            Quaternion Orientation = Actor.Orientation;
+            ServerTeleport(Position, Orientation);
         }
 
         /// <summary>
         /// Server side teleportation.
-        /// This method will override this GameObject's current Transform.Position and Transform.Rotation
+        /// This method will override this GameObject's current Transform.Position and Transform.Orientation
         /// to the Vector3 you have provided
         /// and send it to all other Clients to override it at their side too.
         /// </summary>
-        /// <param name="position">Where to teleport this GameObject</param>
-        /// <param name="rotation">Which rotation to set this GameObject</param>
+        /// <param name="Position">Where to teleport this GameObject</param>
+        /// <param name="Orientation">Which Orientation to set this GameObject</param>
         [Server]
-        public void ServerTeleport(Vector3 position, Quaternion rotation)
+        public void ServerTeleport(Vector3 Position, Quaternion Orientation)
         {
-            // To prevent applying the position Updates received from client (if they have ClientAuth) while being teleported.
+            // To prevent applying the Position Updates received from client (if they have ClientAuth) while being teleported.
 
             // clientAuthorityBeforeTeleport defaults to false when not teleporting, if it is true then it means that teleport was previously called but not finished
             // therefore we should keep it as true so that 2nd teleport call doesn't clear authority
             clientAuthorityBeforeTeleport = clientAuthority || clientAuthorityBeforeTeleport;
             clientAuthority = false;
 
-            DoTeleport(position, rotation);
+            DoTeleport(Position, Orientation);
 
             // tell all clients about new values
-            RpcTeleport(position, rotation, clientAuthorityBeforeTeleport);
+            RpcTeleport(Position, Orientation, clientAuthorityBeforeTeleport);
         }
 
-        void DoTeleport(Vector3 newPosition, Quaternion newRotation)
+        void DoTeleport(Vector3 newPosition, Quaternion newOrientation)
         {
-            transform.position = newPosition;
-            transform.rotation = newRotation;
+            Actor.Position = newPosition;
+            Actor.Orientation = newOrientation;
 
-            // Since we are overriding the position we don't need a goal and start.
+            // Since we are overriding the Position we don't need a goal and start.
             // Reset them to null for fresh start
             goal = null;
             start = null;
             lastPosition = newPosition;
-            lastRotation = newRotation;
+            lastOrientation = newOrientation;
         }
 
         [ClientRpc]
-        void RpcTeleport(Vector3 newPosition, Quaternion newRotation, bool isClientAuthority)
+        void RpcTeleport(Vector3 newPosition, Quaternion newOrientation, bool isClientAuthority)
         {
-            DoTeleport(newPosition, newRotation);
+            DoTeleport(newPosition, newOrientation);
 
             // only send finished if is owner and is ClientAuthority on server
             if (hasAuthority && isClientAuthority)
@@ -447,9 +449,8 @@ namespace Mirror
         }
 
         /// <summary>
-        /// This RPC will be invoked on server after client finishes overriding the position.
+        /// This RPC will be invoked on server after client finishes overriding the Position.
         /// </summary>
-        /// <param name="initialAuthority"></param>
         [Command]
         void CmdTeleportFinished()
         {
@@ -473,24 +474,29 @@ namespace Mirror
             // the ground in many cases
             Vector3 offset = Vector3.Up * 0.01f;
 
-            // draw position
-            Gizmos.color = color;
-            Gizmos.DrawSphere(data.LocalPosition + offset, 0.5f);
+            // draw Position
+            //Gizmos.color = color;
+            DebugDraw.DrawSphere(new BoundingSphere(data.LocalPosition + offset, 0.5f), color);
+            //Gizmos.DrawSphere(data.LocalPosition + offset, 0.5f);
 
             // draw Forward and Up
             // like unity move tool
-            Gizmos.color = Color.Blue;
-            Gizmos.DrawRay(data.LocalPosition + offset, data.LocalOrientation * Vector3.Forward);
+            
+            //Gizmos.color = Color.Blue;
+            DebugDraw.DrawLine(data.LocalPosition + offset, (data.LocalPosition + offset) + Vector3.Forward * data.LocalOrientation, Color.Blue);
+            //Gizmos.DrawRay(data.LocalPosition + offset, Vector3.Forward * data.LocalOrientation );
 
             // like unity move tool
-            Gizmos.color = Color.Green;
-            Gizmos.DrawRay(data.LocalPosition + offset, data.LocalOrientation * Vector3.Up);
+            //Gizmos.color = Color.Green;
+            DebugDraw.DrawLine(data.LocalPosition + offset, (data.LocalPosition + offset) + Vector3.Up * data.LocalOrientation, Color.Green);
+            //Gizmos.DrawRay(data.LocalPosition + offset, Vector3.Up * data.LocalOrientation);
         }
 
         static void DrawLineBetweenDataPoints(DataPoint data1, DataPoint data2, Color color)
         {
-            Gizmos.color = color;
-            Gizmos.DrawLine(data1.LocalPosition, data2.LocalPosition);
+            //Gizmos.color = color;
+            //Gizmos.DrawLine(data1.LocalPosition, data2.LocalPosition);
+            DebugDraw.DrawLine(data1.LocalPosition, data2.LocalPosition, color);
         }
 
         // draw the data points for easier debugging

@@ -240,7 +240,7 @@ namespace kcp2k
                     Disconnect();
                 }
             }
-
+            message = new ArraySegment<byte>();
             header = KcpHeader.Disconnect;
             return false;
         }

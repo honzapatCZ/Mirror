@@ -140,7 +140,7 @@ namespace kcp2k
             //
             //bool ispeek = len < 0;
             if (len < 0)
-                throw new NotSUpportedException("Receive ispeek for negative len is not sUpported!");
+                throw new NotSupportedException("Receive ispeek for negative len is not sUpported!");
 
             if (rcv_queue.Count == 0)
                 return -1;
@@ -694,7 +694,7 @@ namespace kcp2k
 
             acklist.Clear();
 
-            // probe window size (if remote window size equals zero)
+            // probe window size (if remote window size equals Zero)
             if (rmt_wnd == 0)
             {
                 if (probe_wait == 0)

@@ -94,10 +94,10 @@ namespace Mirror
         }
 
         #endregion
-
+        /*
         void OnValidate()
         {
-#if UNITY_EDITOR
+#if FLAX_EDITOR
             // automatically assign authenticator field if we add this to NetworkManager
             NetworkManager manager = GetComponent<NetworkManager>();
             if (manager != null && manager.authenticator == null)
@@ -106,6 +106,6 @@ namespace Mirror
                 UnityEditor.Undo.RecordObject(gameObject, "Assigned NetworkManager authenticator");
             }
 #endif
-        }
+        }*/
     }
 }

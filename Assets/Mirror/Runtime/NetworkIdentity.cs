@@ -4,14 +4,6 @@ using System.Security.Cryptography;
 using Mirror.RemoteCalls;
 using FlaxEngine;
 
-
-#if UNITY_EDITOR
-using UnityEditor;
-#if UNITY_2018_3_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
-#endif
-
 namespace Mirror
 {
     /// <summary>
@@ -64,7 +56,7 @@ namespace Mirror
     ///         The UpdateVars packet is populated by calling OnSerialize on each NetworkBehaviour on the object
     ///     </description></item>
     ///     <item><description>
-    ///         NetworkBehaviours that are NOT dirty write a zero to the packet for their dirty bits
+    ///         NetworkBehaviours that are NOT dirty write a Zero to the packet for their dirty bits
     ///     </description></item>
     ///     <item><description>
     ///         NetworkBehaviours that are dirty write their dirty mask, then the values for the SyncVars that have changed
@@ -92,10 +84,10 @@ namespace Mirror
     ///         Each NetworkBehaviour script on the object reads a dirty mask.
     ///     </description></item>
     ///     <item><description>
-    ///         If the dirty mask for a NetworkBehaviour is zero, the OnDeserialize functions returns without reading any more
+    ///         If the dirty mask for a NetworkBehaviour is Zero, the OnDeserialize functions returns without reading any more
     ///     </description></item>
     ///     <item><description>
-    ///         If the dirty mask is non-zero value, then the OnDeserialize function reads the values for the SyncVars that correspond to the dirty bits that are set
+    ///         If the dirty mask is non-Zero value, then the OnDeserialize function reads the values for the SyncVars that correspond to the dirty bits that are set
     ///     </description></item>
     ///     <item><description>
     ///         If there are SyncVar hook functions, those are invoked with the value read from the stream.
@@ -262,8 +254,6 @@ namespace Mirror
         }
 
         [Serialize, HideInEditor] string m_AssetId;
-
-
         /// <summary>
         /// Unique identifier used to find the source assets when server spawns the on clients.
         /// </summary>
@@ -292,7 +282,55 @@ namespace Mirror
         {
             get
             {
-#if UNITY_EDITOR
+
+#if FLAX_EDITOR
+                // This is important because sometimes OnValidate does not run (like when adding view to prefab with no child links)
+                if (string.IsNullOrEmpty(m_AssetId))
+                {
+                    m_AssetId = Actor.PrefabID.ToString("N");
+                }
+#endif
+                // convert string to Guid and use .Empty to avoid exception if
+                // we would use 'new Guid("")'
+                return string.IsNullOrEmpty(m_AssetId) ? Guid.Empty : new Guid(m_AssetId);
+            }
+            internal set
+            {
+                string newAssetIdString = value == Guid.Empty ? string.Empty : value.ToString("N");
+                string oldAssetIdSrting = m_AssetId;
+
+                // they are the same, do nothing
+                if (oldAssetIdSrting == newAssetIdString)
+                {
+                    return;
+                }
+
+                // new is empty
+                if (string.IsNullOrEmpty(newAssetIdString))
+                {
+                    logger.LogError($"Can not set AssetId to empty guid on NetworkIdentity '{Actor.Name}', old assetId '{oldAssetIdSrting}'");
+                    return;
+                }
+
+                // old not empty
+                if (!string.IsNullOrEmpty(oldAssetIdSrting))
+                {
+                    logger.LogError($"Can not Set AssetId on NetworkIdentity '{Actor.Name}' because it already had an assetId, current assetId '{oldAssetIdSrting}', attempted new assetId '{newAssetIdString}'");
+                    return;
+                }
+
+                // old is empty
+                m_AssetId = newAssetIdString;
+
+                if (logger.LogEnabled()) logger.Log($"Settings AssetId on NetworkIdentity '{Actor.Name}', new assetId '{newAssetIdString}'");
+            }
+        }
+        /*
+        public Guid assetId
+        {
+            get
+            {
+#if FLAX_EDITOR
                 // This is important because sometimes OnValidate does not run (like when adding view to prefab with no child links)
                 if (string.IsNullOrEmpty(m_AssetId))
                     SetUpIDs();
@@ -315,35 +353,35 @@ namespace Mirror
                 // new is empty
                 if (string.IsNullOrEmpty(newAssetIdString))
                 {
-                    logger.LogError($"Can not set AssetId to empty guid on NetworkIdentity '{name}', old assetId '{oldAssetIdSrting}'");
+                    logger.LogError($"Can not set AssetId to empty guid on NetworkIdentity '{Actor.Name}', old assetId '{oldAssetIdSrting}'");
                     return;
                 }
 
                 // old not empty
                 if (!string.IsNullOrEmpty(oldAssetIdSrting))
                 {
-                    logger.LogError($"Can not Set AssetId on NetworkIdentity '{name}' because it already had an assetId, current assetId '{oldAssetIdSrting}', attempted new assetId '{newAssetIdString}'");
+                    logger.LogError($"Can not Set AssetId on NetworkIdentity '{Actor.Name}' because it already had an assetId, current assetId '{oldAssetIdSrting}', attempted new assetId '{newAssetIdString}'");
                     return;
                 }
 
                 // old is empty
                 m_AssetId = newAssetIdString;
 
-                if (logger.LogEnabled()) logger.Log($"Settings AssetId on NetworkIdentity '{name}', new assetId '{newAssetIdString}'");
+                if (logger.LogEnabled()) logger.Log($"Settings AssetId on NetworkIdentity '{Actor.Name}', new assetId '{newAssetIdString}'");
             }
         }
-
+        */
         /// <summary>
         /// Keep track of all sceneIds to detect scene dUplicates
         /// </summary>
-        static readonly Dictionary<ulong, NetworkIdentity> sceneIds = new Dictionary<ulong, NetworkIdentity>();
+        static readonly Dictionary<Guid, NetworkIdentity> sceneIds = new Dictionary<Guid, NetworkIdentity>();
 
         /// <summary>
         /// Gets the NetworkIdentity from the sceneIds dictionary with the corresponding id
         /// </summary>
         /// <param name="id"></param>
         /// <returns>NetworkIdentity from the sceneIds dictionary</returns>
-        public static NetworkIdentity GetSceneIdentity(ulong id) => sceneIds[id];
+        public static NetworkIdentity GetSceneIdentity(Guid id) => sceneIds[id];
 
         /// <summary>
         /// used when adding players
@@ -400,34 +438,37 @@ namespace Mirror
         [Serialize, HideInEditor] bool hasSpawned;
         public bool SpawnedFromInstantiate { get; private set; }
 
-        void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             if (hasSpawned)
             {
-                logger.LogError($"{name} has already spawned. Don't call Instantiate for NetworkIdentities that were in the scene since the beginning (aka scene objects).  Otherwise the client won't know which object to use for a SpawnSceneObject message.");
+                logger.LogError($"{Actor.Name} has already spawned. Don't call Instantiate for NetworkIdentities that were in the scene since the beginning (aka scene objects).  Otherwise the client won't know which object to use for a SpawnSceneObject message.");
 
                 SpawnedFromInstantiate = true;
-                Destroy(gameObject);
+                Destroy(Actor);
             }
 
             hasSpawned = true;
         }
-
+        /*
         void OnValidate()
         {
             // OnValidate is not called when using Instantiate, so we can use
             // it to make sure that hasSpawned is false
             hasSpawned = false;
 
-#if UNITY_EDITOR
+#if FLAX_EDITOR
             SetUpIDs();
 #endif
         }
-
-#if UNITY_EDITOR
+        */
+        /*
+#if FLAX_EDITOR
         void AssignAssetID(GameObject prefab) => AssignAssetID(AssetDatabase.GetAssetPath(prefab));
         void AssignAssetID(string path) => m_AssetId = AssetDatabase.AssetPathToGUID(path);
-
+        */
+        /*
         bool ThisIsAPrefab() => PrefabUtility.IsPartOfPrefabAsset(gameObject);
 
         bool ThisIsASceneObjectWithPrefabParent(out GameObject prefab)
@@ -447,6 +488,7 @@ namespace Mirror
             }
             return true;
         }
+        
 
         static uint GetRandomUInt()
         {
@@ -458,7 +500,7 @@ namespace Mirror
                 return BitConverter.ToUInt32(bytes, 0);
             }
         }
-
+        
         // persistent sceneId assignment
         // (because scene objects have no persistent unique ID in Unity)
         //
@@ -588,7 +630,7 @@ namespace Mirror
             // log it. this is incredibly useful to debug sceneId issues.
             if (logger.LogEnabled()) logger.Log(name + " in scene=" + gameObject.scene.name + " scene index hash(" + pathHash.ToString("X") + ") copied into sceneId: " + sceneId.ToString("X"));
         }
-
+        *//*
         void SetUpIDs()
         {
             // IMPORTANT: DO NOT EVER try to change ids at runtime!
@@ -654,13 +696,14 @@ namespace Mirror
             }
         }
 #endif
-
+        */
         /// <summary>
         /// Unity will Destroy all networked objects on Scene Change, so we have to handle that here silently.
         /// That means we cannot have any warning or logging in this method.
         /// </summary>
-        void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
             // Objects spawned from Instantiate are not allowed so are destroyed right away
             // we don't want to call NetworkServer.Destroy if this is the case
             if (SpawnedFromInstantiate)
@@ -672,7 +715,7 @@ namespace Mirror
             if (isServer && !destroyCalled)
             {
                 // Do not add logging to this (see above)
-                NetworkServer.Destroy(gameObject);
+                NetworkServer.Destroy(Actor);
             }
 
             if (isLocalPlayer)
@@ -766,7 +809,7 @@ namespace Mirror
 
             isClient = true;
 
-            if (logger.LogEnabled()) logger.Log("OnStartClient " + gameObject + " netId:" + netId);
+            if (logger.LogEnabled()) logger.Log("OnStartClient " + Actor + " netId:" + netId);
             foreach (NetworkBehaviour comp in NetworkBehaviours)
             {
                 // an exception in OnStartClient should be caught, so that one
@@ -941,7 +984,7 @@ namespace Mirror
             catch (Exception e)
             {
                 // show a detailed error and let the user know what went wrong
-                logger.LogError("OnSerialize failed for: object=" + name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + "\n\n" + e);
+                logger.LogError("OnSerialize failed for: object=" + Actor.Name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + "\n\n" + e);
             }
             int endPosition = writer.Position;
 
@@ -950,7 +993,7 @@ namespace Mirror
             writer.WriteInt32(endPosition - contentPosition);
             writer.Position = endPosition;
 
-            if (logger.LogEnabled()) logger.Log("OnSerializeSafely written for object=" + comp.name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + "header@" + headerPosition + " content@" + contentPosition + " end@" + endPosition + " contentSize=" + (endPosition - contentPosition));
+            if (logger.LogEnabled()) logger.Log("OnSerializeSafely written for object=" + comp.Actor.Name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + "header@" + headerPosition + " content@" + contentPosition + " end@" + endPosition + " contentSize=" + (endPosition - contentPosition));
 
             return result;
         }
@@ -974,7 +1017,7 @@ namespace Mirror
             // that we avoid overflows
             NetworkBehaviour[] components = NetworkBehaviours;
             if (components.Length > byte.MaxValue)
-                throw new IndexOutOfRangeException($"{name} has more than {byte.MaxValue} components. This is not sUpported.");
+                throw new IndexOutOfRangeException($"{Actor.Name} has more than {byte.MaxValue} components. This is not sUpported.");
 
             // serialize all components
             for (int i = 0; i < components.Length; ++i)
@@ -985,9 +1028,9 @@ namespace Mirror
                 NetworkBehaviour comp = components[i];
                 if (initialState || comp.IsDirty())
                 {
-                    if (logger.LogEnabled()) logger.Log("OnSerializeAllSafely: " + name + " -> " + comp.GetType() + " initial=" + initialState);
+                    if (logger.LogEnabled()) logger.Log("OnSerializeAllSafely: " + Actor.Name + " -> " + comp.GetType() + " initial=" + initialState);
 
-                    // remember start position in case we need to copy it into
+                    // remember start Position in case we need to copy it into
                     // observers writer too
                     int startPosition = ownerWriter.Position;
 
@@ -1031,13 +1074,13 @@ namespace Mirror
             // way to mess Up another component's deserialization
             try
             {
-                if (logger.LogEnabled()) logger.Log("OnDeserializeSafely: " + comp.name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + " length=" + contentSize);
+                if (logger.LogEnabled()) logger.Log("OnDeserializeSafely: " + comp.Actor.Name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + " length=" + contentSize);
                 comp.OnDeserialize(reader, initialState);
             }
             catch (Exception e)
             {
                 // show a detailed error and let the user know what went wrong
-                logger.LogError($"OnDeserialize failed Exception={e.GetType()} (see below) object={name} component={comp.GetType()} sceneId={sceneId:X} length={contentSize}. Possible Reasons:\n" +
+                logger.LogError($"OnDeserialize failed Exception={e.GetType()} (see below) object={Actor.Name} component={comp.GetType()} sceneId={sceneId:X} length={contentSize}. Possible Reasons:\n" +
                     $"  * Do {comp.GetType()}'s OnSerialize and OnDeserialize calls write the same amount of data({contentSize} bytes)? \n" +
                     $"  * Was there an exception in {comp.GetType()}'s OnSerialize/OnDeserialize code?\n" +
                     $"  * Are the server and client the exact same project?\n" +
@@ -1051,9 +1094,9 @@ namespace Mirror
             {
                 // warn the user
                 int bytesRead = reader.Position - chunkStart;
-                logger.LogWarning("OnDeserialize was expected to read " + contentSize + " instead of " + bytesRead + " bytes for object:" + name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + ". Make sure that OnSerialize and OnDeserialize write/read the same amount of data in all cases.");
+                logger.LogWarning("OnDeserialize was expected to read " + contentSize + " instead of " + bytesRead + " bytes for object:" + Actor.Name + " component=" + comp.GetType() + " sceneId=" + sceneId.ToString("X") + ". Make sure that OnSerialize and OnDeserialize write/read the same amount of data in all cases.");
 
-                // fix the position, so the following components don't all fail
+                // fix the Position, so the following components don't all fail
                 reader.Position = chunkEnd;
             }
         }
@@ -1103,7 +1146,7 @@ namespace Mirror
 
             if (!RemoteCallHelper.InvokeHandlerDelegate(functionHash, invokeType, reader, invokeComponent, senderConnection))
             {
-                logger.LogError($"Found no receiver for incoming {invokeType} [{functionHash}] on {gameObject.name}, the server and client should have the same NetworkBehaviour instances [netId={netId}].");
+                logger.LogError($"Found no receiver for incoming {invokeType} [{functionHash}] on {Actor.Name}, the server and client should have the same NetworkBehaviour instances [netId={netId}].");
             }
         }
 
@@ -1154,7 +1197,7 @@ namespace Mirror
         {
             if (observers == null)
             {
-                logger.LogError("AddObserver for " + gameObject + " observer list is null");
+                logger.LogError("AddObserver for " + Actor + " observer list is null");
                 return;
             }
 
@@ -1165,7 +1208,7 @@ namespace Mirror
                 return;
             }
 
-            if (logger.LogEnabled()) logger.Log("Added observer " + conn.address + " added for " + gameObject);
+            if (logger.LogEnabled()) logger.Log("Added observer " + conn.address + " added for " + Actor);
 
             observers[conn.connectionId] = conn;
             conn.AddToVisList(this);
@@ -1266,7 +1309,7 @@ namespace Mirror
                     {
                         // new observer
                         conn.AddToVisList(this);
-                        if (logger.LogEnabled()) logger.Log("New Observer for " + gameObject + " " + conn);
+                        if (logger.LogEnabled()) logger.Log("New Observer for " + Actor + " " + conn);
                         changed = true;
                     }
                 }
@@ -1279,7 +1322,7 @@ namespace Mirror
                 {
                     // removed observer
                     conn.RemoveFromVisList(this, false);
-                    if (logger.LogEnabled()) logger.Log("Removed Observer for " + gameObject + " " + conn);
+                    if (logger.LogEnabled()) logger.Log("Removed Observer for " + Actor + " " + conn);
                     changed = true;
                 }
             }
@@ -1341,13 +1384,13 @@ namespace Mirror
 
             if (conn == null)
             {
-                logger.LogError("AssignClientAuthority for " + gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
+                logger.LogError("AssignClientAuthority for " + Actor + " owner cannot be null. Use RemoveClientAuthority() instead.");
                 return false;
             }
 
             if (connectionToClient != null && conn != connectionToClient)
             {
-                logger.LogError("AssignClientAuthority for " + gameObject + " already has an owner. Use RemoveClientAuthority() first.");
+                logger.LogError("AssignClientAuthority for " + Actor + " already has an owner. Use RemoveClientAuthority() first.");
                 return false;
             }
 

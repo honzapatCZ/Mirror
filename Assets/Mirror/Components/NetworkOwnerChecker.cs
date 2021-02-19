@@ -10,7 +10,7 @@ namespace Mirror
     /// </summary>
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkOwnerChecker")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Components/NetworkOwnerChecker.html")]
     public class NetworkOwnerChecker : NetworkVisibility
     {

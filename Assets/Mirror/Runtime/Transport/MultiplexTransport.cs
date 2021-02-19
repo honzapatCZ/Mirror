@@ -12,8 +12,9 @@ namespace Mirror
 
         Transport available;
 
-        public void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             if (transports == null || transports.Length == 0)
             {
                 Debug.LogError("Multiplex transport requires at least 1 underlying transport");

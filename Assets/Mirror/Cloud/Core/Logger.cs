@@ -1,6 +1,5 @@
 using System;
 using FlaxEngine;
-using UnityEngine.Networking;
 
 namespace Mirror.Cloud
 {
@@ -13,11 +12,11 @@ namespace Mirror.Cloud
         {
             if (hasJson)
             {
-                logger.LogFormat(LogType.Log, "Request: {0} {1} {2}", method, page, json);
+                logger.LogFormat(LogType.Info, "Request: {0} {1} {2}", method, page, json);
             }
             else
             {
-                logger.LogFormat(LogType.Log, "Request: {0} {1}", method, page);
+                logger.LogFormat(LogType.Info, "Request: {0} {1}", method, page);
             }
         }
 
@@ -25,7 +24,7 @@ namespace Mirror.Cloud
         {
             long code = statusRequest.responseCode;
             LogType logType = statusRequest.IsOk()
-                ? LogType.Log
+                ? LogType.Info
                 : LogType.Error;
 
             string format = "Response: {0} {1} {2} {3}";

@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using FlaxEngine;
 
@@ -37,8 +38,8 @@ namespace Mirror.Discovery
 
         protected UdpClient serverUdpClient;
         protected UdpClient clientUdpClient;
-
-#if UNITY_EDITOR
+        /*
+#if FLAX_EDITOR
         void OnValidate()
         {
             if (secretHandshake == 0)
@@ -48,7 +49,7 @@ namespace Mirror.Discovery
             }
         }
 #endif
-
+        */
         public static long RandomLong()
         {
             Random rand = new Random();
@@ -104,7 +105,8 @@ namespace Mirror.Discovery
                 clientUdpClient = null;
             }
 
-            CancelInvoke();
+            //CancelInvoke();
+            brDiscoverCanceller?.Cancel();
         }
 
         #region Server
@@ -220,6 +222,7 @@ namespace Mirror.Discovery
 
         #region Client
 
+        CancellationTokenSource brDiscoverCanceller;
         /// <summary>
         /// Start Active Discovery
         /// </summary>
@@ -245,7 +248,16 @@ namespace Mirror.Discovery
 
             _ = ClientListenAsync();
 
-            InvokeRepeating(nameof(BroadcastDiscoveryRequest), 0, ActiveDiscoveryInterval);
+            brDiscoverCanceller?.Cancel();
+            brDiscoverCanceller = new CancellationTokenSource();
+            Task.Run(async()=> {
+                while (true)
+                {
+                    BroadcastDiscoveryRequest();
+                    await Task.Delay(Mathf.RoundToInt(ActiveDiscoveryInterval*1000));
+                }
+            }, brDiscoverCanceller.Token);
+            //InvokeRepeating(nameof(BroadcastDiscoveryRequest), 0, ActiveDiscoveryInterval);
         }
 
         /// <summary>

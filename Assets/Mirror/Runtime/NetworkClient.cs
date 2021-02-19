@@ -246,7 +246,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// This sends a network message with a message Id to the server. This message is sent on channel zero, which by default is the reliable channel.
+        /// This sends a network message with a message Id to the server. This message is sent on channel Zero, which by default is the reliable channel.
         /// <para>The message must be an instance of a class derived from MessageBase.</para>
         /// <para>The message id passed to Send() is used to identify the handler function to invoke on the server when the message is received.</para>
         /// </summary>

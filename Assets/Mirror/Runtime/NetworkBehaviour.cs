@@ -19,7 +19,7 @@ namespace Mirror
     /// <para>Some of the built-in components of the networking system are derived from NetworkBehaviour, including NetworkTransport, NetworkAnimator and NetworkProximityChecker.</para>
     /// </remarks>
     //[AddComponentMenu("")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Guides/NetworkBehaviour.html")]
     public abstract class NetworkBehaviour : Script
     {
@@ -126,11 +126,11 @@ namespace Mirror
             {
                 if (netIdentityCache is null)
                 {
-                    netIdentityCache = GetComponent<NetworkIdentity>();
+                    netIdentityCache = Actor.GetScript<NetworkIdentity>();
                     // do this 2nd check inside first if so that we are not checking == twice on unity Object
                     if (netIdentityCache is null)
                     {
-                        logger.LogError("There is no NetworkIdentity on " + name + ". Please add one.");
+                        logger.LogError("There is no NetworkIdentity on " + Actor.Name + ". Please add one.");
                     }
                 }
                 return netIdentityCache;
@@ -222,7 +222,7 @@ namespace Mirror
             // This cannot use NetworkServer.active, as that is not specific to this object.
             if (!isServer)
             {
-                logger.LogWarning("ClientRpc " + rpcName + " called on un-spawned object: " + name);
+                logger.LogWarning("ClientRpc " + rpcName + " called on un-spawned object: " + Actor.Name);
                 return;
             }
 
@@ -253,7 +253,7 @@ namespace Mirror
 
             if (!isServer)
             {
-                logger.LogWarning($"TargetRpc {rpcName} called on {name} but that object has not been spawned or has been unspawned");
+                logger.LogWarning($"TargetRpc {rpcName} called on {Actor.Name} but that object has not been spawned or has been unspawned");
                 return;
             }
 
@@ -297,18 +297,18 @@ namespace Mirror
         // helper function for [SyncVar] GameObjects.
         // IMPORTANT: keep as 'protected', not 'internal', otherwise Weaver
         //            can't resolve it
-        protected bool SyncVarGameObjectEqual(GameObject newGameObject, uint netIdField)
+        protected bool SyncVarGameObjectEqual(Actor newGameObject, uint netIdField)
         {
             uint newNetId = 0;
             if (newGameObject != null)
             {
-                NetworkIdentity identity = newGameObject.GetComponent<NetworkIdentity>();
+                NetworkIdentity identity = newGameObject.GetScript<NetworkIdentity>();
                 if (identity != null)
                 {
                     newNetId = identity.netId;
                     if (newNetId == 0)
                     {
-                        logger.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
+                        logger.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a Zero netId. Maybe it is not spawned yet?");
                     }
                 }
             }
@@ -317,7 +317,7 @@ namespace Mirror
         }
 
         // helper function for [SyncVar] GameObjects.
-        protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, ulong dirtyBit, ref uint netIdField)
+        protected void SetSyncVarGameObject(Actor newGameObject, ref Actor gameObjectField, ulong dirtyBit, ref uint netIdField)
         {
             if (getSyncVarHookGuard(dirtyBit))
                 return;
@@ -325,13 +325,13 @@ namespace Mirror
             uint newNetId = 0;
             if (newGameObject != null)
             {
-                NetworkIdentity identity = newGameObject.GetComponent<NetworkIdentity>();
+                NetworkIdentity identity = newGameObject.GetScript<NetworkIdentity>();
                 if (identity != null)
                 {
                     newNetId = identity.netId;
                     if (newNetId == 0)
                     {
-                        logger.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
+                        logger.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a Zero netId. Maybe it is not spawned yet?");
                     }
                 }
             }
@@ -345,7 +345,7 @@ namespace Mirror
 
         // helper function for [SyncVar] GameObjects.
         // -> ref GameObject as second argument makes OnDeserialize processing easier
-        protected GameObject GetSyncVarGameObject(uint netId, ref GameObject gameObjectField)
+        protected Actor GetSyncVarGameObject(uint netId, ref Actor gameObjectField)
         {
             // server always uses the field
             if (isServer)
@@ -356,7 +356,7 @@ namespace Mirror
             // client always looks Up based on netId because objects might get in and out of range
             // over and over again, which shouldn't null them forever
             if (NetworkIdentity.spawned.TryGetValue(netId, out NetworkIdentity identity) && identity != null)
-                return gameObjectField = identity.gameObject;
+                return gameObjectField = identity.Actor;
             return null;
         }
 
@@ -371,7 +371,7 @@ namespace Mirror
                 newNetId = newIdentity.netId;
                 if (newNetId == 0)
                 {
-                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newIdentity + " has a zero netId. Maybe it is not spawned yet?");
+                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newIdentity + " has a Zero netId. Maybe it is not spawned yet?");
                 }
             }
 
@@ -391,7 +391,7 @@ namespace Mirror
                 newNetId = newIdentity.netId;
                 if (newNetId == 0)
                 {
-                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newIdentity + " has a zero netId. Maybe it is not spawned yet?");
+                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newIdentity + " has a Zero netId. Maybe it is not spawned yet?");
                 }
             }
 
@@ -428,7 +428,7 @@ namespace Mirror
                 newComponentIndex = newBehaviour.ComponentIndex;
                 if (newNetId == 0)
                 {
-                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newBehaviour + " has a zero netId. Maybe it is not spawned yet?");
+                    logger.LogWarning("SetSyncVarNetworkIdentity NetworkIdentity " + newBehaviour + " has a Zero netId. Maybe it is not spawned yet?");
                 }
             }
 
@@ -450,7 +450,7 @@ namespace Mirror
                 componentIndex = newBehaviour.ComponentIndex;
                 if (newNetId == 0)
                 {
-                    logger.LogWarning($"{nameof(SetSyncVarNetworkBehaviour)} NetworkIdentity " + newBehaviour + " has a zero netId. Maybe it is not spawned yet?");
+                    logger.LogWarning($"{nameof(SetSyncVarNetworkBehaviour)} NetworkIdentity " + newBehaviour + " has a Zero netId. Maybe it is not spawned yet?");
                 }
             }
 
@@ -592,7 +592,7 @@ namespace Mirror
         /// <remarks>
         /// <para>The initialState flag is useful to differentiate between the first time an object is serialized and when incremental Updates can be sent. The first time an object is sent to a client, it must include a full state snapshot, but subsequent Updates can save on bandwidth by including only incremental changes. Note that SyncVar hook functions are not called when initialState is true, only for incremental Updates.</para>
         /// <para>If a class has SyncVars, then an implementation of this function and OnDeserialize() are added automatically to the class. So a class that has SyncVars cannot also have custom serialization functions.</para>
-        /// <para>The OnSerialize function should return true to indicate that an Update should be sent. If it returns true, then the dirty bits for that script are set to zero, if it returns false then the dirty bits are not changed. This allows multiple changes to a script to be accumulated over time and sent when the system is ready, instead of every frame.</para>
+        /// <para>The OnSerialize function should return true to indicate that an Update should be sent. If it returns true, then the dirty bits for that script are set to Zero, if it returns false then the dirty bits are not changed. This allows multiple changes to a script to be accumulated over time and sent when the system is ready, instead of every frame.</para>
         /// </remarks>
         /// <param name="writer">Writer to use to write to the stream.</param>
         /// <param name="initialState">If this is being called to send initial state.</param>

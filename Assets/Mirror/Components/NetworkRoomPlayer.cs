@@ -51,7 +51,12 @@ namespace Mirror
                 // in server and all clients, otherwise it will be respawned in the game scene which would
                 // have undesirable effects.
                 if (room.dontDestroyOnLoad)
-                    DontDestroyOnLoad(gameObject);
+                {
+                    //DontDestroyOnLoad(Actor);
+                    Debug.LogWarning("Making dontdestroyonload by using parent = null, which in turn completely removes it from any levels");
+                    Actor.SetParent(null, false);
+                }
+                    
 
                 room.roomSlots.Add(this);
 
@@ -65,8 +70,9 @@ namespace Mirror
                 logger.LogError("RoomPlayer could not find a NetworkRoomManager. The RoomPlayer requires a NetworkRoomManager object to function. Make sure that there is one in the scene.");
         }
 
-        public virtual void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             if (NetworkClient.active && NetworkManager.singleton is NetworkRoomManager room)
             {
                 // only need to call this on client as server removes it before object is destroyed
@@ -106,6 +112,7 @@ namespace Mirror
         /// This is a hook that is invoked on clients when a RoomPlayer switches between ready or not ready.
         /// <para>This function is called when the a client player calls CmdChangeReadyState.</para>
         /// </summary>
+        /// <param name="oldReadyState"></param>
         /// <param name="newReadyState">New Ready State</param>
         public virtual void ReadyStateChanged(bool oldReadyState, bool newReadyState) { }
 
@@ -126,6 +133,7 @@ namespace Mirror
 
         #endregion
 
+        /*
         #region Optional UI
 
         /// <summary>
@@ -152,7 +160,7 @@ namespace Mirror
 
         void DrawPlayerReadyState()
         {
-            GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
+            GUILayout.BeginArea(new Rectangle(20f + (index * 100), 200f, 90f, 130f));
 
             GUILayout.Label($"Player [{index + 1}]");
 
@@ -166,7 +174,7 @@ namespace Mirror
                 // This button only shows on the Host for all players other than the Host
                 // Host and Players can't remove themselves (stop the client instead)
                 // Host can kick a Player this way.
-                GetComponent<NetworkIdentity>().connectionToClient.Disconnect();
+                Actor.GetScript<NetworkIdentity>().connectionToClient.Disconnect();
             }
 
             GUILayout.EndArea();
@@ -176,7 +184,7 @@ namespace Mirror
         {
             if (NetworkClient.active && isLocalPlayer)
             {
-                GUILayout.BeginArea(new Rect(20f, 300f, 120f, 20f));
+                GUILayout.BeginArea(new Rectangle(20f, 300f, 120f, 20f));
 
                 if (readyToBegin)
                 {
@@ -192,7 +200,7 @@ namespace Mirror
                 GUILayout.EndArea();
             }
         }
-
-        #endregion
+#endregion
+        */
     }
 }

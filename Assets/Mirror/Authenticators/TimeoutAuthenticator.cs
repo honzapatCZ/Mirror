@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using FlaxEngine;
 
 namespace Mirror.Authenticators
@@ -17,10 +18,11 @@ namespace Mirror.Authenticators
         [Range(0, 600), Tooltip("Timeout to auto-disconnect in seconds. Set to 0 for no timeout.")]
         public float timeout = 60;
 
-        public void Awake()
+        public override void OnAwake()
         {
-            authenticator.OnServerAuthenticated.AddListener(connection => OnServerAuthenticated.Invoke(connection));
-            authenticator.OnClientAuthenticated.AddListener(connection => OnClientAuthenticated.Invoke(connection));
+            base.OnAwake();
+            authenticator.OnServerAuthenticated += (connection => OnServerAuthenticated.Invoke(connection));
+            authenticator.OnClientAuthenticated += (connection => OnClientAuthenticated.Invoke(connection));
         }
 
         public override void OnStartServer()
@@ -47,21 +49,22 @@ namespace Mirror.Authenticators
         {
             authenticator.OnServerAuthenticate(conn);
             if (timeout > 0)
-                StartCoroutine(BeginAuthentication(conn));
+                Task.Run(() => BeginAuthentication(conn));
         }
 
         public override void OnClientAuthenticate(NetworkConnection conn)
         {
             authenticator.OnClientAuthenticate(conn);
             if (timeout > 0)
-                StartCoroutine(BeginAuthentication(conn));
+                Task.Run(() => BeginAuthentication(conn));
         }
 
-        IEnumerator BeginAuthentication(NetworkConnection conn)
+        async Task BeginAuthentication(NetworkConnection conn)
         {
             if (logger.LogEnabled()) logger.Log($"Authentication countdown started {conn} {timeout}");
 
-            yield return new WaitForSecondsRealtime(timeout);
+            await Task.Delay(Mathf.RoundToInt(timeout * 1000));
+            //yield return new WaitForSecondsRealtime(timeout);
 
             if (!conn.isAuthenticated)
             {

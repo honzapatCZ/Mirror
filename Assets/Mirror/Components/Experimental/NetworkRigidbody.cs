@@ -9,7 +9,7 @@ namespace Mirror.Experimental
         static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkRigidbody));
 
         [Header("Settings")]
-        [Serialize] internal Rigidbody target = null;
+        [Serialize] internal RigidBody target = null;
 
         [Tooltip("Set to true if moves come from owner client, set to false if moves always come from server")]
         [Serialize] bool clientAuthority = false;
@@ -31,11 +31,11 @@ namespace Mirror.Experimental
         [Tooltip("Syncs AngularVelocity every SyncInterval")]
         [Serialize] bool syncAngularVelocity = true;
 
-        [Tooltip("Set angularVelocity to 0 each frame (only works if syncAngularVelocity is false")]
+        [Tooltip("Set AngularVelocity to 0 each frame (only works if syncAngularVelocity is false")]
         [Serialize] bool clearAngularVelocity = false;
 
         [Tooltip("Only Syncs Value if distance between previous and current is great than sensitivity")]
-        [Serialize] float angularVelocitySensitivity = 0.1f;
+        [Serialize] float AngularVelocitySensitivity = 0.1f;
 
         /// <summary>
         /// Values sent on client with authority after they are sent to the server
@@ -46,23 +46,23 @@ namespace Mirror.Experimental
         {
             if (target == null)
             {
-                target = GetComponent<Rigidbody>();
+                target = Actor as RigidBody;
             }
         }
 
 
         #region Sync vars
         [SyncVar(hook = nameof(OnVelocityChanged))]
-        Vector3 velocity;
+        Vector3 LinearVelocity;
 
         [SyncVar(hook = nameof(OnAngularVelocityChanged))]
-        Vector3 angularVelocity;
+        Vector3 AngularVelocity;
 
         [SyncVar(hook = nameof(OnIsKinematicChanged))]
-        bool isKinematic;
+        bool IsKinematic;
 
         [SyncVar(hook = nameof(OnUseGravityChanged))]
-        bool useGravity;
+        bool EnableGravity;
 
         [SyncVar(hook = nameof(OnuDragChanged))]
         float drag;
@@ -83,7 +83,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.velocity = newValue;
+            target.LinearVelocity = newValue;
         }
 
 
@@ -92,7 +92,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.angularVelocity = newValue;
+            target.AngularVelocity = newValue;
         }
 
         void OnIsKinematicChanged(bool _, bool newValue)
@@ -100,7 +100,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.isKinematic = newValue;
+            target.IsKinematic = newValue;
         }
 
         void OnUseGravityChanged(bool _, bool newValue)
@@ -108,7 +108,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.useGravity = newValue;
+            target.EnableGravity = newValue;
         }
 
         void OnuDragChanged(float _, float newValue)
@@ -116,7 +116,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.drag = newValue;
+            target.LinearDamping = newValue;
         }
 
         void OnAngularDragChanged(float _, float newValue)
@@ -124,7 +124,7 @@ namespace Mirror.Experimental
             if (IgnoreSync)
                 return;
 
-            target.angularDrag = newValue;
+            target.AngularDamping = newValue;
         }
         #endregion
 
@@ -145,12 +145,12 @@ namespace Mirror.Experimental
         {
             if (clearAngularVelocity && !syncAngularVelocity)
             {
-                target.angularVelocity = Vector3.zero;
+                target.AngularVelocity = Vector3.Zero;
             }
 
             if (clearVelocity && !syncVelocity)
             {
-                target.velocity = Vector3.zero;
+                target.LinearVelocity = Vector3.Zero;
             }
         }
 
@@ -162,29 +162,29 @@ namespace Mirror.Experimental
         {
             // only Update if they have changed more than Sensitivity
 
-            Vector3 currentVelocity = syncVelocity ? target.velocity : default;
-            Vector3 currentAngularVelocity = syncAngularVelocity ? target.angularVelocity : default;
+            Vector3 currentVelocity = syncVelocity ? target.LinearVelocity : default;
+            Vector3 currentAngularVelocity = syncAngularVelocity ? target.AngularVelocity : default;
 
-            bool velocityChanged = syncVelocity && ((previousValue.velocity - currentVelocity).sqrMagnitude > velocitySensitivity * velocitySensitivity);
-            bool angularVelocityChanged = syncAngularVelocity && ((previousValue.angularVelocity - currentAngularVelocity).sqrMagnitude > angularVelocitySensitivity * angularVelocitySensitivity);
+            bool velocityChanged = syncVelocity && ((previousValue.LinearVelocity - currentVelocity).LengthSquared > velocitySensitivity * velocitySensitivity);
+            bool AngularVelocityChanged = syncAngularVelocity && ((previousValue.AngularVelocity - currentAngularVelocity).LengthSquared > AngularVelocitySensitivity * AngularVelocitySensitivity);
 
             if (velocityChanged)
             {
-                velocity = currentVelocity;
-                previousValue.velocity = currentVelocity;
+                LinearVelocity = currentVelocity;
+                previousValue.LinearVelocity = currentVelocity;
             }
 
-            if (angularVelocityChanged)
+            if (AngularVelocityChanged)
             {
-                angularVelocity = currentAngularVelocity;
-                previousValue.angularVelocity = currentAngularVelocity;
+                AngularVelocity = currentAngularVelocity;
+                previousValue.AngularVelocity = currentAngularVelocity;
             }
 
             // other rigidbody settings
-            isKinematic = target.isKinematic;
-            useGravity = target.useGravity;
-            drag = target.drag;
-            angularDrag = target.angularDrag;
+            IsKinematic = target.IsKinematic;
+            EnableGravity = target.EnableGravity;
+            drag = target.LinearDamping;
+            angularDrag = target.AngularDamping;
         }
 
         /// <summary>
@@ -210,29 +210,29 @@ namespace Mirror.Experimental
             if (now < previousValue.nextSyncTime)
                 return;
 
-            Vector3 currentVelocity = syncVelocity ? target.velocity : default;
-            Vector3 currentAngularVelocity = syncAngularVelocity ? target.angularVelocity : default;
+            Vector3 currentVelocity = syncVelocity ? target.LinearVelocity : default;
+            Vector3 currentAngularVelocity = syncAngularVelocity ? target.AngularVelocity : default;
 
-            bool velocityChanged = syncVelocity && ((previousValue.velocity - currentVelocity).sqrMagnitude > velocitySensitivity * velocitySensitivity);
-            bool angularVelocityChanged = syncAngularVelocity && ((previousValue.angularVelocity - currentAngularVelocity).sqrMagnitude > angularVelocitySensitivity * angularVelocitySensitivity);
+            bool velocityChanged = syncVelocity && ((previousValue.LinearVelocity - currentVelocity).LengthSquared > velocitySensitivity * velocitySensitivity);
+            bool AngularVelocityChanged = syncAngularVelocity && ((previousValue.AngularVelocity - currentAngularVelocity).LengthSquared > AngularVelocitySensitivity * AngularVelocitySensitivity);
 
-            // if angularVelocity has changed it is likely that velocity has also changed so just sync both values
+            // if AngularVelocity has changed it is likely that velocity has also changed so just sync both values
             // however if only velocity has changed just send velocity
-            if (angularVelocityChanged)
+            if (AngularVelocityChanged)
             {
                 CmdSendVelocityAndAngular(currentVelocity, currentAngularVelocity);
-                previousValue.velocity = currentVelocity;
-                previousValue.angularVelocity = currentAngularVelocity;
+                previousValue.LinearVelocity = currentVelocity;
+                previousValue.AngularVelocity = currentAngularVelocity;
             }
             else if (velocityChanged)
             {
                 CmdSendVelocity(currentVelocity);
-                previousValue.velocity = currentVelocity;
+                previousValue.LinearVelocity = currentVelocity;
             }
 
 
             // only Update syncTime if either has changed
-            if (angularVelocityChanged || velocityChanged)
+            if (AngularVelocityChanged || velocityChanged)
             {
                 previousValue.nextSyncTime = now + syncInterval;
             }
@@ -242,25 +242,25 @@ namespace Mirror.Experimental
         void SendRigidBodySettings()
         {
             // These shouldn't change often so it is ok to send in their own Command
-            if (previousValue.isKinematic != target.isKinematic)
+            if (previousValue.IsKinematic != target.IsKinematic)
             {
-                CmdSendIsKinematic(target.isKinematic);
-                previousValue.isKinematic = target.isKinematic;
+                CmdSendIsKinematic(target.IsKinematic);
+                previousValue.IsKinematic = target.IsKinematic;
             }
-            if (previousValue.useGravity != target.useGravity)
+            if (previousValue.EnableGravity != target.EnableGravity)
             {
-                CmdSendUseGravity(target.useGravity);
-                previousValue.useGravity = target.useGravity;
+                CmdSendUseGravity(target.EnableGravity);
+                previousValue.EnableGravity = target.EnableGravity;
             }
-            if (previousValue.drag != target.drag)
+            if (previousValue.drag != target.LinearDamping)
             {
-                CmdSendDrag(target.drag);
-                previousValue.drag = target.drag;
+                CmdSendDrag(target.LinearDamping);
+                previousValue.drag = target.LinearDamping;
             }
-            if (previousValue.angularDrag != target.angularDrag)
+            if (previousValue.angularDrag != target.AngularDamping)
             {
-                CmdSendAngularDrag(target.angularDrag);
-                previousValue.angularDrag = target.angularDrag;
+                CmdSendAngularDrag(target.AngularDamping);
+                previousValue.angularDrag = target.AngularDamping;
             }
         }
 
@@ -274,15 +274,15 @@ namespace Mirror.Experimental
             if (!clientAuthority)
                 return;
 
-            this.velocity = velocity;
-            target.velocity = velocity;
+            this.LinearVelocity = velocity;
+            target.LinearVelocity = velocity;
         }
 
         /// <summary>
-        /// Called when angularVelocity has changed on the client
+        /// Called when AngularVelocity has changed on the client
         /// </summary>
         [Command]
-        void CmdSendVelocityAndAngular(Vector3 velocity, Vector3 angularVelocity)
+        void CmdSendVelocityAndAngular(Vector3 velocity, Vector3 AngularVelocity)
         {
             // Ignore messages from client if not in client authority mode
             if (!clientAuthority)
@@ -290,35 +290,35 @@ namespace Mirror.Experimental
 
             if (syncVelocity)
             {
-                this.velocity = velocity;
+                this.LinearVelocity = velocity;
 
-                target.velocity = velocity;
+                target.LinearVelocity = velocity;
 
             }
-            this.angularVelocity = angularVelocity;
-            target.angularVelocity = angularVelocity;
+            this.AngularVelocity = AngularVelocity;
+            target.AngularVelocity = AngularVelocity;
         }
 
         [Command]
-        void CmdSendIsKinematic(bool isKinematic)
+        void CmdSendIsKinematic(bool IsKinematic)
         {
             // Ignore messages from client if not in client authority mode
             if (!clientAuthority)
                 return;
 
-            this.isKinematic = isKinematic;
-            target.isKinematic = isKinematic;
+            this.IsKinematic = IsKinematic;
+            target.IsKinematic = IsKinematic;
         }
 
         [Command]
-        void CmdSendUseGravity(bool useGravity)
+        void CmdSendUseGravity(bool EnableGravity)
         {
             // Ignore messages from client if not in client authority mode
             if (!clientAuthority)
                 return;
 
-            this.useGravity = useGravity;
-            target.useGravity = useGravity;
+            this.EnableGravity = EnableGravity;
+            target.EnableGravity = EnableGravity;
         }
 
         [Command]
@@ -329,7 +329,7 @@ namespace Mirror.Experimental
                 return;
 
             this.drag = drag;
-            target.drag = drag;
+            target.LinearDamping = drag;
         }
 
         [Command]
@@ -340,7 +340,7 @@ namespace Mirror.Experimental
                 return;
 
             this.angularDrag = angularDrag;
-            target.angularDrag = angularDrag;
+            target.AngularDamping = angularDrag;
         }
 
         /// <summary>
@@ -352,10 +352,10 @@ namespace Mirror.Experimental
             /// Next sync time that velocity will be synced, based on syncInterval.
             /// </summary>
             public float nextSyncTime;
-            public Vector3 velocity;
-            public Vector3 angularVelocity;
-            public bool isKinematic;
-            public bool useGravity;
+            public Vector3 LinearVelocity;
+            public Vector3 AngularVelocity;
+            public bool IsKinematic;
+            public bool EnableGravity;
             public float drag;
             public float angularDrag;
         }

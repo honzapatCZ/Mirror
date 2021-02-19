@@ -21,7 +21,7 @@ namespace Mirror
     {
         // reuse Pool<T>
         // we still wrap it in NetworkWriterPool.Get/Recycle so we can reset the
-        // position before reusing.
+        // Position before reusing.
         // this is also more consistent with NetworkReaderPool where we need to
         // assign the internal buffer before reusing.
         static readonly Pool<PooledNetworkWriter> pool = new Pool<PooledNetworkWriter>(
@@ -34,7 +34,7 @@ namespace Mirror
         /// </summary>
         public static PooledNetworkWriter GetWriter()
         {
-            // grab from pool & reset position
+            // grab from pool & reset Position
             PooledNetworkWriter writer = pool.Take();
             writer.Reset();
             return writer;

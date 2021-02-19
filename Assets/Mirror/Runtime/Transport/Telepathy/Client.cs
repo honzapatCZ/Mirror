@@ -60,9 +60,9 @@ namespace Telepathy
             // that we can call Connect() again immediately after Disconnect
             // -> calling .Join would sometimes wait forever, e.g. when
             //    calling Disconnect while trying to connect to a dead end
-            receiveThread?.InterrUpt();
+            receiveThread?.Interrupt();
 
-            // we interrUpted the receive Thread, so we can't guarantee that
+            // we Interrupted the receive Thread, so we can't guarantee that
             // connecting was reset. let's do it manually.
             Connecting = false;
 
@@ -159,7 +159,7 @@ namespace Telepathy
                 // knows that the Connect failed. otherwise they will never know
                 state.receivePipe.Enqueue(0, EventType.Disconnected, default);
             }
-            catch (ThreadInterrUptedException)
+            catch (ThreadInterruptedException)
             {
                 // expected if Disconnect() aborts it
             }
@@ -184,7 +184,7 @@ namespace Telepathy
             // otherwise the send thread would only end if it's
             // actually sending data while the connection is
             // closed.
-            sendThread?.InterrUpt();
+            sendThread?.Interrupt();
 
             // Connect might have failed. thread might have been closed.
             // let's reset connecting state no matter what.
@@ -273,7 +273,7 @@ namespace Telepathy
                         // calling Send here would be blocking (sometimes for long
                         // times if other side lags or wire was disconnected)
                         state.sendPipe.Enqueue(message);
-                        state.sendPending.Set(); // interrUpt SendThread WaitOne()
+                        state.sendPending.Set(); // Interrupt SendThread WaitOne()
                         return true;
                     }
                     // disconnect if send queue gets too big.

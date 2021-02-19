@@ -11,7 +11,7 @@ namespace Mirror
     /// </summary>
     //[DisallowMultipleComponent]
     //[AddComponentMenu("Network/NetworkMatchChecker")]
-    [RequireComponent(typeof(NetworkIdentity))]
+    //[RequireComponent(typeof(NetworkIdentity))]
     //[HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkMatchChecker.html")]
     public class NetworkMatchChecker : NetworkVisibility
     {
@@ -112,7 +112,7 @@ namespace Mirror
             if (matchId == Guid.Empty)
                 return false;
 
-            NetworkMatchChecker networkMatchChecker = conn.identity.GetComponent<NetworkMatchChecker>();
+            NetworkMatchChecker networkMatchChecker = conn.identity.Actor.GetScript<NetworkMatchChecker>();
 
             if (networkMatchChecker == null)
                 return false;

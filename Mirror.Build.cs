@@ -31,7 +31,9 @@ public class Mirror : GameModule
         options.SourceFiles = options.SourceFiles.Except(except2).ToList();
         List<string> except3 = Directory.GetFiles(Path.Combine(FolderPath, "Assets", "Mirror", "Unused"), "*.*", SearchOption.AllDirectories).ToList();
         options.SourceFiles = options.SourceFiles.Except(except3).ToList();
-
+        List<string> except4 = Directory.GetFiles(Path.Combine(FolderPath, "Assets", "Mirror", "Cloud"), "*.*", SearchOption.AllDirectories).ToList();
+        options.SourceFiles = options.SourceFiles.Except(except4).ToList();
+        
         string output = "";
         foreach(string name in options.SourceFiles)
         {

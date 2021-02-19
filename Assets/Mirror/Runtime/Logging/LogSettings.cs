@@ -26,16 +26,21 @@ namespace Mirror.Logging
                 return;
             }
 
-            settings.loglevels.Clear();
-
-            foreach (KeyValuePair<string, ILogger> kvp in dictionary)
-            {
-                settings.loglevels.Add(new LogSettings.LoggerSettings { name = kvp.Key, logLevel = kvp.Value.FilterLogType });
-            }
-
-#if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(settings);
+#if FLAX_EDITOR
+            using (new FlaxEditor.UndoBlock(FlaxEditor.Editor.Instance.Undo, settings, "Change Log Settings"))
 #endif
+            {
+                settings.loglevels.Clear();
+
+                foreach (KeyValuePair<string, ILogger> kvp in dictionary)
+                {
+                    settings.loglevels.Add(new LogSettings.LoggerSettings { name = kvp.Key, logLevel = kvp.Value.FilterLogType });
+                }
+#if FLAX_EDITOR
+            }
+            //UnityEditor.EditorUtility.SetDirty(settings);
+#endif
+
         }
 
         public static void LoadIntoDictionary(this LogSettings settings, SortedDictionary<string, ILogger> dictionary)

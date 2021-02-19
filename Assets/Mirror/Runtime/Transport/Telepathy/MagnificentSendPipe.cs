@@ -126,19 +126,19 @@ namespace Telepathy
                     payload = new byte[packetSize];
 
                 // dequeue all byte[] messages and serialize into the packet
-                int position = 0;
+                int Position = 0;
                 while (queue.Count > 0)
                 {
                     // dequeue
                     ArraySegment<byte> message = queue.Dequeue();
 
-                    // write header (size) into buffer at position
-                    Utils.IntToBytesBigEndianNonAlloc(message.Count, payload, position);
-                    position += 4;
+                    // write header (size) into buffer at Position
+                    Utils.IntToBytesBigEndianNonAlloc(message.Count, payload, Position);
+                    Position += 4;
 
-                    // copy message into payload at position
-                    Buffer.BlockCopy(message.Array, message.Offset, payload, position, message.Count);
-                    position += message.Count;
+                    // copy message into payload at Position
+                    Buffer.BlockCopy(message.Array, message.Offset, payload, Position, message.Count);
+                    Position += message.Count;
 
                     // return to pool so it can be reused (avoids allocations!)
                     pool.Return(message.Array);

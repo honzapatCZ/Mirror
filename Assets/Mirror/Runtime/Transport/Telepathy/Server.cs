@@ -161,7 +161,7 @@ namespace Telepathy
                             // otherwise the send thread would only end if it's
                             // actually sending data while the connection is
                             // closed.
-                            sendThread.InterrUpt();
+                            sendThread.Interrupt();
                         }
                         catch (Exception exception)
                         {
@@ -180,8 +180,8 @@ namespace Telepathy
             }
             catch (SocketException exception)
             {
-                // calling StopServer will interrUpt this thread with a
-                // 'SocketException: interrUpted'. that's okay.
+                // calling StopServer will Interrupt this thread with a
+                // 'SocketException: Interrupted'. that's okay.
                 Log.Info("Server Thread stopped. That's okay. " + exception);
             }
             catch (Exception exception)
@@ -226,13 +226,13 @@ namespace Telepathy
             // stop listening to connections so that no one can connect while we
             // close the client connections
             // (might be null if we call Stop so quickly after Start that the
-            //  thread was interrUpted before even creating the listener)
+            //  thread was Interrupted before even creating the listener)
             listener?.Stop();
 
             // kill listener thread at all costs. only way to guarantee that
             // .Active is immediately false after Stop.
             // -> calling .Join would sometimes wait forever
-            listenerThread?.InterrUpt();
+            listenerThread?.Interrupt();
             listenerThread = null;
 
             // close all client connections
@@ -271,7 +271,7 @@ namespace Telepathy
                         // calling Send here would be blocking (sometimes for long
                         // times if other side lags or wire was disconnected)
                         connection.sendPipe.Enqueue(message);
-                        connection.sendPending.Set(); // interrUpt SendThread WaitOne()
+                        connection.sendPending.Set(); // Interrupt SendThread WaitOne()
                         return true;
                     }
                     // disconnect if send queue gets too big.

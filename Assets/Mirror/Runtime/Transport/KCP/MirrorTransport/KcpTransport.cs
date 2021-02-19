@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using FlaxEngine;
 using Mirror;
 
@@ -42,8 +43,9 @@ namespace kcp2k
         // log statistics for headless servers that can't show them in GUI
         public bool statisticsLog;
 
-        void Awake()
+        public override void OnAwake()
         {
+            base.OnAwake();
             // logging
             //   Log.Info should use Debug.Log if enabled, or nothing otherwise
             //   (don't want to spam the console on headless servers)
@@ -75,7 +77,15 @@ namespace kcp2k
             );
 
             if (statisticsLog)
-                InvokeRepeating(nameof(OnLogStatistics), 1, 1);
+            {
+                Task.Run(async()=> {
+                    await Task.Delay(100);
+                    OnLogStatistics();
+                    await Task.Delay(100);
+                });
+                //InvokeRepeating(nameof(OnLogStatistics), 1, 1);
+            }
+
 
             Debug.Log("KcpTransport initialized!");
         }
@@ -106,8 +116,8 @@ namespace kcp2k
         // IMPORTANT: set script execution order to >1000 to call Transport's
         //            LateUpdate after all others. Fixes race condition where
         //            e.g. in uSurvival Transport would apply Cmds before
-        //            ShoulderRotation.LateUpdate, resulting in projectile
-        //            spawns at the point before shoulder rotation.
+        //            ShoulderOrientation.LateUpdate, resulting in projectile
+        //            spawns at the point before shoulder Orientation.
         public void LateUpdate()
         {
             // scene change messages disable transports to stop them from
@@ -127,15 +137,17 @@ namespace kcp2k
         // stopped immediately after scene change (= after disabled)
         // => kcp has tests to guaranteed that calling .Pause() during the
         //    receive loop stops the receive loop immediately, not after.
-        void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
             // unpause when enabled again
             client?.Unpause();
             server?.Unpause();
         }
 
-        void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             // pause immediately when not enabled anymore
             client?.Pause();
             server?.Pause();
@@ -245,7 +257,7 @@ namespace kcp2k
             // gigabytes
             return $"{(bytes / (1024f * 1024f * 1024f)):F2} GB";
         }
-
+        /*
         void OnGUI()
         {
             if (!statisticsGUI) return;
@@ -281,12 +293,12 @@ namespace kcp2k
 
             GUILayout.EndArea();
         }
-
+        */
         void OnLogStatistics()
         {
             if (ServerActive())
             {
-                string log = "kcp SERVER @ time: " + NetworkTime.GameTime + "\n";
+                string log = "kcp SERVER @ time: " + NetworkTime.time + "\n";
                 log += $"  connections: {server.connections.Count}\n";
                 log += $"  MaxSendRate (avg): {PrettyBytes(GetAverageMaxSendRate())}/s\n";
                 log += $"  MaxRecvRate (avg): {PrettyBytes(GetAverageMaxReceiveRate())}/s\n";
@@ -299,7 +311,7 @@ namespace kcp2k
 
             if (ClientConnected())
             {
-                string log = "kcp CLIENT @ time: " + NetworkTime.GameTime + "\n";
+                string log = "kcp CLIENT @ time: " + NetworkTime.time + "\n";
                 log += $"  MaxSendRate: {PrettyBytes(client.connection.MaxSendRate)}/s\n";
                 log += $"  MaxRecvRate: {PrettyBytes(client.connection.MaxReceiveRate)}/s\n";
                 log += $"  SendQueue: {client.connection.SendQueueCount}\n";

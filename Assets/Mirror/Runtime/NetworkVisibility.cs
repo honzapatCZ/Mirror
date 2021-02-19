@@ -12,6 +12,7 @@ namespace Mirror
     //[DisallowMultipleComponent]
     public abstract class NetworkVisibility : NetworkBehaviour
     {
+        
         /// <summary>
         /// Callback used by the visibility system to determine if an observer (player) can see this object.
         /// <para>If this function returns true, the network connection will be added as an observer.</para>
@@ -35,8 +36,8 @@ namespace Mirror
         /// <param name="visible">New visibility state.</param>
         public virtual void OnSetHostVisibility(bool visible)
         {
-            foreach (Renderer rend in GetComponentsInChildren<Renderer>())
-                rend.enabled = visible;
+            foreach (ModelInstanceActor rend in Actor.GetChildren<ModelInstanceActor>())
+                rend.IsActive = visible;
         }
     }
 }
