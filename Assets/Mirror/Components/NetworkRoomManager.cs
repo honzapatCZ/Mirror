@@ -44,13 +44,11 @@ namespace Mirror
         /// <summary>
         /// The scene to use for the room. This is similar to the offlineScene of the NetworkManager.
         /// </summary>
-        [Scene]
         public SceneReference RoomScene;
 
         /// <summary>
         /// The scene to use for the playing the game from the room. This is similar to the onlineScene of the NetworkManager.
         /// </summary>
-        [Scene]
         public SceneReference GameplayScene;
 
         /// <summary>
@@ -123,7 +121,11 @@ namespace Mirror
 
             base.OnValidate();
         }
-
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            OnValidate();
+        }
         public void ReadyStatusChanged()
         {
             int CurrentPlayers = 0;

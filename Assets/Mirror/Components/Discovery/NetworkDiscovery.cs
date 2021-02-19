@@ -19,7 +19,7 @@ namespace Mirror.Discovery
         [Tooltip("Invoked when a server is found")]
         public Action<ServerResponse> OnServerFound;
 
-        public override void Start()
+        public override void OnStart()
         {
             ServerId = RandomLong();
 
@@ -29,7 +29,7 @@ namespace Mirror.Discovery
             if (transport == null)
                 transport = Transport.activeTransport;
 
-            base.Start();
+            base.OnStart();
         }
 
         /// <summary>

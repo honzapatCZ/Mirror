@@ -118,8 +118,9 @@ namespace kcp2k
         //            e.g. in uSurvival Transport would apply Cmds before
         //            ShoulderOrientation.LateUpdate, resulting in projectile
         //            spawns at the point before shoulder Orientation.
-        public void LateUpdate()
+        public override void OnLateUpdate()
         {
+            base.OnLateUpdate();
             // scene change messages disable transports to stop them from
             // processing while changing the scene.
             // -> we need to check enabled here

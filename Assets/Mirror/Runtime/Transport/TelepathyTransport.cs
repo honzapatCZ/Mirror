@@ -134,8 +134,9 @@ namespace Mirror
         //            e.g. in uSurvival Transport would apply Cmds before
         //            ShoulderOrientation.LateUpdate, resulting in projectile
         //            spawns at the point before shoulder Orientation.
-        public void LateUpdate()
+        public override void OnLateUpdate()
         {
+            base.OnLateUpdate();
             // note: we need to check enabled in case we set it to false
             // when LateUpdate already started.
             // (https://github.com/vis2k/Mirror/pull/379)

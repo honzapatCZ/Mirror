@@ -74,15 +74,4 @@ namespace Mirror
     [AttributeUsage(AttributeTargets.Method)]
     public class ClientCallbackAttribute : Attribute { }
 
-    /// <summary>
-    /// Converts a string property into a Scene property in the inspector
-    /// </summary>
-    public class SceneAttribute : Attribute { }//PropertyAttribute
-
-    /// <summary>
-    /// Used to show private SyncList in the inspector,
-    /// <para> Use instead of Serialize for non Serializable types </para>
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
-    public class ShowInInspectorAttribute : Attribute { }
 }

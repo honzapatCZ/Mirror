@@ -30,6 +30,7 @@ namespace Mirror
         [Header("Configuration")]
         ////[FormerlySerializedAs("m_DontDestroyOnLoad")]
         [Tooltip("Should the Network Manager object be persisted through scene changes?")]
+        [EditorOrder(0)]
         public bool dontDestroyOnLoad = true;
 
         /// <summary>
@@ -47,6 +48,7 @@ namespace Mirror
         /// </summary>
         [Tooltip("Should the server auto-start when 'Server Build' is checked in build settings")]
         ////[FormerlySerializedAs("startOnHeadless")]
+        [EditorOrder(1)]
         public bool autoStartServerBuild = true;
 
         /// <summary>
@@ -54,12 +56,14 @@ namespace Mirror
         /// </summary>
         ////[FormerlySerializedAs("m_ShowDebugMessages")]
         [Tooltip("This will enable verbose debug messages in the Unity Editor console")]
+        [EditorOrder(2)]
         public bool showDebugMessages;
 
         /// <summary>
         /// Server Update frequency, per second. Use around 60Hz for fast paced games like Counter-Strike to minimize latency. Use around 30Hz for games like WoW to minimize computations. Use around 1-10Hz for slow paced games like EVE.
         /// </summary>
         [Tooltip("Server Update frequency, per second. Use around 60Hz for fast paced games like Counter-Strike to minimize latency. Use around 30Hz for games like WoW to minimize computations. Use around 1-10Hz for slow paced games like EVE.")]
+        [EditorOrder(3)]
         public int serverTickRate = 30;
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace Mirror
         /// => enable it for high scale / cpu heavy games
         /// </summary>
         [Tooltip("Batching greatly reduces CPU & Transport load, but increases latency by one frame time. Use for high scale games / CPU intensive games. Don't use for fast paced games.")]
+        [EditorOrder(4)]
         public bool serverBatching;
 
         /// <summary>
@@ -80,6 +85,7 @@ namespace Mirror
         /// if batch interval is 0, then we only batch until the Update() call
         /// </summary>
         [Tooltip("Server can batch messages Up to Transport.GetMaxPacketSize to significantly reduce transport calls and improve performance/scale.\nIf batch interval is 0, then we only batch until the Update() call. Otherwise we batch until interval elapsed (note that this increases latency).")]
+        [EditorOrder(5)]
         public float serverBatchInterval = 0;
 
         /// <summary>
@@ -87,24 +93,27 @@ namespace Mirror
         /// <para>Setting this makes the NetworkManager do scene management. This scene will be switched to when a network session is completed - such as a client disconnect, or a server shutdown.</para>
         /// </summary>
         [Header("Scene Management")]
-        [Scene]
         ////[FormerlySerializedAs("m_OfflineScene")]
+        //[Scene]
         [Tooltip("Scene that Mirror will switch to when the client or server is stopped")]
+        [EditorOrder(6)]
         public SceneReference offlineScene;
 
         /// <summary>
         /// The scene to switch to when online.
         /// <para>Setting this makes the NetworkManager do scene management. This scene will be switched to when a network session is started - such as a client connect, or a server listen.</para>
         /// </summary>
-        [Scene]
+        //[Scene]
         ////[FormerlySerializedAs("m_OnlineScene")]
         [Tooltip("Scene that Mirror will switch to when the server is started. Clients will recieve a Scene Message to load the server's current scene when they connect.")]
+        [EditorOrder(7)]
         public SceneReference onlineScene;
 
         // transport layer
         [Header("Network Info")]
         [Tooltip("Transport component attached to this object that server and client will use to connect")]
-        [Serialize]
+        [Serialize][ShowInEditor]
+        [EditorOrder(8)]
         protected Transport transport;
 
         /// <summary>
@@ -113,6 +122,7 @@ namespace Mirror
         /// </summary>
         ////[FormerlySerializedAs("m_NetworkAddress")]
         [Tooltip("Network Address where the client should connect to the server. Server does not use this for anything.")]
+        [EditorOrder(9)]
         public string networkAddress = "localhost";
 
         /// <summary>
@@ -121,6 +131,7 @@ namespace Mirror
         /// </summary>
         ////[FormerlySerializedAs("m_MaxConnections")]
         [Tooltip("Maximum number of concurrent connections.")]
+        [EditorOrder(10)]
         public int maxConnections = 100;
 
         // This value is passed to NetworkServer in SetUpServer
@@ -128,6 +139,7 @@ namespace Mirror
         /// Should the server disconnect remote connections that have gone silent for more than Server Idle Timeout?
         /// </summary>
         [Tooltip("Server Only - Disconnects remote connections that have been silent for more than Server Idle Timeout")]
+        [EditorOrder(11)]
         public bool disconnectInactiveConnections;
 
         // This value is passed to NetworkServer in SetUpServer
@@ -138,10 +150,12 @@ namespace Mirror
         /// <para>Default value is 60 seconds.</para>
         /// </summary>
         [Tooltip("Timeout in seconds since last message from a client after which server will auto-disconnect if Disconnect Inactive Connections is enabled.")]
+        [EditorOrder(12)]
         public float disconnectInactiveTimeout = 60f;
 
         [Header("Authentication")]
         [Tooltip("Authentication component attached to this object")]
+        [EditorOrder(13)]
         public NetworkAuthenticator authenticator;
 
         /// <summary>
@@ -151,6 +165,7 @@ namespace Mirror
         [Header("Player Object")]
         ////[FormerlySerializedAs("m_PlayerPrefab")]
         [Tooltip("Prefab of the player object. Prefab must have a Network Identity component. May be an empty game object or a full avatar.")]
+        [EditorOrder(14)]
         public Prefab playerPrefab;
 
         /// <summary>
@@ -158,6 +173,7 @@ namespace Mirror
         /// </summary>
         ////[FormerlySerializedAs("m_AutoCreatePlayer")]
         [Tooltip("Should Mirror automatically spawn the player after scene change?")]
+        [EditorOrder(15)]
         public bool autoCreatePlayer = true;
 
         /// <summary>
@@ -165,6 +181,7 @@ namespace Mirror
         /// </summary>
         ////[FormerlySerializedAs("m_PlayerSpawnMethod")]
         [Tooltip("Round Robin or Random order of Start Position selection")]
+        [EditorOrder(16)]
         public PlayerSpawnMethod playerSpawnMethod;
 
         /// <summary>
@@ -172,6 +189,7 @@ namespace Mirror
         /// <para>For each of these prefabs, ClientScene.RegisterPrefab() will be automatically invoked.</para>
         /// </summary>
         ////[FormerlySerializedAs("m_SpawnPrefabs"), HideInEditor]
+        [EditorOrder(17)]
         public List<Prefab> spawnPrefabs = new List<Prefab>();
 
         /// <summary>
@@ -189,7 +207,7 @@ namespace Mirror
         /// True if the server or client is started and running
         /// <para>This is set True in StartServer / StartClient, and set False in StopServer / StopClient</para>
         /// </summary>
-        [NonSerialized]
+        [NonSerialized][HideInEditor]
         public bool isNetworkActive;
 
         static NetworkConnection clientReadyConnection;
@@ -198,7 +216,7 @@ namespace Mirror
         /// This is true if the client loaded a new scene when connecting to the server.
         /// <para>This is set before OnClientConnect is called, so it can be checked there to perform different logic if a scene load occurred.</para>
         /// </summary>
-        [NonSerialized]
+        [NonSerialized][HideInEditor]
         public bool clientLoadedScene;
 
         // helper enum to know if we started the networkmanager as server/client/host.
@@ -258,6 +276,9 @@ namespace Mirror
         public override void OnAwake()
         {
             base.OnAwake();
+
+            OnValidate();
+
             // Don't allow collision-destroyed second instance to continue.
             if (!InitializeSingleton()) return;
 
@@ -295,8 +316,9 @@ namespace Mirror
         /// <summary>
         /// virtual so that inheriting classes' LateUpdate() can call base.LateUpdate() too
         /// </summary>
-        public virtual void LateUpdate()
+        public override void OnLateUpdate()
         {
+            base.OnLateUpdate();
             // call it while the NetworkManager exists.
             // -> we don't only call while Client/Server.Connected, because then we would stop if disconnected and the
             //    NetworkClient wouldn't receive the last Disconnect event, result in all kinds of issues
@@ -753,6 +775,7 @@ namespace Mirror
             {
                 LogFactory.EnableDebugMode();
             }
+            Debug.Log(singleton);
 
             if (dontDestroyOnLoad)
             {
@@ -763,25 +786,20 @@ namespace Mirror
 
                     // Return false to not allow collision-destroyed second instance to continue.
                     return false;
-                }
-                logger.Log("NetworkManager created singleton (DontDestroyOnLoad)");
-                singleton = this;
-                
+                }    
                 //if (Application.isPlaying)
                 {
                     //DontDestroyOnLoad(Actor);
                     Debug.LogWarning("Making dontdestroyonload by using parent = null, which in turn completely removes it from any levels");
-                    Actor.SetParent(null, false);
+                    Actor.SetParent(Actor.Scene.Parent, true);
+                    
                 }
             }
-            else
-            {
-                logger.Log("NetworkManager created singleton (ForScene)");
-                singleton = this;
-            }
-
+            logger.Log("NetworkManager created singleton (DontDestroyOnLoad)");
+            singleton = this;
             // set active transport AFTER setting singleton.
             // so only if we didn't destroy ourselves.
+            logger.Log("Settign active transport to " + transport?.TypeName);
             Transport.activeTransport = transport;
 
             return true;
@@ -833,6 +851,9 @@ namespace Mirror
         public override void OnDestroy()
         {
             base.OnDestroy();
+            Level.SceneLoaded -= OnSceneLoaded;
+            if (this == singleton)
+                Shutdown();
             logger.Log("NetworkManager destroyed");
         }
 
@@ -998,7 +1019,9 @@ namespace Mirror
 
             // process queued messages that we received while loading the scene
             logger.Log("FinishLoadScene: resuming handlers after scene was loading.");
+            Debug.Log("pretest" + Transport.activeTransport);
             Transport.activeTransport.Enabled = true;
+            Debug.Log("test" + Transport.activeTransport);
 
             // host mode?
             if (mode == NetworkManagerMode.Host)

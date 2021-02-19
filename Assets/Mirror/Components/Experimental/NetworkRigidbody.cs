@@ -50,6 +50,12 @@ namespace Mirror.Experimental
             }
         }
 
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            OnValidate();
+        }
+
 
         #region Sync vars
         [SyncVar(hook = nameof(OnVelocityChanged))]
@@ -129,8 +135,9 @@ namespace Mirror.Experimental
         #endregion
 
 
-        internal void Update()
+        public override void OnUpdate()
         {
+            base.OnUpdate();
             if (isServer)
             {
                 SyncToClients();
@@ -141,8 +148,9 @@ namespace Mirror.Experimental
             }
         }
 
-        internal void FixedUpdate()
+        public override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
             if (clearAngularVelocity && !syncAngularVelocity)
             {
                 target.AngularVelocity = Vector3.Zero;

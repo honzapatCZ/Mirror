@@ -61,8 +61,9 @@ namespace Mirror.Discovery
         /// <summary>
         /// virtual so that inheriting classes' Start() can call base.Start() too
         /// </summary>
-        public virtual void Start()
+        public override void OnStart()
         {
+            base.OnStart();
             // Server mode? then start advertising
 #if UNITY_SERVER
             AdvertiseServer();

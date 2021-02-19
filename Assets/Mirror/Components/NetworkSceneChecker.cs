@@ -52,8 +52,9 @@ namespace Mirror
         }
 
         [ServerCallback]
-        void Update()
+        public override void OnUpdate()
         {
+            base.OnUpdate();
             if (currentScene == Actor.Scene)
                 return;
 

@@ -41,8 +41,15 @@ namespace Mirror.Experimental
             }
         }
 
-        void Update()
+        public override void OnAwake()
         {
+            base.OnAwake();
+            OnValidate();
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
             if (isServer)
             {
                 SyncToClients();
@@ -78,8 +85,9 @@ namespace Mirror.Experimental
             targetPosition = Position;
         }
 
-        void FixedUpdate()
+        public override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
             if (IgnoreSync) { return; }
 
             target.LinearVelocity = Vector3.Lerp(target.LinearVelocity, targetLinearVelocity, lerpLinearVelocityAmount);

@@ -321,8 +321,9 @@ namespace Mirror
             targetComponent.LocalScale = scale;
         }
 
-        void Update()
+        public override void OnUpdate()
         {
+            base.OnUpdate();
             // if server then always sync to others.
             if (isServer)
             {
@@ -500,8 +501,9 @@ namespace Mirror
         }
 
         // draw the data points for easier debugging
-        void OnDrawGizmos()
+        public override void OnDebugDraw()
         {
+            base.OnDebugDraw();
             // draw start and goal points
             if (start != null) DrawDataPointGizmo(start, Color.Gray);
             if (goal != null) DrawDataPointGizmo(goal, Color.White);

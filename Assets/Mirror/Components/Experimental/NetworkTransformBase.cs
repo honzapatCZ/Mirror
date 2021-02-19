@@ -112,8 +112,9 @@ namespace Mirror.Experimental
         // We need to store this locally on the server so clients can't request Authority when ever they like
         bool clientAuthorityBeforeTeleport;
 
-        void FixedUpdate()
+        public override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
             // if server then always sync to others.
             // let the clients know that this has moved
             if (isServer && HasEitherMovedRotatedScaled())
@@ -491,8 +492,9 @@ namespace Mirror.Experimental
         #region Debug Gizmos
 
         // draw the data points for easier debugging
-        void OnDrawGizmos()
+        public override void OnDebugDraw()
         {
+            base.OnDebugDraw();
             // draw start and goal points and a line between them
             if (start.LocalPosition != goal.LocalPosition)
             {
