@@ -89,7 +89,7 @@ namespace Mirror.Weaver
         /// </summary>
         public static bool IsNetworkIdentityField(this TypeReference tr)
         {
-            return tr.Is<UnityEngine.GameObject>()
+            return tr.Is<FlaxEngine.Actor>()
                 || tr.Is<NetworkIdentity>()
                 || tr.IsDerivedFrom<NetworkBehaviour>();
         }

@@ -3,8 +3,6 @@ using System;
 using System.Linq;
 using Mono.CecilX;
 using Mono.CecilX.Cil;
-using UnityEditor;
-using UnityEditor.Compilation;
 using FlaxEngine;
 
 namespace Mirror.Weaver
@@ -128,7 +126,7 @@ namespace Mirror.Weaver
         static bool IsEditorAssembly(AssemblyDefinition currentAssembly)
         {
             return currentAssembly.MainModule.AssemblyReferences.Any(assemblyReference =>
-                assemblyReference.Name == nameof(UnityEditor)
+                assemblyReference.Name == nameof(FlaxEditor)
                 );
         }
 
@@ -152,6 +150,7 @@ namespace Mirror.Weaver
             customAttributeRef.ConstructorArguments.Add(new CustomAttributeArgument(WeaverTypes.Import<RuntimeInitializeLoadType>(), RuntimeInitializeLoadType.BeforeSceneLoad));
             rwInitializer.CustomAttributes.Add(customAttributeRef);
 
+            
             if (IsEditorAssembly(currentAssembly))
             {
                 // editor assembly,  add InitializeOnLoadMethod too.  Useful for the editor tests
@@ -159,6 +158,7 @@ namespace Mirror.Weaver
                 CustomAttribute initializeCustomConstructorRef = new CustomAttribute(currentAssembly.MainModule.ImportReference(initializeOnLoadConstructor));
                 rwInitializer.CustomAttributes.Add(initializeCustomConstructorRef);
             }
+            
 
             ILProcessor worker = rwInitializer.Body.GetILProcessor();
 

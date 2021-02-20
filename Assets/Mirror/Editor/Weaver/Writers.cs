@@ -7,7 +7,7 @@ using Mono.CecilX.Rocks;
 namespace Mirror.Weaver
 {
     public static class Writers
-    {
+    {        
         static Dictionary<TypeReference, MethodReference> writeFuncs;
 
         public static void Init()
@@ -116,15 +116,15 @@ namespace Mirror.Weaver
             {
                 throw new GenerateWriterException($"{variableReference.Name} is not a supported type. Use a supported type or provide a custom writer", variableReference);
             }
-            if (variableDefinition.IsDerivedFrom<UnityEngine.Component>())
+            if (variableDefinition.IsDerivedFrom<FlaxEngine.Actor>())
             {
                 throw new GenerateWriterException($"Cannot generate writer for component type {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
-            if (variableReference.Is<UnityEngine.Object>())
+            if (variableReference.Is<FlaxEngine.Object>())
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
-            if (variableReference.Is<UnityEngine.ScriptableObject>())
+            if (variableReference.Is<FlaxEngine.JsonAsset>())
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }

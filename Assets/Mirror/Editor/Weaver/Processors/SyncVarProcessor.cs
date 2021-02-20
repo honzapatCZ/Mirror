@@ -82,7 +82,7 @@ namespace Mirror.Weaver
             ILProcessor worker = get.Body.GetILProcessor();
 
             // [SyncVar] GameObject?
-            if (fd.FieldType.Is<UnityEngine.GameObject>())
+            if (fd.FieldType.Is<FlaxEngine.Actor>())
             {
                 // return this.GetSyncVarGameObject(ref field, uint netId);
                 // this.
@@ -154,7 +154,7 @@ namespace Mirror.Weaver
             worker.Append(worker.Create(OpCodes.Ldarg_1));
             // reference to field to set
             // make generic version of SetSyncVar with field type
-            if (fd.FieldType.Is<UnityEngine.GameObject>())
+            if (fd.FieldType.Is<FlaxEngine.Actor>())
             {
                 // reference to netId Field to set
                 worker.Append(worker.Create(OpCodes.Ldarg_0));
@@ -213,7 +213,7 @@ namespace Mirror.Weaver
             // 8 byte integer aka long
             worker.Append(worker.Create(OpCodes.Ldc_I8, dirtyBit));
 
-            if (fd.FieldType.Is<UnityEngine.GameObject>())
+            if (fd.FieldType.Is<FlaxEngine.Actor>())
             {
                 // reference to netId Field to set
                 worker.Append(worker.Create(OpCodes.Ldarg_0));
@@ -342,7 +342,13 @@ namespace Mirror.Weaver
             }
         }
 
-        public static (List<FieldDefinition> syncVars, Dictionary<FieldDefinition, FieldDefinition> syncVarNetIds) ProcessSyncVars(TypeDefinition td)
+        public struct ProcessSyncVarReturn
+        {
+            public List<FieldDefinition> syncVars;
+            public Dictionary<FieldDefinition, FieldDefinition> syncVarNetIds;
+        }
+
+        public static ProcessSyncVarReturn ProcessSyncVars(TypeDefinition td)
         {
             List<FieldDefinition> syncVars = new List<FieldDefinition>();
             Dictionary<FieldDefinition, FieldDefinition> syncVarNetIds = new Dictionary<FieldDefinition, FieldDefinition>();
@@ -395,7 +401,7 @@ namespace Mirror.Weaver
             }
             Weaver.WeaveLists.SetNumSyncVars(td.FullName, syncVars.Count);
 
-            return (syncVars, syncVarNetIds);
+            return new ProcessSyncVarReturn { syncVars = syncVars, syncVarNetIds = syncVarNetIds };
         }
 
         public static void WriteCallHookMethodUsingArgument(ILProcessor worker, MethodDefinition hookMethod, VariableDefinition oldValue)

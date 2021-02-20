@@ -33,7 +33,7 @@ public class Mirror : GameModule
         options.SourceFiles = options.SourceFiles.Except(except3).ToList();
         List<string> except4 = Directory.GetFiles(Path.Combine(FolderPath, "Assets", "Mirror", "Cloud"), "*.*", SearchOption.AllDirectories).ToList();
         options.SourceFiles = options.SourceFiles.Except(except4).ToList();
-        
+        /*
         string output = "";
         foreach(string name in options.SourceFiles)
         {
@@ -41,6 +41,7 @@ public class Mirror : GameModule
         }
 
         Flax.Build.Log.Info(output);
+        */
         // Here you can modify the build options for your game module
         // To reference another module use: options.PublicDependencies.Add("Audio");
         // To add C++ define use: options.PublicDefinitions.Add("COMPILE_WITH_FLAX");

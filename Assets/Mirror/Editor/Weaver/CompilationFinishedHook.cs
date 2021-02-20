@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.Compilation;
 using FlaxEngine;
-using UnityAssembly = UnityEditor.Compilation.Assembly;
+using FlaxEditor;
+using FlaxEditor.Utilities;
 
 namespace Mirror.Weaver
 {
@@ -40,10 +39,13 @@ namespace Mirror.Weaver
             if (OnWeaverError != null) OnWeaverError.Invoke(msg);
         }
 
-        [InitializeOnLoadMethod]
+        //[InitializeOnLoadMethod]
         public static void OnInitializeOnLoad()
         {
-            CompilationPipeline.assemblyCompilationFinished += OnCompilationFinished;
+            ScriptsBuilder.CompilationSuccess += OnCompilationFinished;
+            //ScriptsBuilder.CompilationEnd += OnCompilationEnd;
+            
+            //CompilationPipeline.assemblyCompilationFinished += OnCompilationFinished;
 
             // We only need to run this once per session
             // after that, all assemblies will be weaved by the event
@@ -63,7 +65,7 @@ namespace Mirror.Weaver
             {
                 if (File.Exists(assembly.outputPath))
                 {
-                    OnCompilationFinished(assembly.outputPath, new CompilerMessage[0]);
+                    OnCompilationFinished(assembly.outputPath);
                 }
             }
 
@@ -85,20 +87,23 @@ namespace Mirror.Weaver
             }
             return "";
         }
-
+        /*
         static bool CompilerMessagesContainError(CompilerMessage[] messages)
         {
             return messages.Any(msg => msg.type == CompilerMessageType.Error);
         }
-
-        static void OnCompilationFinished(string assemblyPath, CompilerMessage[] messages)
+        */
+        static void OnCompilationFinished(string assemblyPath)
         {
             // Do nothing if there were compile errors on the target
+            
+            /*
             if (CompilerMessagesContainError(messages))
             {
                 Debug.Log("Weaver: stop because compile errors on target");
                 return;
             }
+            */
 
             // Should not run on the editor only assemblies
             if (assemblyPath.Contains("-Editor") || assemblyPath.Contains(".Editor"))
