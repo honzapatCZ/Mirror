@@ -240,7 +240,11 @@ namespace Mirror
 #pragma warning disable UNT0001 // Empty Unity message
         public override void OnUpdate() { base.OnUpdate(); }
 #pragma warning restore UNT0001 // Empty Unity message
-
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            Shutdown();
+        }
         /// <summary>
         /// called when quitting the application by closing the window / pressing stop in the editor
         /// <para>virtual so that inheriting classes' OnApplicationQuit() can call base.OnApplicationQuit() too</para>

@@ -165,6 +165,8 @@ namespace Mirror
 
         internal static void RegisterMessageHandlers()
         {
+            if (logger.LogEnabled()) logger.Log("Registering message handler for Ready, Command and NetworkPing");
+
             RegisterHandler<ReadyMessage>(OnClientReadyMessage);
             RegisterHandler<CommandMessage>(OnCommandMessage);
             RegisterHandler<NetworkPingMessage>(NetworkTime.OnServerPing, false);

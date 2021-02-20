@@ -36,10 +36,8 @@ namespace Mirror.Logging
                 {
                     settings.loglevels.Add(new LogSettings.LoggerSettings { name = kvp.Key, logLevel = kvp.Value.FilterLogType });
                 }
-#if FLAX_EDITOR
             }
             //UnityEditor.EditorUtility.SetDirty(settings);
-#endif
 
         }
 

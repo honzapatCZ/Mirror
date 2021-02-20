@@ -249,6 +249,7 @@ namespace Mirror
                 // For some insane reason, this line fails when building unless wrapped in this define. StUpid but true.
                 // error CS0234: The type or namespace name 'Undo' does not exist in the namespace 'UnityEditor' (are you missing an assembly reference?)
                 //UnityEditor.Undo.RecordObject(gameObject, "Added default Transport");
+#if FLAX_EDITOR
                 using (new FlaxEditor.UndoBlock(FlaxEditor.Editor.Instance.Undo, this, "Change Log Settings"))
                 {
                     transport = Actor.GetScript<Transport>();
@@ -258,8 +259,8 @@ namespace Mirror
                         logger.Log("NetworkManager: added default Transport because there was none yet.");
                     }
                 }
+#endif
             }
-
             // always >= 0
             maxConnections = Mathf.Max(maxConnections, 0);
 
@@ -843,6 +844,8 @@ namespace Mirror
 
             singleton.StopHost();
             singleton = null;
+
+            Transport.activeTransport = null;
         }
 
         /// <summary>
