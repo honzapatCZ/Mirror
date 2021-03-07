@@ -37,7 +37,7 @@ namespace Mirror
         /// Controls whether the program runs when it is in the background.
         /// <para>This is required when multiple instances of a program using networking are running on the same machine, such as when testing using localhost. But this is not recommended when deploying to mobile platforms.</para>
         /// </summary>
-        ///[FormerlySerializedAs("m_RunInBackground")]
+        //[FormerlySerializedAs("m_RunInBackground")]
         //[Tooltip("Should the server or client keep running in the background?")]
         //public bool runInBackground = true;
 
@@ -336,7 +336,7 @@ namespace Mirror
         bool IsServerOnlineSceneChangeNeeded()
         {
             // Only change scene if the requested online scene is not blank, and is not already loaded
-            return onlineScene.ID != null && !IsSceneActive(onlineScene) && onlineScene.ID != offlineScene.ID;
+            return onlineScene.ID != Guid.Empty && !IsSceneActive(onlineScene) && onlineScene.ID != offlineScene.ID;
         }
 
         public static bool IsSceneActive(SceneReference newSceneName)
@@ -351,7 +351,6 @@ namespace Mirror
             if (logger.LogEnabled()) logger.Log("NetworkManager SetUpServer");
             InitializeSingleton();
 
-            //if (runInBackground)
               //  Application.runInBackground = true;
 
             if (authenticator != null)
@@ -685,7 +684,7 @@ namespace Mirror
             // doesn't think we need initialize anything.
             mode = NetworkManagerMode.Offline;
 
-            if (offlineScene.ID != null)
+            if (offlineScene.ID != Guid.Empty)
             {
                 ServerChangeScene(offlineScene);
             }
@@ -722,7 +721,7 @@ namespace Mirror
             // If this is the host player, StopServer will already be changing scenes.
             // Check loadingSceneAsync to ensure we don't double-invoke the scene change.
             // Check if NetworkServer.active because we can get here via Disconnect before server has started to change scenes.
-            if (offlineScene.ID != null && !IsSceneActive(offlineScene) && !NetworkServer.active)
+            if (offlineScene.ID != Guid.Empty && !IsSceneActive(offlineScene) && !NetworkServer.active)
             {
                 ClientChangeScene(offlineScene, SceneOperation.Normal);
             }
@@ -907,7 +906,7 @@ namespace Mirror
             if (NetworkServer.active)
             {
                 // notify all clients about the new scene
-                NetworkServer.SendToAll(new SceneMessage { sceneName = newSceneName });
+                NetworkServer.SendToAll(new SceneMessage { sceneName = newSceneName.ID });
             }
 
             startPositionIndex = 0;
@@ -921,7 +920,7 @@ namespace Mirror
 
         internal void ClientChangeScene(SceneReference newSceneName, SceneOperation sceneOperation = SceneOperation.Normal, bool customHandling = false)
         {
-            if (networkSceneName.ID == null)
+            if (networkSceneName.ID == Guid.Empty)
             {
                 logger.LogError("ClientChangeScene empty scene name");
                 return;
@@ -1227,9 +1226,10 @@ namespace Mirror
             conn.isAuthenticated = true;
 
             // proceed with the login handshake by calling OnServerConnect
-            if (networkSceneName.ID != null && networkSceneName.ID != offlineScene.ID)
+            if (networkSceneName.ID != Guid.Empty && networkSceneName.ID != offlineScene.ID)
             {
-                SceneMessage msg = new SceneMessage() { sceneName = networkSceneName };
+                Debug.Log("Sending change scene message to new scene " + networkSceneName.ID);
+                SceneMessage msg = new SceneMessage() { sceneName = networkSceneName.ID };
                 conn.Send(msg);
             }
 
@@ -1337,7 +1337,7 @@ namespace Mirror
 
             if (NetworkClient.isConnected && !NetworkServer.active)
             {
-                ClientChangeScene(msg.sceneName, msg.sceneOperation, msg.customHandling);
+                ClientChangeScene(new SceneReference(msg.sceneName), msg.sceneOperation, msg.customHandling);
             }
         }
 

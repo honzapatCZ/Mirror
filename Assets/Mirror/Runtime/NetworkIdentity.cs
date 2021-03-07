@@ -283,13 +283,12 @@ namespace Mirror
             get
             {
 
-#if FLAX_EDITOR
                 // This is important because sometimes OnValidate does not run (like when adding view to prefab with no child links)
                 if (string.IsNullOrEmpty(m_AssetId))
                 {
                     m_AssetId = Actor.PrefabID.ToString("N");
                 }
-#endif
+
                 // convert string to Guid and use .Empty to avoid exception if
                 // we would use 'new Guid("")'
                 return string.IsNullOrEmpty(m_AssetId) ? Guid.Empty : new Guid(m_AssetId);

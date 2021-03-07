@@ -1095,7 +1095,7 @@ namespace Mirror
                 bool isOwner = identity.connectionToClient == conn;
 
                 ArraySegment<byte> payload = CreateSpawnMessagePayload(isOwner, identity, ownerWriter, observersWriter);
-
+                Debug.Log("Posíláme zprávu o Spawnu pro " + identity.Actor + " jehož assetId je " + identity.assetId);
                 SpawnMessage msg = new SpawnMessage
                 {
                     netId = identity.netId,

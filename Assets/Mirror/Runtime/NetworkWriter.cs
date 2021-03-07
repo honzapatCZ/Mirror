@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using FlaxEngine;
+using FlaxEngine.Json;
 
 namespace Mirror
 {
@@ -160,6 +161,7 @@ namespace Mirror
         /// <param name="value"></param>
         public void Write<T>(T value)
         {
+            /*
             Action<NetworkWriter, T> writeDelegate = Writer<T>.write;
             if (writeDelegate == null)
             {
@@ -169,6 +171,10 @@ namespace Mirror
             {
                 writeDelegate(this, value);
             }
+            */
+            string ser = JsonSerializer.Serialize(value);
+
+            this.WriteString(ser);
         }
     }
 

@@ -15,7 +15,7 @@ namespace Mirror
 
     public struct SceneMessage : NetworkMessage
     {
-        public SceneReference sceneName;
+        public Guid sceneName;
         // Normal = 0, LoadAdditive = 1, UnloadAdditive = 2
         public SceneOperation sceneOperation;
         public bool customHandling;

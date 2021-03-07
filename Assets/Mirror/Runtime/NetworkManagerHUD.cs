@@ -134,6 +134,7 @@ namespace Mirror
                 Parent = mainVertPanel,
                 Text = "Disconnect",
                 Visible = false,
+                Font = font,
             };
             cancelServerBtn = new Button
             {

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using FlaxEngine;
+using FlaxEngine.Json;
 
 namespace Mirror
 {
@@ -134,13 +135,19 @@ namespace Mirror
         /// <returns></returns>
         public T Read<T>()
         {
+            /*
             Func<NetworkReader, T> readerDelegate = Reader<T>.read;
             if (readerDelegate == null)
             {
                 logger.LogError($"No reader found for {typeof(T)}. Use a type sUpported by Mirror or define a custom reader");
                 return default;
             }
-            return readerDelegate(this);
+            */
+            string mess = this.ReadString();
+            T des = JsonSerializer.Deserialize<T>(mess);
+
+            return des;
+            //return readerDelegate(this);
         }
     }
 
