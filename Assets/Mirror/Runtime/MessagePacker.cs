@@ -63,10 +63,6 @@ namespace Mirror
             }
         }
 
-        [Obsolete("MessagePacker.UnpackMessage was renamed to Unpack for consistency with Pack.")]
-        public static bool UnpackMessage(NetworkReader messageReader, out int msgType) =>
-            Unpack(messageReader, out msgType);
-
         internal static NetworkMessageDelegate WrapHandler<T, C>(Action<C, T> handler, bool requireAuthentication)
             where T : struct, NetworkMessage
             where C : NetworkConnection

@@ -69,7 +69,9 @@ namespace Mirror.Weaver
             MarkAsProcessed(netBehaviourSubclass);
 
             // deconstruct tuple and set fields
-            (syncVars, syncVarNetIds) = SyncVarProcessor.ProcessSyncVars(netBehaviourSubclass);
+            SyncVarProcessor.ProcessSyncVarReturn ret = SyncVarProcessor.ProcessSyncVars(netBehaviourSubclass);
+            syncVars = ret.syncVars;
+            syncVarNetIds = ret.syncVarNetIds;
 
             syncObjects = SyncObjectProcessor.FindSyncObjectsFields(netBehaviourSubclass);
 

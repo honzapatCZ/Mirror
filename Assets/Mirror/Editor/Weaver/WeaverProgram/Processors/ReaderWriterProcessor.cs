@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using Mono.CecilX;
 using Mono.CecilX.Cil;
-using FlaxEngine;
 
 namespace Mirror.Weaver
 {

@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FlaxEngine;
-using FlaxEditor;
-using FlaxEditor.Utilities;
 
 namespace Mirror.Weaver
 {
@@ -28,27 +25,28 @@ namespace Mirror.Weaver
         // warning message handler that also calls OnWarningMethod delegate
         static void HandleWarning(string msg)
         {
-            if (UnityLogEnabled) Debug.LogWarning(msg);
+            if (UnityLogEnabled) Console.WriteLine(msg);
             if (OnWeaverWarning != null) OnWeaverWarning.Invoke(msg);
         }
 
         // error message handler that also calls OnErrorMethod delegate
         static void HandleError(string msg)
         {
-            if (UnityLogEnabled) Debug.LogError(msg);
+            if (UnityLogEnabled) Console.WriteLine(msg);
             if (OnWeaverError != null) OnWeaverError.Invoke(msg);
         }
 
         //[InitializeOnLoadMethod]
         public static void OnInitializeOnLoad()
         {
-            ScriptsBuilder.CompilationSuccess += OnCompilationFinished;
-            //ScriptsBuilder.CompilationEnd += OnCompilationEnd;
+            /*
+            ScriptsBuilder.CompilationSuccess += ()=> { OnCompilationFinished(); };
             
             //CompilationPipeline.assemblyCompilationFinished += OnCompilationFinished;
 
             // We only need to run this once per session
             // after that, all assemblies will be weaved by the event
+            
             if (!SessionState.GetBool("MIRROR_WEAVED", false))
             {
                 // reset session flag
@@ -57,6 +55,7 @@ namespace Mirror.Weaver
 
                 WeaveExistingAssemblies();
             }
+            */
         }
 
         public static void WeaveExistingAssemblies()
@@ -68,12 +67,12 @@ namespace Mirror.Weaver
                     OnCompilationFinished(assembly.outputPath);
                 }
             }
-
+            /*
 #if UNITY_2019_3_OR_NEWER
             EditorUtility.RequestScriptReload();
 #else
             UnityEditorInternal.InternalEditorUtility.RequestScriptReload();
-#endif
+#endif*/
         }
 
         static string FindMirrorRuntime()
@@ -122,7 +121,7 @@ namespace Mirror.Weaver
             string mirrorRuntimeDll = FindMirrorRuntime();
             if (string.IsNullOrEmpty(mirrorRuntimeDll))
             {
-                Debug.LogError("Failed to find Mirror runtime assembly");
+                Console.WriteLine("Failed to find Mirror runtime assembly");
                 return;
             }
             if (!File.Exists(mirrorRuntimeDll))
@@ -138,7 +137,7 @@ namespace Mirror.Weaver
             string unityEngineCoreModuleDLL = UnityEditorInternal.InternalEditorUtility.GetEngineCoreModuleAssemblyPath();
             if (string.IsNullOrEmpty(unityEngineCoreModuleDLL))
             {
-                Debug.LogError("Failed to find UnityEngine assembly");
+                Console.WriteLine("Failed to find UnityEngine assembly");
                 return;
             }
 
@@ -151,8 +150,9 @@ namespace Mirror.Weaver
             if (!Weaver.WeaveAssembly(assemblyPath, dependencyPaths.ToArray()))
             {
                 // Set false...will be checked in \Editor\EnterPlayModeSettingsCheck.CheckSuccessfulWeave()
-                SessionState.SetBool("MIRROR_WEAVE_SUCCESS", false);
-                if (UnityLogEnabled) Debug.LogError("Weaving failed for: " + assemblyPath);
+                //SessionState.SetBool("MIRROR_WEAVE_SUCCESS", false);
+                if (UnityLogEnabled) 
+                    Console.WriteLine("Weaving failed for: " + assemblyPath);
             }
         }
 

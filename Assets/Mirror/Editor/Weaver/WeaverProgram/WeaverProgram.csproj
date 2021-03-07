@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="FlaxEngine.CSharp">
+      <HintPath>Plugins\RefDll\FlaxEngine.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.CSharp">
+      <HintPath>Plugins\RefDll\Game.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirror.CSharp">
+      <HintPath>Plugins\RefDll\Mirror.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX">
+      <HintPath>Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Mdb">
+      <HintPath>Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Pdb">
+      <HintPath>Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Rocks">
+      <HintPath>Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

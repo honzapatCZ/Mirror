@@ -13,7 +13,7 @@ public class MirrorEditor : GameEditorModule
 
         // C#-only scripting
         BuildNativeCode = false;
-
+        
     }
 
     /// <inheritdoc />
@@ -25,12 +25,15 @@ public class MirrorEditor : GameEditorModule
 
         options.SourcePaths.Clear();
         options.SourceFiles.AddRange(Directory.GetFiles(Path.Combine(FolderPath, "Assets", "Mirror", "Editor"), "*.*", SearchOption.AllDirectories));
-        
+
+        List<string> except = Directory.GetFiles(Path.Combine(FolderPath, "Assets", "Mirror", "Editor", "Weaver"), "*.*", SearchOption.AllDirectories).ToList();
+        options.SourceFiles = options.SourceFiles.Except(except).ToList();
+        /*
         options.ScriptingAPI.FileReferences.Add(Path.Combine(FolderPath, "Assets", "Mirror", "Editor", "Plugins", "Mono.Cecil", "Mono.CecilX.dll"));
         options.ScriptingAPI.FileReferences.Add(Path.Combine(FolderPath, "Assets", "Mirror", "Editor", "Plugins", "Mono.Cecil", "Mono.CecilX.Mdb.dll"));
         options.ScriptingAPI.FileReferences.Add(Path.Combine(FolderPath, "Assets", "Mirror", "Editor", "Plugins", "Mono.Cecil", "Mono.CecilX.Pdb.dll"));
         options.ScriptingAPI.FileReferences.Add(Path.Combine(FolderPath, "Assets", "Mirror", "Editor", "Plugins", "Mono.Cecil", "Mono.CecilX.Rocks.dll"));
-
+        */
         options.PublicDependencies.Add("Mirror");
         /*
         string output = "";

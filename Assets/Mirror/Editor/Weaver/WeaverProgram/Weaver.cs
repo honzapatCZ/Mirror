@@ -80,7 +80,7 @@ namespace Mirror.Weaver
 
         static void CheckScript(TypeDefinition td)
         {
-            if (td.IsDerivedFrom<UnityEngine.Script>())
+            if (td.IsDerivedFrom<FlaxEngine.Script>())
             {
                 ScriptProcessor.Process(td);
             }
